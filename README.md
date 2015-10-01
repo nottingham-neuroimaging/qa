@@ -1,16 +1,23 @@
-# qa - quality assurance code for 7T fMRI data
+# qa - quality assurance 7T fMRI data
 
 ## what data?
 
+this is not supposed to replace the detailed, technical QA that will routinely be run at the MR centre, but will hopefully provide a
+
+## PSIR
+
+provides the files / example for calculating PSIR images on the console. we'll use this as a starting point for getting the code in ``fmriQA`` to run / do the right thing.
+
 ## how to run?
 
+- on PRIDE / the Philips scanner
 - straight from ``matlab``
 - in shell wrapper
 
 
 ## desiderata
 
-We want to be able to run this in one of the following ways:
+We may also want to be able to run this in one of the following ways:
 
 ```matlab
   uonQA() % allow data file picking.
