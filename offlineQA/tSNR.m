@@ -23,7 +23,7 @@ validInputArgs = {'dynNOISEscan', 'temporalFilter', 'cropTimeSeries', 'outputBas
 
 };
 
-eval(evalargs(varargin,[],[],[],validInputArgs))
+eval(evalargs(varargin,[],[],validInputArgs))
 
 % check inputs for the required arguments
 if ieNotDefined('dynNOISEscan')
@@ -39,12 +39,12 @@ if ieNotDefined('cropTimeSeries')
     cropTimeSeries=[];
 end
 
-if ieNotDefined('datafilename')
+if ieNotDefined('dataFilename')
     % get data_filename
     [dataFilename,pathname] = uigetfile({'*.hdr';'*.nii';'*.img'},'Select file ');
 end
 
-if ieNotDefined('outputFname')
+if ieNotDefined('outputBaseName')
     outputBaseName = [pathname stripext(dataFilename)];    
 end
 
