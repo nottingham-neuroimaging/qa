@@ -1,4 +1,4 @@
-function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap)
+function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap,ROI_box)
 % Function here to generate summary images, saves them as pngs for everyone
 % to see.
 % usage:
@@ -29,6 +29,9 @@ if(nargin<6)
     cmap = hot(255).';
 end
 
+if(nargin<7)
+    ROI_box = [];
+end
 
 data = cbiReadNifti(filename);
 data = mean(data,4);
@@ -57,6 +60,10 @@ for sc=1:length(sliceChoice),
     dat2 = dat2(end:-1:1,:,:);
     
     dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
+    
+    if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))
+        dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[0 0 255]);
+    end
     dats{sc} = dat2;
 end
 
