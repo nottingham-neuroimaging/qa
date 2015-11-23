@@ -1,13 +1,14 @@
 function fmriQA()
-%% fmriAQ - script. to be compiled to run as standalone EXE on scanner
+%% fmriQA - script. to be compiled to run as standalone EXE on scanner
+%
+% computes tSNR from functional dataset (escluding last dynamic(
 %
 % based on PSIR example code from andrew peters / emma hall.
-%
-% 2015/10/01
+% modified by Denis Schluppeck and Julien Besle
+% 2015/11/23
 %
 %    a couple of notes: function should be able to be compiled (not script)
-%                       need to fix a few things relating to P/M and
-%                       picking up on how many dynamics we have, etc.
+%                       need to test for M/P data
 %      
 %                       should break more stuff out into sub-functions to
 %                       make it easier to read / debug.
@@ -16,13 +17,20 @@ function fmriQA()
 %% define locations on scanner
 InputPathName='G:\patch\pride\tempinputseries\';
 OutputPathName='G:\patch\pride\tempoutputseries\';
+% InputPathName='N:\data\testSNRPride\';
+% OutputPathName='N:\data\testSNRPride\';
+% InputPathName='/home/julien/data/testSNRPride/';
+% OutputPathName='/home/julien/data/testSNRPride/';
 
 % and the exported filename
 FileName='DBIEX.REC';
 
 %% Read in the xml file
 xml_file = strcat(InputPathName,strtok(FileName,'.'),'.xml');
+% tic  %converting the xml file for a functional dataset takes a
+% significant amount of time...
 s = xml2struct(xml_file);
+% toc
 
 % info about the series
 b1 = s.PRIDE_V5.Series_Info.Attribute;
@@ -33,30 +41,13 @@ b2 = s.PRIDE_V5.Image_Array.Image_Info;
 % q = 0; % quit variable % deal with this in another way [ds]
 
 
-%% This checks that the image has 2 phases
-% NOT NEEDED for tSNR / QA
-%
-% for g=1:length(b1)
-%     c=b1{g}.Attributes;
-%     if strcmp(c.Name, 'Max No Phases')
-%         if strcmp(b1{g}.Text,'2')==0
-%             q=1;
-%             disp('Need two inversion times for PSIR reconstruction'); %display the error
-%         end
-%     end
-% end
-
-%% Only need modulus images for qa/tSNR calculations... but data may or may not be reconned as M/P
-%  I think this is important later on, when deciding on how to read out the
-%  REC file [ds]
-
-m1=1000;
+%% Identify modulus images 
+m1=inf;
 M=0;
-p1=1000;
+p1=inf;
 P=0;
 
 imagetype = zeros(1,length(b2));
-imageTI = zeros(1,length(b2));
 
 % count through the files:
 for count=1:length(b2)
@@ -76,12 +67,6 @@ for count=1:length(b2)
             end
             if P==1 && M==1
             end
-        elseif strcmp(c{counter}.Attributes.Name,'Phase')
-            if strcmp(c{counter}.Text,'1');
-                imageTI(count)=1;
-            elseif strcmp(c{counter}.Text,'2');
-                imageTI(count)=2;
-            end
         end
     end
 end
@@ -97,53 +82,52 @@ for g=1:length(b1)
     if strcmp(c.Name, 'Max No Slices') %compare to findLabel to see if match
         zdim=str2double(char(b1{g}.Text));
     end
+    if strcmp(c.Name, 'Max No Dynamics')
+        tdim=str2double(char(b1{g}.Text));
+    end
 end
 
 %% Find the X and y dim
-%  and t. [ds]
-c=b2{p1}.Attribute;
+c=b2{m1}.Attribute;
 for g2=1:length(c)
     d=c{g2}.Attributes;
     if strcmp(d.Name, 'Resolution X') %compare to findLabel to see if match
         xdim=str2double(char(c{g2}.Text));
     elseif strcmp(d.Name, 'Resolution Y') %compare to findLabel to see if match
         ydim=str2double(char(c{g2}.Text));
-    elseif strcmp(d.Name, 'NUMBER OF DYNAMICS') %% !!! need to find proper label for # of dynamics
-        tdim=str2double(char(c{g2}.Text));
-    elseif strcmp(d.Name, 'Rescale Intercept') %compare to findLabel to see if match
-        rescale_interc_phase=str2double(char(c{g2}.Text));
-    elseif strcmp(d.Name, 'Rescale Slope') %compare to findLabel to see if match
-        rescale_slope_phase=str2double(char(c{g2}.Text));
-    elseif strcmp(d.Name, 'Scale Slope') %compare to findLabel to see if match
-        scale_slope_phase=str2double(char(c{g2}.Text));
     end
 end
 
 %% Read in the Modulus Data
 data_file1 = strcat(InputPathName,FileName);
 file_id = fopen(data_file1,'r','l');
-%% need to adjust the to includ # of dynamics, too. tdim [ds]
-IM = fread(file_id,xdim*ydim*zdim*4,'int16');
-IM = reshape(IM,xdim,ydim,zdim*4);
 
-MOD1=IM(:,:,imagetype==1 & imageTI==1);
-PHA1=IM(:,:,imagetype==2 & imageTI==1);
-MOD2=IM(:,:,imagetype==1 & imageTI==2);
-PHA2=IM(:,:,imagetype==2 & imageTI==2);
-PHA1=((PHA1*rescale_slope_phase)+rescale_interc_phase)/rescale_slope_phase/scale_slope_phase;
-PHA2=((PHA2*rescale_slope_phase)+rescale_interc_phase)/rescale_slope_phase/scale_slope_phase;
+if isinf(p1) %if no phase has been found
+  IM = fread(file_id,xdim*ydim*tdim*zdim,'int16');
+  IM = permute(reshape(IM,xdim,ydim,tdim,zdim),[1 2 4 3]);
+else  %if there is both phase and magnitude, twice the amount of data (not tested if read in correct order [JB])
+  IM = fread(file_id,xdim*ydim*tdim*zdim*2,'int16');
+  IM = reshape(IM,xdim,ydim,tdim,zdim*2);
+  IM = permute(IM(:,:,:,imagetype==1),[1 2 4 3]);
+end
+fclose(file_id);
 
-% make some space (speed? memory?)
-clear IM
-
-%% Create PSIR images
-% PSIRim = calcPSIR(MOD1, MOD2, PHA1, PHA2);
+%remove last dynamic (might be a noise scan)
+IM = IM(:,:,:,1:tdim-1);
 
 %% Create tSNR image
 %  could also think of something to check how the phase images look?
-tsnrIM = calcTSNR(MOD1)
+% tic
+tsnrIM = calcTSNR(IM);
+% toc
 
-% [havne't look at much below here]
+%% Rescale the Images to be between 0 and 4095 for writing out    
+tsnrIM(isnan(tsnrIM))=0;
+maxValue = max(max(max(tsnrIM(~isinf(tsnrIM))))); %any voxel with constant value across dynamics will have infinite tSNR
+tsnrIM(isinf(tsnrIM)) = maxValue;
+sc = 4095 / maxValue; %scale the output between 0 and 4095
+tsnrIM = sc*tsnrIM;
+tsnrIM=round(tsnrIM);
 
 %% Now to alter the xml file for the output
 % Remove the phase images
@@ -160,15 +144,13 @@ for count=1:length(b2)
 end
 b2(rem)=[];
 
-% Remove the Phase = 2 images
+% Remove the dynamic scans after the first one
 rem=[];
 for count=1:length(b2)
-    
     c = b2{count}.Key.Attribute;
-    
     for counter=1:length(c);
-        if strcmp(c{counter}.Attributes.Name,'Phase')
-            if strcmp(c{counter}.Text,'2')
+        if strcmp(c{counter}.Attributes.Name,'Dynamic')
+            if ~strcmp(c{counter}.Text,'1')
                 rem =[rem count];
             end
         end
@@ -207,64 +189,26 @@ end
 s.PRIDE_V5.Image_Array.Image_Info = b2;
 
 %write out the new xml file
-outfile = strcat(OutputPathName,strtok(FileName,'.'),'_PSIR.xml');
+outfile = strcat(OutputPathName,strtok(FileName,'.'),'_tSNR.xml');
 struct2xml( s, outfile )
 
 %write out the rec file
-outfile1 = strcat(OutputPathName,strtok(FileName,'.'),'_PSIR.rec');
+outfile1 = strcat(OutputPathName,strtok(FileName,'.'),'_tSNR.rec');
 file_id = fopen(outfile1,'w','l');
-fwrite(file_id,PSIRim,'int16');
+fwrite(file_id,tsnrIM,'int16');
+fclose(file_id);
 
 end
 
 
-function tsnrIM = calcTSNR(mod1)
+function tsnrIM = calcTSNR(IM)
 % calcTSNR - calculate TSNR for a time series image
 
-% does nothing at the moment, but should run the core code for calculating
-% tSNR maps, and pick out relevant stats, maybe
-%    prctile(tSNR(:), [5, 95])
-% or similar.
+meanData=mean(IM,4);
+stdData=std(IM,1,4);
+tsnrIM=meanData./stdData;
 
-disp('(uhoh) nothing to be done so far')
-tsnrIM = [];
+% pick out relevant stats, maybe prctile(tSNR(:), [5, 95]) or similar.
 
 end
-
-function PSIRim = calcPSIR(mod1,mod2, pha1, pha2)
-% calcPSIR - calculate PSIR / just to show how to do this...
-%
-% broke this out into a function. [ds]
-
-% do the calculations
-S = abs(mod2)+abs(mod1); %need to determine best here
-
-S = smooth3(S,'gaussian',[9 9 9],150);
-
-PSIRim = mod1./S;
-
-pha = pha1 - pha2;
-
-% why is this done twice? phase values wrapped twice?
-P = find(pha<0);
-pha(P)=pha(P)+(2*pi);
-P = find(pha<0);
-pha(P)=pha(P)+(2*pi);
-
-f = find(pha>1.57 & pha<4.71);
-PSIRim(f)=-PSIRim(f);
-
-% Rescale the Images to be between 0 and 4095 for writing out
-PSIRim(isnan(PSIRim))=0;
-PSIRim(PSIRim<-3)=0;
-PSIRim(PSIRim>3)=0;
-PSIRim=(PSIRim+3);
-PSIRim(S<1)=0;
-
-sc = 4095 /max(max(max(PSIRim))); %scale the output between 0 and 4095
-PSIRim = sc*PSIRim;
-PSIRim=round(PSIRim);
-
-end
-
 
