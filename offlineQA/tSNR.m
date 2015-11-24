@@ -64,6 +64,7 @@ if dynNOISEscan==1
     noise_data=Data(:,:,:,nV);
 else
     im_data=Data;
+    noise_data = zeros(nX,nY,nS);
 end
 
 if(~isempty(cropTimeSeries))
