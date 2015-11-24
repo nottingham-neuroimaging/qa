@@ -90,7 +90,7 @@ end
 
 function scanParams = updateScanParams(scanParams,dat)
 for nf=1:length(scanParams)
-    scanParams(nf).notes = dat{nf,2};
+    scanParams(nf).notes = dat{nf,3};
     scanParams(nf).dynNOISEscan = dat{nf,4};
     scanParams(nf).volumeSelect = dat{nf,5};
 end
