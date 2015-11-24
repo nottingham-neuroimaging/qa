@@ -8,7 +8,6 @@ function fmriQA()
 % 2015/11/23
 %
 %    a couple of notes: function should be able to be compiled (not script)
-%                       need to test for M/P data
 %      
 %                       should break more stuff out into sub-functions to
 %                       make it easier to read / debug.
@@ -24,6 +23,7 @@ OutputPathName='G:\patch\pride\tempoutputseries\';
 
 % and the exported filename
 FileName='DBIEX.REC';
+% FileName='DBIEX_P.REC';
 
 %% Read in the xml file
 xml_file = strcat(InputPathName,strtok(FileName,'.'),'.xml');
@@ -37,11 +37,12 @@ b1 = s.PRIDE_V5.Series_Info.Attribute;
 
 % info about the image arrays
 b2 = s.PRIDE_V5.Image_Array.Image_Info;
+s.PRIDE_V5.Image_Array.Image_Info = []; %save some memory (this can be quite large for functional data)
 
 % q = 0; % quit variable % deal with this in another way [ds]
 
 
-%% Identify modulus images 
+%% Identify modulus and phase images 
 m1=inf;
 M=0;
 p1=inf;
@@ -72,9 +73,7 @@ for count=1:length(b2)
 end
 
 %% check / the code should not go beyond this if this is not met
-assert(M == 1, 'need to have at least one set of magnitude images');
-
-%% need to do slightly different things if M images and/or P images are present
+assert(M == 1, 'Need to have at least one set of magnitude images');
 
 % if q==0 %providing neither of the quit criteria have been met, execute the rest of the code
 for g=1:length(b1)
@@ -99,16 +98,19 @@ for g2=1:length(c)
 end
 
 %% Read in the Modulus Data
+% (need to do slightly different things if M images and/or P images are present)
+
 data_file1 = strcat(InputPathName,FileName);
 file_id = fopen(data_file1,'r','l');
 
 if isinf(p1) %if no phase has been found
   IM = fread(file_id,xdim*ydim*tdim*zdim,'int16');
   IM = permute(reshape(IM,xdim,ydim,tdim,zdim),[1 2 4 3]);
-else  %if there is both phase and magnitude, twice the amount of data (not tested if read in correct order [JB])
+else  %if there is both phase and magnitude, twice the amount of data
   IM = fread(file_id,xdim*ydim*tdim*zdim*2,'int16');
-  IM = reshape(IM,xdim,ydim,tdim,zdim*2);
-  IM = permute(IM(:,:,:,imagetype==1),[1 2 4 3]);
+  IM = reshape(IM,xdim,ydim,tdim*zdim*2);
+%   PH = permute(reshape(IM(:,:,imagetype==2),xdim,ydim,tdim,zdim),[1 2 4 3]);
+  IM = permute(reshape(IM(:,:,imagetype==1),xdim,ydim,tdim,zdim),[1 2 4 3]);
 end
 fclose(file_id);
 
