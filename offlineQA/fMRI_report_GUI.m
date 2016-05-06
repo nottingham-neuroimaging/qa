@@ -47,7 +47,8 @@ data.main_fig = gui_handle.main_fig;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
-gui_handle.returnButton = makeButton(gui_handle.main_fig,[42.5 6 25 3],'Run report',@runReport);
+gui_handle.returnButton = makeButton(gui_handle.main_fig,[42.5 2 25 3],'Run report',@runReport);
+
 
 drawnow;
 end
@@ -93,5 +94,6 @@ for nf=1:length(scanParams)
     scanParams(nf).notes = dat{nf,3};
     scanParams(nf).dynNOISEscan = dat{nf,4};
     scanParams(nf).volumeSelect = dat{nf,5};
+    scanParams(nf).cropTimeSeries = [1 dat{nf,5}];
 end
 end

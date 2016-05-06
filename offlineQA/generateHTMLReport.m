@@ -4,7 +4,7 @@ fileID = fopen('QA_report/index.html','w');
 
 % Make the header first
 
-fprintf(fileID,'%s','<html><title>TEST</title><h1>SCAN: </h1>');
+fprintf(fileID,'%s','<html><title>QA Report</title><h1>SCAN: </h1>');
 
 
 for nf=1:length(scanParams)
