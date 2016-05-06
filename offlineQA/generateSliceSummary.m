@@ -62,7 +62,7 @@ for sc=1:length(sliceChoice),
     dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
     
     if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))
-        dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[0 0 255]);
+        dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
     end
     dats{sc} = dat2;
 end

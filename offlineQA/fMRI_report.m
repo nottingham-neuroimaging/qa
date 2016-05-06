@@ -15,5 +15,5 @@ end
 scanParams = setInitialParams(filenames);
 
 % Now run the GUI.
-fMRI_report_GUI(scanParams);
+scanParams = fMRI_report_GUI(scanParams);
 
