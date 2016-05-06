@@ -10,7 +10,10 @@ if(~isdir('QA_report'));
 end
 
 % Select the the scans taht we want to use.
-[filenames] = uigetfile({'*.hdr';'*.nii';'*.img'},'Select the scans you want a report on... ', 'multiselect', 'on');
+[filenames] = uigetfile({'*.img;*.nii;*.nii.gz','Nifti/Analyze files'},'Select the scans you want a report on... ', 'multiselect', 'on');
+if ischar(filenames)
+  filenames = {filenames};
+end
 % intialize intial parameters from the nifti headers.
 scanParams = setInitialParams(filenames);
 
