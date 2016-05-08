@@ -81,6 +81,8 @@ dat = get(data.scan_table,'dat');
 
 scanParams = updateScanParams(scanParams,dat);
 [tSNR_ROI,iSNR] = tSNR_report(scanParams);
+mean_image_report(scanParams);
+
 disp(tSNR_ROI);
 disp(iSNR);
 
