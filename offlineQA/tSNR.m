@@ -90,6 +90,12 @@ output(:,:,:,4)=squeeze(std(im_data,1,4));
 
 outputFilename = [outputBaseName '_tSNR_N_M_V.hdr'];
 cbiWriteNifti(outputFilename,output,Hdr);
+
+Hdr.dim(5)=1;
+meanImg=squeeze(mean(im_data,4));
+outputFilename = [outputBaseName '_Mean.hdr'];
+cbiWriteNifti(outputFilename,meanImg,Hdr);
+
 disp(['Saved ' outputFilename]);
 
 
