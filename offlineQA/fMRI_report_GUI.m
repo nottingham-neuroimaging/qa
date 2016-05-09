@@ -9,11 +9,18 @@ function scanParams = fMRI_report_GUI(scanParams)
 
 
 % create the figure
-position = [60 25 110 60];
-gui_handle.main_fig = figure('Units','Character','OuterPosition',...
-    position,'windowstyle', 'normal', 'resize', 'off','visible','on',...
+figureHeight = 60;
+figureWidth = 110;
+% position = [60 25 110 60];
+gui_handle.main_fig = figure('Units','Character',...
+    'windowstyle', 'normal', 'resize', 'off','visible','on',...
     'menubar','none','Toolbar','none','numbertitle','off', ...
     'name','.');
+position = get(gui_handle.main_fig,'outerposition');
+position(3) = figureWidth;
+position(2) = position(2) + position(4) - figureHeight;
+position(4) = figureHeight;
+set(gui_handle.main_fig,'outerposition',position);
 
 % intialize the position vector.
 position_phys_pos = [1 position(4)/4 position(3)-2 position(4)*3/4-4];
