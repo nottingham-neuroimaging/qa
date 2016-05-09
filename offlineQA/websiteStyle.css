@@ -1,0 +1,124 @@
+
+
+a {
+    color: blue;
+}
+
+body {
+    font-size: 16px;
+    color: black;
+    background-color: #E6EAEF;
+    /*background-image: url(http://whatsonmyblackboard.files.wordpress.com/2013/03/momentum-exhibition12.jpg);*/
+    background-repeat: repeat-x;
+    margin: 0 auto;
+}
+
+form {
+    color: black;
+    font-family: tahoma;
+    margin-left: 20;
+    margin-right: 20;
+}
+
+
+h2 {
+    color: black;
+    font-family: tahoma;
+}
+
+#boxcontent {
+   margin: 50; /* setting top and bottom margin to 0 and right and left margin to 200px */
+    background-color:#E6EAEF;
+        /* border-radius: 10px; */
+        position: relative;
+        min-width: 800px;
+        max-width: 1000px;
+}
+
+#boxcontent h3 {
+    color: black;
+    font-family: tahoma;
+    margin-left: 20;
+}
+
+#boxcontent p {
+    color: black;
+    font-family: arial;
+    margin-left: 20;
+    margin-right: 20;
+    text-align: justify;
+}
+
+
+#content {
+    margin: 0 auto; /* setting top and bottom margin to 0 and right and left margin to 200px */
+    background-color:white;
+        /* border-radius: 10px; */
+        position: relative;
+        min-width: 800px;
+        max-width: 1000px;
+}
+
+#content p {
+    color: black;
+    font-family: arial;
+    margin-left: 20;
+    margin-right: 20;
+    text-align: justify;
+}
+
+#content h2 {
+    color: black;
+    font-family: tahoma;
+    margin-left: 20;
+}
+
+#content li {
+    color: black;
+    font-family: arial;
+}
+
+
+#navigation {
+    height: 25px;
+    background-color: #E0E0D1;
+    text-align: right;
+}
+
+#navigation a {
+    display: inline;
+    padding: 5px 10px;
+    color: white;
+    background-color: #006699;
+    font-family: tahoma,arial;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+#navigation a:hover {
+    text-decoration: none;
+    color: white;
+    background-color: #339933;
+}
+
+#header {
+    margin: 0 auto; /* setting top and bottom margin to 0 and right and left margin to 200px */
+    /*background-color: #E4E4E3; */
+    background-color: rgba(0, 0, 0, .4);
+    min-width: 800px;
+    max-width: 1000px;
+}
+
+#header h1 {
+    color: white;
+    font-family: tahoma;
+    text-align: center;
+    color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+
