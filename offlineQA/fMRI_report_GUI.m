@@ -138,9 +138,19 @@ for iScan = 2:length(data.scanParams)
   end
 end
 volume = cbiReadNifti(data.scanParams(1).fileName);
-roiCoords = selectCropRegion(volume(:,:,:,1));
+roiCoords = selectCropRegion(volume(:,end:-1:1,:,1));
 
-set(data.roiEditBox,'string',mat2str(roiCoords'));
+
+% Please note: this looks clunky because the image co-ords used later on
+% uses co-ordinates based on the rotated images. However, what would make
+% sense to the user is to include co-ordinates directly from the nifti 
+% volume.
+
+niftiCoords = roiCoords;
+niftiCoords(:,2) = size(volume,2) - roiCoords([2:-1:1],2);
+
+% Quote the nifti-coordinates
+set(data.roiEditBox,'string',mat2str(niftiCoords'));
 
 for iScan = 1:length(data.scanParams)
   data.scanParams(iScan).ROI_box = mat2roiBox(roiCoords);
