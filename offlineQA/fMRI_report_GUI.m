@@ -46,16 +46,24 @@ dat = createCellArray(scanParams);
 
 set(gui_handle.scan_table,'dat',dat);
 
+gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15 7 30 3],'',@editROI);
+
+
 % Passing data to the handle object.
 data = guidata(gui_handle.main_fig);
 data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
+data.roiEditBox = gui_handle.roiEditbox;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
 gui_handle.returnButton = makeButton(gui_handle.main_fig,[42.5 2 25 3],'Run report',@runReport);
 
+gui_handle.roiButton = makeButton(gui_handle.main_fig,[45 7 25 3],'Draw ROI',@drawROI);
+if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
+  set(gui_handle.roiButton,'enable','off');
+end
 
 drawnow;
 end
@@ -77,8 +85,78 @@ buttonHandle = uicontrol ( 'parent', parentPanel, 'style', 'pushbutton', ...
     'fontsize', fontSize,'CallBack',callBackStr);
 end
 
+function editboxHandle = makeEditbox(parentPanel,position,boxStr,callBackStr)
+fontSize = 14;
+editboxHandle = uicontrol ( 'parent', parentPanel, 'style', 'edit', ...
+    'units', 'character', 'position', position, 'string', boxStr, ...
+    'fontsize', fontSize,'CallBack',callBackStr);
+end
+
 function resize_table(hObject,~)
 % do nothing at the moment, but will add the feature later?
+end
+
+function editROI(hObject,toto)
+
+data = guidata(hObject);
+if ~isempty(get(data.roiEditBox,'string'))
+  dims=data.scanParams(1).dims ;
+  for iScan = 2:length(data.scanParams)
+    if ~isequal(dims,data.scanParams(iScan).dims)
+      warndlg('All scans must have the same dimensions to use an ROI');
+      return
+    end
+  end
+else
+  return
+end
+
+try
+  roiCoords = eval(get(data.roiEditBox,'string'));
+catch
+  roiCoords = [];
+end
+
+if isequal(size(roiCoords),[3 2])
+  for iScan = 1:length(data.scanParams)
+    data.scanParams(iScan).ROI_box = mat2roiBox(roiCoords');
+  end
+  guidata(hObject,data);
+else
+  warndlg('ROI coordinates should be a 3x2 matrix');
+end
+
+end
+
+function drawROI(hObject,~)
+data = guidata(hObject);
+dims=data.scanParams(1).dims ;
+for iScan = 2:length(data.scanParams)
+  if ~isequal(dims,data.scanParams(iScan).dims)
+    warndlg('All scans must have the same dimensions to use an ROI');
+    return
+  end
+end
+volume = cbiReadNifti(data.scanParams(1).fileName);
+roiCoords = selectCropRegion(volume(:,:,:,1));
+
+set(data.roiEditBox,'string',mat2str(roiCoords'));
+
+for iScan = 1:length(data.scanParams)
+  data.scanParams(iScan).ROI_box = mat2roiBox(roiCoords);
+end
+guidata(hObject,data);
+
+end
+
+function ROI_box = mat2roiBox(roiCoords)
+
+  ROI_box.x = roiCoords(1,1);
+  ROI_box.width = roiCoords(2,1)-roiCoords(1,1);
+  ROI_box.y = roiCoords(1,2);
+  ROI_box.height = roiCoords(2,2)-roiCoords(1,2);
+  ROI_box.slice = roiCoords(1,3):roiCoords(2,3);
+
 end
 
 function runReport(hObject,~)
@@ -90,8 +168,12 @@ scanParams = updateScanParams(scanParams,dat);
 [tSNR_ROI,iSNR] = tSNR_report(scanParams);
 mean_image_report(scanParams);
 
-disp(tSNR_ROI);
-disp(iSNR);
+if any(~isnan(tSNR_ROI))
+  tSNR_ROI
+end
+if any(~isnan(iSNR))
+  iSNR
+end
 
 generateHTMLReport(scanParams);
 % now get the data from the table and reset the scan Params

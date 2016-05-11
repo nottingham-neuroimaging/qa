@@ -68,7 +68,10 @@ for sc=1:length(sliceChoice),
     end
     
     if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))
+      try
         dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
+      catch
+      end
     end
     dats{sc} = dat2;
 end
