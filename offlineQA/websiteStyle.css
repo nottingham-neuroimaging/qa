@@ -73,6 +73,12 @@ h2 {
     margin-left: 20;
 }
 
+#content h3 {
+    color: black;
+    font-family: tahoma;
+    margin-left: 20;
+}
+
 #content li {
     color: black;
     font-family: arial;
