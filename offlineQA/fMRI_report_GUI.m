@@ -102,6 +102,12 @@ function scanParams = updateScanParams(scanParams,dat)
 for nf=1:length(scanParams)
     scanParams(nf).notes = dat{nf,3};
     scanParams(nf).dynNOISEscan = dat{nf,4};
+    if scanParams(nf).dynNOISEscan %check if there is noise scan and user forgot to change the last scan number
+      hdr = cbiReadNiftiHeader(scanParams(nf).fileName);
+      if  dat{nf,5} == hdr.dim(5)
+        dat{nf,5} = dat{nf,5}-1;
+      end
+    end
     scanParams(nf).volumeSelect = dat{nf,5};
     scanParams(nf).cropTimeSeries = [1 dat{nf,5}];
 end
