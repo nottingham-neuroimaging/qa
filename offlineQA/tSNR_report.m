@@ -1,8 +1,6 @@
 function [tSNR_ROI,iSNR] = tSNR_report(scanParams)
 
 fontScale = 20;
-noise_calculation = 0;
-roi_calculation = 0;
 cmap = hot(255).';
 imgScale = 50;
 
@@ -31,42 +29,40 @@ set(gca,'YTick',[],'fontSize',20);
 print(figH,['QA_report/cbar.png'],'-dpng');
 
 % Another function now to look at specific ROIs and noise calculations
-if(roi_calculation)
-    for nf=1:length(scanParams)
-        % First load image
-        img = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR']);
-        slice_image = img(:,:,scanParams(nf).ROI_box.slice,1);
-        % Reorder, just so that we have a match of the ROIs with the image
-        % (from rotation)
-        slice_image = slice_image(:,end:-1:1).';
-        image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
-        tSNR_ROI(nf) = mean(image_cropped(:));
-    end
-else
-    tSNR_ROI = [];
+tSNR_ROI = nan(length(scanParams),1);
+for nf=1:length(scanParams)
+  if ~isempty(scanParams(nf).ROI_box)
+    % First load image
+    img = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR']);
+    slice_image = img(:,:,scanParams(nf).ROI_box.slice,1);
+    % Reorder, just so that we have a match of the ROIs with the image
+    % (from rotation)
+    slice_image = permute(slice_image(:,end:-1:1,:),[2 1 3]);
+    image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+    tSNR_ROI(nf) = mean(image_cropped(:));
+  end
 end
 
-if(noise_calculation)
-    for nf=1:length(scanParams)
-        nI = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
-        noiseImage = nI(:,:,:,2);
-        img = cbiReadNifti(scanParams(nf).fileName);
-        img_data = img(:,:,:,scanParams(nf).cropTimeSeries(2));
-        
-        img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);
-        img_slice = img_slice(:,end:-1:1).';
-        image_cropped = img_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
-        
-        
-        noise_slice = noiseImage(:,:,scanParams(nf).ROI_box.slice);
-        noise_slice = noise_slice(:,end:-1:1).';
-        noise_cropped = noise_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
-        
-        
-        iSNR(nf) = mean(image_cropped(:))/std(noise_cropped(:));
-    end
-else
-    iSNR = [];
+iSNR = nan(length(scanParams),1);
+for nf=1:length(scanParams)
+  if ~isempty(scanParams(nf).ROI_box) && scanParams(nf).dynNOISEscan
+    nI = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
+    noiseImage = nI(:,:,:,2);
+    img = cbiReadNifti(scanParams(nf).fileName);
+    img_data = img(:,:,:,scanParams(nf).cropTimeSeries(2));
+
+    img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);
+    img_slice = permute(img_slice(:,end:-1:1,:),[2 1 3]);
+    image_cropped = img_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+
+
+    noise_slice = noiseImage(:,:,scanParams(nf).ROI_box.slice);
+    noise_slice = permute(noise_slice(:,end:-1:1,:),[2 1 3]);
+    noise_cropped = noise_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+
+
+    iSNR(nf) = mean(image_cropped(:))/std(noise_cropped(:));
+  end
 end
 
 

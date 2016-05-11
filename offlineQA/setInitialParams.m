@@ -13,6 +13,7 @@ for nf=1:length(filenames)
     scanParams(nf).volumeSelect = [hdr.dim(5)];
     scanParams(nf).outputBaseName = hdr.hdr_name(1:end-4);
     scanParams(nf).slices = 1:hdr.dim(4);
+    scanParams(nf).dims = hdr.dim(2:4);
     scanParams(nf).ROI_box = [];
     % Some of the characters in this contain non-unicode characters, so
     % remove them here. 
