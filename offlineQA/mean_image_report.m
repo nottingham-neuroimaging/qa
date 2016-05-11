@@ -9,8 +9,9 @@ imgScale = [];
 % Mean map, creating the images..
 
 for nf=1:length(scanParams)
-    % Create the tSNR maps    
-    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_Mean'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box);
+    % Create mean image maps
+    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_Mean'],scanParams(nf).slices,[],fontScale,imgScale,cmap,[]);
+    % Note: ROIs were taken out from these mean maps, because they are not used for the mean images (maybe add)
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_Mean_IMAGE.png'],'PNG')
 end
 
