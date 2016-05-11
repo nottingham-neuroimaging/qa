@@ -4,10 +4,12 @@
 % function [tSNR_ROI,iSNR]=fMRI_report()
 
 
-% Select the the scans taht we want to use.
+% Select the the scans that we want to use.
 [filenames,pathname] = uigetfile({'*.img;*.nii;*.nii.gz','Nifti/Analyze files'},'Select the scans you want a report on... ', 'multiselect', 'on');
 if ischar(filenames)
   filenames = {filenames};
+elseif isnumeric(filenames)
+  return;
 end
 
 % Make a folder called QA_report, where the tSNR maps are calculated, and
