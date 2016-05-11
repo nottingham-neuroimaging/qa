@@ -191,6 +191,5 @@ for nf=1:length(scanParams)
       end
     end
     scanParams(nf).volumeSelect = dat{nf,5};
-    scanParams(nf).cropTimeSeries = [1 dat{nf,5}];
 end
 end

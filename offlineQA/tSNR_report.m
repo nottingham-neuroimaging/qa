@@ -49,7 +49,7 @@ for nf=1:length(scanParams)
     nI = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
     noiseImage = nI(:,:,:,2);
     img = cbiReadNifti(scanParams(nf).fileName);
-    img_data = img(:,:,:,scanParams(nf).cropTimeSeries(2));
+    img_data = img(:,:,:,scanParams(nf).volumeSelect);
 
     img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);
     img_slice = permute(img_slice(:,end:-1:1,:),[2 1 3]);
