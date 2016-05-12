@@ -72,7 +72,8 @@ for sc=1:length(sliceChoice),
         dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
       catch
         % BoxColor = [255 255 255];
-        dat2(ROI_box.y:ROI_box.height+ROI_box.y,ROI_box.x:ROI_box.width+ROI_box.x,:) = 255;
+        dat2(ROI_box.y:ROI_box.height+ROI_box.y,[ROI_box.x-[0 1] ROI_box.width+ROI_box.x+[0 1]],:) = 255;
+        dat2([ROI_box.y-[0 1] ROI_box.height+ROI_box.y+[0 1]],ROI_box.x:ROI_box.width+ROI_box.x,:) = 255;
       end
     end
     dats{sc} = dat2;
@@ -96,7 +97,7 @@ elseif(length(sliceChoice)>no_columns)
     end
     image_matrix = cell2mat(newMatrix(reshape(1:totalImages,no_columns,no_rows).'));
 else
-    disp('error!, somebthing went wrong');
+    disp('error!, something went wrong');
     keyboard;
     return
 end
