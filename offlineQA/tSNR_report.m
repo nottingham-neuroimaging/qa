@@ -38,7 +38,7 @@ for nf=1:length(scanParams)
     % Reorder, just so that we have a match of the ROIs with the image
     % (from rotation)
     slice_image = permute(slice_image(:,end:-1:1,:),[2 1 3]);    
-    image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width,scanParams(nf).ROI_box.slice);
+    image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
     tSNR_ROI(nf) = mean(image_cropped(:));
   end
 end
