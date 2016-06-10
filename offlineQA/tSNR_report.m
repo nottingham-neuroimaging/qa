@@ -11,14 +11,28 @@ for nf=1:length(scanParams)
     tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[1 scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
     image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box);
-    imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')
+    imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
 end
 
+% Now calculate the histograms and save them
+for nf=1:length(scanParams)
+    data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
+    data2 = data(~isnan(data(:)) & ~isinf(data(:)));
+    figH = figure;
+    set(figH,'PaperPosition',[0.25 0.25 6 4],'visible','off');
+    hist(data2(:),200);
 
+    xlim([mean(data2)-2*std(data2(:)) mean(data2)+2*std(data2(:))])
+    set(gca,'fontSize',20);
+    xlabel('$tSNR$','fontSize',20,'Interpreter','LaTeX');    
+    ylabel('$count$','fontSize',20,'Interpreter','LaTeX');    
+    line([0 0],ylim,'Color','black');  %y-axis
+    line(mean(data2)*[1 1],ylim,'Color','red','lineStyle','--');  %Mean 
+    print(figH,['QA_report/' scanParams(nf).outputBaseName '_tSNR_HIST.png'],'-dpng');
+    clear data data2;
+end
 
-% Make a colorbar
-
-% Save the colorbar that is the same for all the scans.
+% Make a colorbar ... save the colorbar that is the same for all the scans.
 hh = ones(1,size(cmap.',1),3);
 hh(1,:,:) = cmap.';
 
