@@ -13,9 +13,9 @@ figureHeight = 60;
 figureWidth = 110;
 % position = [60 25 110 60];
 gui_handle.main_fig = figure('Units','Character',...
-    'windowstyle', 'normal', 'resize', 'off','visible','on',...
+    'windowstyle', 'normal', 'resize', 'off','visible','off',...
     'menubar','none','Toolbar','none','numbertitle','off', ...
-    'name','.');
+    'name','fMRI report');
 position = get(gui_handle.main_fig,'outerposition');
 position(3) = figureWidth;
 position(2) = position(2) + position(4) - figureHeight;
@@ -68,6 +68,10 @@ gui_handle.roiButton = makeButton(gui_handle.main_fig,[45 7 25 3],'Draw ROI',@dr
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
 end
+
+% Make default options
+generateDefaultOptions(gui_handle.main_fig);
+set(gui_handle.main_fig,'visible','on');
 
 drawnow;
 end
@@ -179,7 +183,7 @@ scanParams = data.scanParams;
 dat = get(data.scan_table,'dat');
 
 scanParams = updateScanParams(scanParams,dat);
-[tSNR_ROI,iSNR] = tSNR_report(scanParams);
+[tSNR_ROI,iSNR] = tSNR_report(scanParams,data.main_fig);
 mean_image_report(scanParams);
 
 if any(~isnan(tSNR_ROI))
@@ -200,12 +204,28 @@ end
 
 function rerunHTML(hObject,~)
   % Function here to regenerate HTML page
+  disp('Regenerating the HTML report ....');
+  % Getting all the information from guidata..
   data = guidata(hObject);
   scanParams = data.scanParams;
   dat = get(data.scan_table,'dat');
 
+  % Re-run the tSNR report and mean image report, but this time don't recalculate the tSNR maps as it doesn't make sense to.  
+  data.options.recaulculateTSNR = 0; % Flag here makes sure we don't recalculate the maps, it is just to resave the figures.
+  guidata(data.main_fig,data);
+
   scanParams = updateScanParams(scanParams,dat);
+  [tSNR_ROI,iSNR] = tSNR_report(scanParams,data.main_fig);
+  mean_image_report(scanParams);
+
+  if any(~isnan(tSNR_ROI))
+    tSNR_ROI
+  end
+  if any(~isnan(iSNR))
+    iSNR
+  end  
   generateHTMLReport(scanParams);
+
 end
 
 
@@ -221,4 +241,14 @@ for nf=1:length(scanParams)
     end
     scanParams(nf).volumeSelect = dat{nf,5};
 end
+end
+
+function generateDefaultOptions(main_fig)
+  options = struct;
+  options.recaulculateTSNR = 1;
+  options.imgScale = 20;
+  data = guidata(main_fig);
+  % check
+  data.options = options;
+  guidata(main_fig,data);
 end
