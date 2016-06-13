@@ -46,7 +46,7 @@ dat = createCellArray(scanParams);
 
 set(gui_handle.scan_table,'dat',dat);
 
-gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15 7 30 3],'',@editROI);
+gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15+10 7 30 3],'',@editROI);
 
 
 % Passing data to the handle object.
@@ -64,7 +64,7 @@ gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML
 
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
-gui_handle.roiButton = makeButton(gui_handle.main_fig,[45 7 25 3],'Draw ROI',@drawROI);
+gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',@drawROI);
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
 end
@@ -226,7 +226,11 @@ function reportOptions(hObject,~)
 
   % Make the colorscale options
   colourScaleHandle = makeEditbox(option_fig,[28 18 15 3],data.options.imgScale,'');
-  makeText(option_fig,[10 18 15 3],'Color scale (for tSNR)')  
+  makeText(option_fig,[10 18 15 3],'Color scale (for tSNR)');
+
+  % colourbar options
+  colourbarScaleHandle = makeEditbox(option_fig,[28 12 15 3],data.options.cmap_str,'');
+  makeText(option_fig,[10 12 15 3],'Colourmap (for tSNR)');
 
   % Make the Apply button
   optHandles.ApplyButton = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButton);
@@ -234,6 +238,7 @@ function reportOptions(hObject,~)
   % Set all the information to the guidata
   optHandles = struct;
   optHandles.colourScaleHandle = colourScaleHandle;
+  optHandles.colourbarScaleHandle = colourbarScaleHandle;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
 
@@ -245,6 +250,29 @@ function ApplyButton(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   data.options.imgScale = str2num(get(optionData.colourScaleHandle,'string'));
+  data.options.cmap_str = get(optionData.colourbarScaleHandle,'string');
+
+  % Here we look at changing the colourmaps!
+  try
+    eval(['cmap =' data.options.cmap_str ';']);    
+    if(size(cmap,2)==3)
+      cmap = cmap.';
+    elseif(size(cmap,1)==3)
+      % Do nothing because this is right;
+    else
+      disp(['Error! cmap is not in the right format must be a matrix! e.g. hot(255).']);
+      cmap = hot(255).';
+      options.cmap_str = 'hot(255)';      
+    end
+  catch
+    disp(['Error! cmap is not in the right format must be a matrix! e.g. hot(255).']);
+    cmap = hot(255).';
+    options.cmap_str = 'hot(255)';
+  end  
+  % This just resets the colourmap to whatever has been assigned (if we went back, do so on the string too)
+  set(optionData.colourbarScaleHandle,'string',data.options.cmap_str);
+  % Now set the new colourmap  
+  data.options.cmap = cmap;
   guidata(optionData.main_fig,data);
 end
 
@@ -293,6 +321,8 @@ function generateDefaultOptions(main_fig)
   options = struct;
   options.recaulculateTSNR = 1;
   options.imgScale = 20;
+  options.cmap = hot(255).';
+  options.cmap_str = 'hot(255)';
   data = guidata(main_fig);
   % check
   data.options = options;
