@@ -39,7 +39,7 @@ gui_handle.scan_table = uitable(gui_handle.phys_panel,'RowStriping', ...
     columnformat,'ColumnEditable', columneditable,'RowName',[], ...
     'Visible','on','FontSize',11,'ColumnWidth',{'auto','auto',310,'auto','auto'});
 
-set(gui_handle.scan_table,'Units','Character','Position',[1 1 105 38]);
+set(gui_handle.scan_table,'Units','Character','Position',[1 9 105 30]);
 
 % Here we convert the scanParams array to a format read by uiTable.
 dat = createCellArray(scanParams);
@@ -58,7 +58,11 @@ data.roiEditBox = gui_handle.roiEditbox;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
-gui_handle.returnButton = makeButton(gui_handle.main_fig,[42.5 2 25 3],'Run report',@runReport);
+gui_handle.returnButton = makeButton(gui_handle.main_fig,[12.5 18 25 3],'Run report',@runReport);
+
+gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML',@rerunHTML);
+
+gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
 gui_handle.roiButton = makeButton(gui_handle.main_fig,[45 7 25 3],'Draw ROI',@drawROI);
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
@@ -189,6 +193,21 @@ generateHTMLReport(scanParams);
 % now get the data from the table and reset the scan Params
 
 end
+
+function reportOptions(hObject,~)
+  disp('Make an options menu');
+end
+
+function rerunHTML(hObject,~)
+  % Function here to regenerate HTML page
+  data = guidata(hObject);
+  scanParams = data.scanParams;
+  dat = get(data.scan_table,'dat');
+
+  scanParams = updateScanParams(scanParams,dat);
+  generateHTMLReport(scanParams);
+end
+
 
 function scanParams = updateScanParams(scanParams,dat)
 for nf=1:length(scanParams)
