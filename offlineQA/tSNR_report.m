@@ -1,10 +1,10 @@
 function [tSNR_ROI,iSNR] = tSNR_report(scanParams,figHandle)
 
 fontScale = 20;
-cmap = hot(255).';
 
 data = guidata(figHandle);
 imgScale = data.options.imgScale;
+cmap = data.options.cmap;
 
 % tSNR calculation and summary collections..
 
