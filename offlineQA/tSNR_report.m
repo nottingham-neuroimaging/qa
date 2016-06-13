@@ -1,14 +1,26 @@
-function [tSNR_ROI,iSNR] = tSNR_report(scanParams)
+function [tSNR_ROI,iSNR] = tSNR_report(scanParams,figHandle)
 
 fontScale = 20;
 cmap = hot(255).';
-imgScale = 2.5;
 
-% tSNR calculation and summary collections:
+data = guidata(figHandle);
+imgScale = data.options.imgScale;
+
+% tSNR calculation and summary collections..
+
+% Calculate and save the tSNR maps, only redo this if it is asked to. 
+% Sometimes you don't want to recalculate the tSNR maps, just the 
+% figures that show all the stuff in them, which is what the
+% options structure is for.
+% 
+if(data.options.recaulculateTSNR)
+    for nf=1:length(scanParams)
+        % Create the tSNR maps
+        tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[1 scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+    end
+end
 
 for nf=1:length(scanParams)
-    % Create the tSNR maps
-    tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[1 scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
     image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box);
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
