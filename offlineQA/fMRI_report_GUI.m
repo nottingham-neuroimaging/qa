@@ -100,6 +100,12 @@ editboxHandle = uicontrol ( 'parent', parentPanel, 'style', 'edit', ...
     'fontsize', fontSize,'CallBack',callBackStr);
 end
 
+function textHandle = makeText(parentPanel,position,textString)
+  fontSize = 14;
+  uicontrol( 'parent', parentPanel, 'style', 'text','units', 'character', 'position', position , 'string', textString, ...
+    'fontsize', fontSize);
+end
+
 function resize_table(hObject,~)
 % do nothing at the moment, but will add the feature later?
 end
@@ -199,7 +205,47 @@ generateHTMLReport(scanParams);
 end
 
 function reportOptions(hObject,~)
-  disp('Make an options menu');
+  % disp('Make an options menu');
+
+
+  % create the panel
+  figureHeight = 25;
+  figureWidth = 50;
+  % position = [60 25 110 60];
+  option_fig = figure('Units','Character',...
+      'windowstyle', 'normal', 'resize', 'off','visible','on',...
+      'menubar','none','Toolbar','none','numbertitle','off', ...
+      'name','Report options');
+  position = get(option_fig,'outerposition');
+  position(3) = figureWidth;
+  position(2) = position(2) + position(4) - figureHeight;
+  position(4) = figureHeight;
+  set(option_fig,'outerposition',position);
+
+  data = guidata(hObject);
+
+  % Make the colorscale options
+  colourScaleHandle = makeEditbox(option_fig,[28 18 15 3],data.options.imgScale,'');
+  makeText(option_fig,[10 18 15 3],'Color scale (for tSNR)')  
+
+  % Make the Apply button
+  optHandles.ApplyButton = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButton);
+
+  % Set all the information to the guidata
+  optHandles = struct;
+  optHandles.colourScaleHandle = colourScaleHandle;
+  optHandles.main_fig = data.main_fig;
+  guidata(option_fig,optHandles);
+
+
+end
+
+% Function here to apply the different colour scale options
+function ApplyButton(hObject,~)
+  optionData = guidata(hObject);
+  data = guidata(optionData.main_fig);
+  data.options.imgScale = str2num(get(optionData.colourScaleHandle,'string'));
+  guidata(optionData.main_fig,data);
 end
 
 function rerunHTML(hObject,~)
