@@ -185,10 +185,13 @@ end
 
 function runReport(hObject,~)
 data = guidata(hObject);
+data.options.recaulculateTSNR = 1;
+guidata(hObject,data);
 scanParams = data.scanParams;
 dat = get(data.scan_table,'dat');
 
 scanParams = updateScanParams(scanParams,dat);
+disp('Running report....');
 [tSNR_ROI,iSNR] = tSNR_report(scanParams,data.main_fig);
 mean_image_report(scanParams);
 
