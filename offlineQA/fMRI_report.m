@@ -15,7 +15,7 @@
 	% Make a folder called QA_report, where the tSNR maps are calculated, and
 	% where the summary file will live once this is run.
 	cd(pathname);
-	if(~isdir('QA_report'));
+	if(~isdir([pathname '/QA_report']));
 	    mkdir('QA_report');
 	end
 
