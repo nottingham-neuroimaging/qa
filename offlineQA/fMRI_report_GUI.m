@@ -323,7 +323,7 @@ end
 function generateDefaultOptions(main_fig)
   options = struct;
   options.recaulculateTSNR = 1;
-  options.imgScale = 20;
+  options.imgScale = 100;
   options.cmap = hot(255).';
   options.cmap_str = 'hot(255)';
   data = guidata(main_fig);
