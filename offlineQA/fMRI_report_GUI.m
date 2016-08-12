@@ -81,10 +81,10 @@ end
 
 
 function dat = createCellArray(scanParams)
-dat = cell(length(scanParams),5);
+dat = cell(length(scanParams),6);
 % Here just assigning dat
 for nf=1:length(scanParams),
-    dat(nf,1:5) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelect}];
+    dat(nf,1:6) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect}];
 end
 end
 
@@ -311,7 +311,7 @@ end
 function selectDynamics(hObject, ~)
 
 % create the panel
-  figureHeight = 15;
+  figureHeight = 25;
   figureWidth = 50;
   % position = [60 25 110 60];
   option_fig = figure('Units','Character',...
@@ -327,8 +327,13 @@ function selectDynamics(hObject, ~)
   data = guidata(hObject);
 
   % Make the colorscale options
-  dynSelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.options.imgScale,'');
-  makeText(option_fig,[14 9 15 3],'Select Dynamics');
+  
+  dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams.volumeSelectFirst,'');
+  makeText(option_fig,[14 15 15 3],'Select First Dynamic');
+  
+  dyn2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams.volumeSelect,'');
+  makeText(option_fig,[14 9 15 3],'Select Last Dynamic');
+  
 
   % Make the Apply button
   optHandles.ApplyButtonDyn = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButtonDyn);
@@ -336,11 +341,12 @@ function selectDynamics(hObject, ~)
   % Set all the information to the guidata
   optHandles = struct;
   optHandles.dynSelectionHandle = dynSelectionHandle;
+  optHandles.dyn2SelectionHandle = dyn2SelectionHandle;
  
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
   
-  fprintf('Dynamic scans chosen: 1 to %.d\n' ,data.scanParams.volumeSelect)
+  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams.volumeSelectFirst, data.scanParams.volumeSelect)
 end
 
 function ApplyButtonDyn(hObject,~)
@@ -348,9 +354,11 @@ function ApplyButtonDyn(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   
-  data.scanParams.volumeSelect = str2num(get(optionData.dynSelectionHandle, 'string'));
+  data.scanParams.volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+  data.scanParams.volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
 
-  set(optionData.dynSelectionHandle,'string',data.scanParams.volumeSelect);
+  set(optionData.dyn2SelectionHandle,'string',data.scanParams.volumeSelect);
+  set(optionData.dynSelectionHandle,'string',data.scanParams.volumeSelectFirst);
 
   %data.scanParams.volumeSelect = dyns;
   guidata(optionData.main_fig,data);
@@ -363,8 +371,8 @@ for nf=1:length(scanParams)
     scanParams(nf).dynNOISEscan = dat{nf,4};
     if scanParams(nf).dynNOISEscan %check if there is noise scan and user forgot to change the last scan number
       hdr = cbiReadNiftiHeader(scanParams(nf).fileName);
-      if  dat{nf,5} == hdr.dim(5)
-        dat{nf,5} = dat{nf,5}-1;
+      if  dat{nf,6} == hdr.dim(6)
+        dat{nf,6} = dat{nf,6}-1;
       end
     end
     %scanParams(nf).volumeSelect = dat{nf,5};

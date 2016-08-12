@@ -11,6 +11,7 @@ for nf=1:length(filenames)
     scanParams(nf).fileName = filenames{nf};
     scanParams(nf).dynNOISEscan = 0;
     scanParams(nf).volumeSelect = [hdr.dim(5)];
+    scanParams(nf).volumeSelectFirst = [hdr.dim(5)/hdr.dim(5)];
     scanParams(nf).outputBaseName = hdr.hdr_name(1:end-4);
     scanParams(nf).slices = 1:hdr.dim(4);
     scanParams(nf).dims = hdr.dim(2:4);
