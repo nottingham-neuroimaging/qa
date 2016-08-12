@@ -65,6 +65,9 @@ gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
 gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',@drawROI);
+
+gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
+
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
 end
@@ -305,6 +308,54 @@ function rerunHTML(hObject,~)
 
 end
 
+function selectDynamics(hObject, ~)
+
+% create the panel
+  figureHeight = 15;
+  figureWidth = 50;
+  % position = [60 25 110 60];
+  option_fig = figure('Units','Character',...
+      'windowstyle', 'normal', 'resize', 'off','visible','on',...
+      'menubar','none','Toolbar','none','numbertitle','off', ...
+      'name','Select Dynamics');
+  position = get(option_fig,'outerposition');
+  position(3) = figureWidth;
+  position(2) = position(2) + position(4) - figureHeight;
+  position(4) = figureHeight;
+  set(option_fig,'outerposition',position);
+
+  data = guidata(hObject);
+
+  % Make the colorscale options
+  dynSelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.options.imgScale,'');
+  makeText(option_fig,[14 9 15 3],'Select Dynamics');
+
+  % Make the Apply button
+  optHandles.ApplyButtonDyn = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButtonDyn);
+
+  % Set all the information to the guidata
+  optHandles = struct;
+  optHandles.dynSelectionHandle = dynSelectionHandle;
+ 
+  optHandles.main_fig = data.main_fig;
+  guidata(option_fig,optHandles);
+  
+  fprintf('Dynamic scans chosen: 1 to %.d\n' ,data.scanParams.volumeSelect)
+end
+
+function ApplyButtonDyn(hObject,~)
+% Select Dynamics button
+  optionData = guidata(hObject);
+  data = guidata(optionData.main_fig);
+  
+  data.scanParams.volumeSelect = str2num(get(optionData.dynSelectionHandle, 'string'));
+
+  set(optionData.dynSelectionHandle,'string',data.scanParams.volumeSelect);
+
+  %data.scanParams.volumeSelect = dyns;
+  guidata(optionData.main_fig,data);
+  
+end
 
 function scanParams = updateScanParams(scanParams,dat)
 for nf=1:length(scanParams)
@@ -316,7 +367,7 @@ for nf=1:length(scanParams)
         dat{nf,5} = dat{nf,5}-1;
       end
     end
-    scanParams(nf).volumeSelect = dat{nf,5};
+    %scanParams(nf).volumeSelect = dat{nf,5};
 end
 end
 
