@@ -1,5 +1,6 @@
-function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
-% tSNRmap- compute temporal SNR map for functional time series
+% function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
+
+% tSNRmap- compute temporal SNR map for functional time series This was for debugging purposes.
 % Outputs tSNR, noise scan, Mean across time and variance across time in a
 % single file (as fisrt, second, third and foruth volume)
 % If there is a dynamic noise scan (las volume of the time series), it will also compute image SNR
@@ -72,7 +73,8 @@ if(~isempty(cropTimeSeries))
 end
 
 tsnrData=mean(im_data,4)./std(im_data,1,4);
-save('meanTSNR', 'tsnrData');
+
+% save('meanTSNR', 'tsnrData'); This was for debugging purposes.
 
 % save out temporal SNR map
 Hdr.dim(5)=1;
