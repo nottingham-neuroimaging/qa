@@ -29,15 +29,15 @@ position_phys_pos = [1 position(4)/4 position(3)-2 position(4)*3/4-4];
 gui_handle.phys_panel = uipanel(gui_handle.main_fig,'units', ...
     'Character','Position',position_phys_pos,'title','Scans');
 
-columnname =   {'Filename', 'Scan number', 'Scan notes','Noise Flag?','Last scan'};
+columnname =   {'Filename', 'Scan number', 'Scan notes','Noise Flag?','First scan','Last scan'};
 columnformat = {'char', 'numeric', 'char','numeric','numeric'};
-columneditable =  [false true true true true];
+columneditable =  [false true true true true true];
 
 dat =  { 'fm',1,'Something is here',0,[1]};
 gui_handle.scan_table = uitable(gui_handle.phys_panel,'RowStriping', ...
     'on','Data', dat,'ColumnName', columnname,'ColumnFormat', ...
     columnformat,'ColumnEditable', columneditable,'RowName',[], ...
-    'Visible','on','FontSize',11,'ColumnWidth',{'auto','auto',310,'auto','auto'});
+    'Visible','on','FontSize',11,'ColumnWidth',{'auto','auto',310,'auto','auto','auto'});
 
 set(gui_handle.scan_table,'Units','Character','Position',[1 9 105 30]);
 
