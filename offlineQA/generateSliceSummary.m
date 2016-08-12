@@ -60,12 +60,12 @@ for sc=1:length(sliceChoice),
     dat2 = dat2(end:-1:1,:,:);
     
     % Here is a fix in case computer graphics toolbox is not installed.   
-    try
-        dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
-%         dat2 = insertString(dat2,[1 1],['slice_' num2str(sliceChoice(sc))],[0 0 255],[255 255 255],fontScale);
-    catch
-        dat2 = dat2;
-    end
+%     try
+%         dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
+% %         dat2 = insertString(dat2,[1 1],['slice_' num2str(sliceChoice(sc))],[0 0 255],[255 255 255],fontScale);
+%     catch
+%         dat2 = dat2;
+%     end
     
     if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))    
       try
