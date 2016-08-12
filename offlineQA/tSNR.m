@@ -1,4 +1,4 @@
-function tsnrData = tSNR(dataFilename,varargin)
+function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
 % tSNRmap- compute temporal SNR map for functional time series
 % Outputs tSNR, noise scan, Mean across time and variance across time in a
 % single file (as fisrt, second, third and foruth volume)
@@ -72,13 +72,14 @@ if(~isempty(cropTimeSeries))
 end
 
 tsnrData=mean(im_data,4)./std(im_data,1,4);
+save('meanTSNR', 'tsnrData');
 
 % save out temporal SNR map
 Hdr.dim(5)=1;
 
-outputFilename = [outputBaseName '_tSNR.hdr'];
-cbiWriteNifti(outputFilename,tsnrData,Hdr);
-disp(['Saved ' outputFilename]);
+outputFilenameTSNR = [outputBaseName '_tSNR.hdr'];
+cbiWriteNifti(outputFilenameTSNR,tsnrData,Hdr);
+disp(['Saved ' outputFilenameTSNR]);
 
 % save out temporal SNR map and noise (as first and second volume)
 Hdr.dim(5)=4;
@@ -97,6 +98,5 @@ outputFilename = [outputBaseName '_Mean.hdr'];
 cbiWriteNifti(outputFilename,meanImg,Hdr);
 
 disp(['Saved ' outputFilename]);
-
 
 return

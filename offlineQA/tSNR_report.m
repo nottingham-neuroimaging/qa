@@ -41,6 +41,8 @@ for nf=1:length(scanParams)
     line([0 0],ylim,'Color','black');  %y-axis
     line(mean(data2)*[1 1],ylim,'Color','red','lineStyle','--');  %Mean 
     print(figH,['QA_report/' scanParams(nf).outputBaseName '_tSNR_HIST.png'],'-dpng');
+    fprintf('Max TSNR: %.4f\n', max(data2))
+    fprintf('Mean TSNR: %.4f\n', mean(data2))
     clear data data2;
 end
 
