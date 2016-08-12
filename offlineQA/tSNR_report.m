@@ -16,7 +16,7 @@ cmap = data.options.cmap;
 if(data.options.recaulculateTSNR)
     for nf=1:length(scanParams)
         % Create the tSNR maps
-        tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[1 scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+        tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
     end
 end
 
