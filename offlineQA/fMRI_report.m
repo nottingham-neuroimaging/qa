@@ -1,7 +1,7 @@
 % This script here is to calculate the tSNR, image SNR then generate a
 % report showing these if needed. 
 
-% function fMRI_report()
+function fMRI_report()
 
 
 	% Select the the scans that we want to use.
@@ -25,4 +25,4 @@
 	% Now run the GUI.
 	scanParams = fMRI_report_GUI(scanParams);
 
-% end
+end
