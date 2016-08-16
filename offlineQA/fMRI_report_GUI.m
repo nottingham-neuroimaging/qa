@@ -328,10 +328,14 @@ function selectDynamics(hObject, ~)
 
   % Make the colorscale options
   
-  dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams.volumeSelectFirst,'');
+  if length(data.scanParams) > 1
+      disp('!!!CAUTION, selecting dynamics for FIRST SCAN ONLY!!!')
+  end
+  
+  dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams(1).volumeSelectFirst,'');
   makeText(option_fig,[14 15 15 3],'Select First Dynamic');
   
-  dyn2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams.volumeSelect,'');
+  dyn2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams(1).volumeSelect,'');
   makeText(option_fig,[14 9 15 3],'Select Last Dynamic');
   
 
@@ -346,7 +350,7 @@ function selectDynamics(hObject, ~)
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
   
-  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams.volumeSelectFirst, data.scanParams.volumeSelect)
+  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(1).volumeSelectFirst, data.scanParams(1).volumeSelect)
 end
 
 function ApplyButtonDyn(hObject,~)
@@ -354,13 +358,13 @@ function ApplyButtonDyn(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   
-  data.scanParams.volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
-  data.scanParams.volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+  data.scanParams(1).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+  data.scanParams(1).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
 
-  set(optionData.dyn2SelectionHandle,'string',data.scanParams.volumeSelect);
-  set(optionData.dynSelectionHandle,'string',data.scanParams.volumeSelectFirst);
+  set(optionData.dyn2SelectionHandle,'string',data.scanParams(1).volumeSelect);
+  set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
 
-  %data.scanParams.volumeSelect = dyns;
+  %data.scanParams(1).volumeSelect = dyns;
   guidata(optionData.main_fig,data);
   
 end
