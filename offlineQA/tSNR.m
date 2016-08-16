@@ -1,4 +1,4 @@
-% function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
+function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
 
 % tSNRmap- compute temporal SNR map for functional time series This was for debugging purposes.
 % Outputs tSNR, noise scan, Mean across time and variance across time in a
