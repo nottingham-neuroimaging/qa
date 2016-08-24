@@ -358,11 +358,18 @@ function ApplyButtonDyn(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   
-  data.scanParams(1).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
-  data.scanParams(1).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+  for i = 1:length(data.scanParams);
+      data.scanParams(i).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+      data.scanParams(i).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+      set(optionData.dyn2SelectionHandle,'string',data.scanParams(i).volumeSelect);
+      set(optionData.dynSelectionHandle,'string',data.scanParams(i).volumeSelectFirst);
+  end
+  
+  %data.scanParams(1).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+  %data.scanParams(1).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
 
-  set(optionData.dyn2SelectionHandle,'string',data.scanParams(1).volumeSelect);
-  set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
+  %set(optionData.dyn2SelectionHandle,'string',data.scanParams(1).volumeSelect);
+  %set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
 
   %data.scanParams(1).volumeSelect = dyns;
   guidata(optionData.main_fig,data);
