@@ -68,6 +68,8 @@ gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',
 
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
+gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 140 200 20], @dynTick);
+
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
 end
@@ -86,6 +88,34 @@ dat = cell(length(scanParams),6);
 for nf=1:length(scanParams),
     dat(nf,1:6) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect}];
 end
+end
+
+function tickHandle = makeTick(parentPanel, position, callBackStr)
+fontSize = 14;
+tickHandle = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
+    'string', 'Discard last dynamic?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
+end
+
+function dynTick(hObject, ~)
+data = guidata(hObject);
+
+% problem is everytime you uncheck the box, it doesn't reset to the 'real'
+% last dynamic, since you've already by definition ticked the box before,
+% therefore adds a fudge factor until I get smarter.
+if hObject.Value == 1;
+    for ii = 1:length(data.scanParams);
+      data.scanParams(ii).volumeSelect = data.scanParams(ii).volumeSelect-1;
+      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
+    end
+elseif hObject.Value == 0;
+    for ii = 1:length(data.scanParams);
+      data.scanParams(ii).volumeSelect = data.scan_table.Data{1,6}; %fudge factor, grabs info from the scan_table
+      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
+    end
+    
+end  
+ guidata(data.main_fig,data);
+
 end
 
 
@@ -328,10 +358,10 @@ function selectDynamics(hObject, ~)
 
   % Make the colorscale options
   
-  if length(data.scanParams) > 1
-      disp('!!!CAUTION, selecting dynamics for FIRST SCAN ONLY!!!')
-  end
-  
+%   if length(data.scanParams) > 1
+%       disp('!!!CAUTION, selecting dynamics for FIRST SCAN ONLY!!!')
+%   end
+%   
   dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams(1).volumeSelectFirst,'');
   makeText(option_fig,[14 15 15 3],'Select First Dynamic');
   
