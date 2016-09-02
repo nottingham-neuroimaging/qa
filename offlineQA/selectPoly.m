@@ -1,8 +1,8 @@
-function [poly, firstSlice, lastSlice] = selectPoly(volume)
+function polymask = selectPoly(volume)
 %selectPoly - follows selectCropRegion function, but implements a polygon,
 %rather than a rectangle
 
-poly = [];
+
 
 if isempty(volume)
   mrWarnDlg('(selectPoly) The source volume is empty');
@@ -117,8 +117,12 @@ for i = firstSlice:lastSlice
     axis off
     axis equal
     set(hFigure, 'name', 'Crop the image.')
-    h = impoly;
-    poly{i} = getPosition(h);
+    h = roipoly;
+    for j = 1:(lastSlice-firstSlice)+1
+        polymask(:,:,j) = thisSlice.*h;
+    end
+    
+    %poly{i} = getPosition(h);
 end
 
 %bb = regionprops(poly, 'BoundingBox');

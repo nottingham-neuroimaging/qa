@@ -48,7 +48,7 @@ set(gui_handle.scan_table,'dat',dat);
 
 gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15+10 7 30 3],'',@editROI);
 
-gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
+%gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
 
 
 % Passing data to the handle object.
@@ -57,7 +57,7 @@ data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
 data.roiEditBox = gui_handle.roiEditbox;
-data.polyEditBox = gui_handle.polyEditbox;
+%data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
@@ -221,7 +221,7 @@ for iScan = 2:length(data.scanParams)
   end
 end
 volume = cbiReadNifti(data.scanParams(1).fileName);
-[poly, firstSlice, lastSlice] = selectPoly(volume(:,end:-1:1,:,1));
+polymask = selectPoly(volume(:,end:-1:1,:,1));
 
 %niftiCoords = poly;
 %niftiCoords(:,2) = size(volume,2) - bb.BoundingBox([2:-1:1],2);
@@ -236,7 +236,7 @@ volume = cbiReadNifti(data.scanParams(1).fileName);
 % end
 
 
-
+data.scanParams.polyROI = polymask;
 guidata(hObject,data);
 
 
@@ -250,12 +250,6 @@ function ROI_box = mat2roiBox(roiCoords)
   ROI_box.y = roiCoords(1,2);
   ROI_box.height = roiCoords(2,2)-roiCoords(1,2);
   ROI_box.slice = roiCoords(1,3):roiCoords(2,3);
-
-end
-
-function poly_box = mat2polybox(poly)
-
-
 
 end
 

@@ -16,7 +16,14 @@ cmap = data.options.cmap;
 if(data.options.recaulculateTSNR)
     for nf=1:length(scanParams)
         % Create the tSNR maps
-        tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+        if isfield(scanParams,'polyROI')
+            %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            tSNR_poly = mean(nonzeros(scanParams.polyROI))./std(nonzeros(scanParams.polyROI));
+            tSNR_poly = mean(tSNR_poly);
+            fprintf('POLY_ROI_TSNR: %.4f\n', tSNR_poly);
+        else
+            tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+        end
     end
 end
 
