@@ -48,6 +48,8 @@ set(gui_handle.scan_table,'dat',dat);
 
 gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15+10 7 30 3],'',@editROI);
 
+gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
+
 
 % Passing data to the handle object.
 data = guidata(gui_handle.main_fig);
@@ -55,6 +57,7 @@ data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
 data.roiEditBox = gui_handle.roiEditbox;
+data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
@@ -65,6 +68,8 @@ gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
 gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',@drawROI);
+
+gui_handle.polyButton = makeButton(gui_handle.main_fig, [55 3 25 3], 'Draw Poly', @drawPoly);
 
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
@@ -206,6 +211,38 @@ guidata(hObject,data);
 
 end
 
+function drawPoly(hObject,~)
+data = guidata(hObject);
+dims=data.scanParams(1).dims ;
+for iScan = 2:length(data.scanParams)
+  if ~isequal(dims,data.scanParams(iScan).dims)
+    warndlg('All scans must have the same dimensions to use an ROI');
+    return
+  end
+end
+volume = cbiReadNifti(data.scanParams(1).fileName);
+[poly, firstSlice, lastSlice] = selectPoly(volume(:,end:-1:1,:,1));
+
+%niftiCoords = poly;
+%niftiCoords(:,2) = size(volume,2) - bb.BoundingBox([2:-1:1],2);
+
+% Quote the nifti-coordinates
+%set(data.polyEditBox,'string',mat2str(niftiCoords'));
+
+% for iScan = firstSlice:lastSlice
+%     poly_box.x(iScan) = poly{iScan}(:,1);
+%     poly_box.y(iScan) = poly{iScan}(:,2);
+%   
+% end
+
+
+
+guidata(hObject,data);
+
+
+end
+
+
 function ROI_box = mat2roiBox(roiCoords)
 
   ROI_box.x = roiCoords(1,1);
@@ -213,6 +250,12 @@ function ROI_box = mat2roiBox(roiCoords)
   ROI_box.y = roiCoords(1,2);
   ROI_box.height = roiCoords(2,2)-roiCoords(1,2);
   ROI_box.slice = roiCoords(1,3):roiCoords(2,3);
+
+end
+
+function poly_box = mat2polybox(poly)
+
+
 
 end
 
