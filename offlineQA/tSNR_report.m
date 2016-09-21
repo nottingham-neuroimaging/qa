@@ -16,14 +16,16 @@ cmap = data.options.cmap;
 if(data.options.recaulculateTSNR)
     for nf=1:length(scanParams)
         % Create the tSNR maps
-        if isfield(scanParams,'polyROI')
+            [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            if isfield(scanParams,'polyROI')
             %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
-            tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
-            tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
-            fprintf('POLY_ROI_TSNR: %.4f\n', mean(tSNR_poly));
-        else
-            tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
-        end
+            test = find(outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI);
+            test2=nanmean(outputFilenameTSNR(test));
+            
+%             tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
+%             tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
+            fprintf('POLY_ROI_TSNR: %.4f\n', test2);
+            end
     end
 end
 
