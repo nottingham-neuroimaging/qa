@@ -1,4 +1,4 @@
-function polymask = selectPoly(volume)
+function [polymask, firstSlice, lastSlice] = selectPoly(volume)
 %selectPoly - follows selectCropRegion function, but implements a polygon,
 %rather than a rectangle
 
