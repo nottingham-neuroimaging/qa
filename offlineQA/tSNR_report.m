@@ -19,8 +19,9 @@ if(data.options.recaulculateTSNR)
             [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
             if isfield(scanParams,'polyROI')
             %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
-            test = find(outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI);
-            test2=nanmean(outputFilenameTSNR(test));
+            newtest = outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI;
+            test = find(newtest);
+            test2=nanmean(newtest(test));
             
 %             tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
 %             tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
