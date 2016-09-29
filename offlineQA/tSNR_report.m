@@ -20,12 +20,13 @@ if(data.options.recaulculateTSNR)
             if isfield(scanParams,'polyROI')
             %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
             newtest = outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI;
-            test = find(newtest);
-            test2=nanmean(newtest(test));
+            L = newtest(newtest~=0 & newtest~=inf & ~isnan(newtest));
+%             test = find(newtest);
+%             test2=nanmean(newtest(test));
             
 %             tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
 %             tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
-            fprintf('POLY_ROI_TSNR: %.4f\n', test2);
+            fprintf('POLY_ROI_TSNR: %.4f\n', mean(L));
             end
     end
 end

@@ -71,6 +71,13 @@ if(~isempty(cropTimeSeries))
     im_data = im_data(:,:,:,cropTimeSeries(1):cropTimeSeries(2));
 end
 
+%quick thing to check iSNR
+% signalpugs = im_data(:,:,:,nV-1);
+% noisepugs = im_data(:,:,:,nV);
+% isnrpugs = mean(signalpugs,4)./noisepugs;
+% isnrpugs2 = isnrpugs(~isnan(isnrpugs(:)) & ~isinf(isnrpugs(:)));
+% fprintf('iSNR: %.4f\n', mean(isnrpugs2));
+
 tsnrData=mean(im_data,4)./std(im_data,1,4);
 save('meanTSNR', 'tsnrData');
 
