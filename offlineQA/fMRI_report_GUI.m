@@ -429,7 +429,7 @@ function selectDynamics(hObject, ~)
   optHandles = struct;
   optHandles.dynSelectionHandle = dynSelectionHandle;
   optHandles.dyn2SelectionHandle = dyn2SelectionHandle;
- 
+  optHandles.option_fig = option_fig;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
   
@@ -457,6 +457,8 @@ function ApplyButtonDyn(hObject,~)
   %data.scanParams(1).volumeSelect = dyns;
   guidata(optionData.main_fig,data);
   
+  
+  close(optionData.option_fig);
 end
 
 function scanParams = updateScanParams(scanParams,dat)
