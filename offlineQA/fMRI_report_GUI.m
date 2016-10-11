@@ -319,6 +319,7 @@ function reportOptions(hObject,~)
   optHandles.colourScaleHandle = colourScaleHandle;
   optHandles.colourbarScaleHandle = colourbarScaleHandle;
   optHandles.orientationScaleHandle = orientationScaleHandle;
+  optHandles.option_fig = option_fig;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
 
@@ -360,6 +361,8 @@ function ApplyButton(hObject,~)
   end
   
   guidata(optionData.main_fig,data);
+  
+  close(optionData.option_fig);
 end
 
 function rerunHTML(hObject,~)

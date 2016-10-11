@@ -78,6 +78,8 @@ end
 % isnrpugs2 = isnrpugs(~isnan(isnrpugs(:)) & ~isinf(isnrpugs(:)));
 % fprintf('iSNR: %.4f\n', mean(isnrpugs2));
 
+% Add drift correction here....
+
 tsnrData=mean(im_data,4)./std(im_data,1,4);
 save('meanTSNR', 'tsnrData');
 
