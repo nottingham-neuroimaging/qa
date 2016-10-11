@@ -1,4 +1,4 @@
-function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap,ROI_box)
+function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap,ROI_box,orientation)
 % Function here to generate summary images, saves them as pngs for everyone
 % to see.
 % usage:
@@ -33,8 +33,22 @@ if(nargin<7)
     ROI_box = [];
 end
 
+if(nargin<8)
+    orientation = 3;
+end
+
 data = cbiReadNifti(filename);
 data = mean(data,4);
+switch orientation
+    case 2
+        data = permute(data,[1 3 2]);
+        sliceChoice = 1:size(data,3);
+    case 1
+        data = permute(data,[2 3 1]);
+        sliceChoice = 1:size(data,3);
+    otherwise
+        %here do nothing for now, set up in the normal orientation
+end
 
 %     figure;
 for sc=1:length(sliceChoice),

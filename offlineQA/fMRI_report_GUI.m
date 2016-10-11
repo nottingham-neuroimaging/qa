@@ -307,6 +307,10 @@ function reportOptions(hObject,~)
   colourbarScaleHandle = makeEditbox(option_fig,[28 12 15 3],data.options.cmap_str,'');
   makeText(option_fig,[10 12 15 3],'Colourmap (for tSNR)');
 
+  % orientation options
+  orientationScaleHandle = makeEditbox(option_fig,[28 6 15 3],data.options.orientation,'');
+  makeText(option_fig,[10 6 15 3],'Orientation (1,2 or 3)');
+  
   % Make the Apply button
   optHandles.ApplyButton = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButton);
 
@@ -314,6 +318,7 @@ function reportOptions(hObject,~)
   optHandles = struct;
   optHandles.colourScaleHandle = colourScaleHandle;
   optHandles.colourbarScaleHandle = colourbarScaleHandle;
+  optHandles.orientationScaleHandle = orientationScaleHandle;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
 
@@ -326,6 +331,7 @@ function ApplyButton(hObject,~)
   data = guidata(optionData.main_fig);
   data.options.imgScale = str2num(get(optionData.colourScaleHandle,'string'));
   data.options.cmap_str = get(optionData.colourbarScaleHandle,'string');
+  data.options.orientation = str2num(get(optionData.orientationScaleHandle,'string'));
 
   % Here we look at changing the colourmaps!
   try
@@ -348,6 +354,11 @@ function ApplyButton(hObject,~)
   set(optionData.colourbarScaleHandle,'string',data.options.cmap_str);
   % Now set the new colourmap  
   data.options.cmap = cmap;
+  
+  for nf=1:length(data.scanParams)
+      data.scanParams(nf).orientation = data.options.orientation;
+  end
+  
   guidata(optionData.main_fig,data);
 end
 
@@ -465,6 +476,7 @@ function generateDefaultOptions(main_fig)
   options.imgScale = 100;
   options.cmap = hot(255).';
   options.cmap_str = 'hot(255)';
+  options.orientation = 3;
   data = guidata(main_fig);
   % check
   data.options = options;
