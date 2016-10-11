@@ -39,15 +39,23 @@ end
 
 data = cbiReadNifti(filename);
 data = mean(data,4);
+% This here changes the image orientation if you need to..
 switch orientation
     case 2
-        data = permute(data,[1 3 2]);
-        sliceChoice = 1:size(data,3);
+        data = permute(data,[1 3 2]);        
     case 1
-        data = permute(data,[2 3 1]);
-        sliceChoice = 1:size(data,3);
+        data = permute(data,[2 3 1]);        
     otherwise
         %here do nothing for now, set up in the normal orientation
+end
+
+if(orientation~=3)
+    sliceChoice = 1:size(data,3);    
+    if(~isempty(ROI_box));
+        disp('Note that ROI will not draw in this orientation... will fix in future!!');
+        ROI_box=[];
+    end
+
 end
 
 %     figure;

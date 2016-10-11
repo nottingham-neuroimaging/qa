@@ -33,7 +33,7 @@ end
 
 for nf=1:length(scanParams)
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
-    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box);
+    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation);
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
 end
 
