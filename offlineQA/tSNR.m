@@ -80,12 +80,18 @@ end
 % isnrpugs2 = isnrpugs(~isnan(isnrpugs(:)) & ~isinf(isnrpugs(:)));
 % fprintf('iSNR: %.4f\n', mean(isnrpugs2));
 
-% To correct for drift correction, we remove a linear trend for the data
+% To correct for scanner drift, we remove a linear and quadratic trend for the data
 % (simplistic at the moment - compared to using high-pass filtering)
+% 
 % Here we reshape the data to vectorise it.
 reshaped_data = reshape(im_data,nX*nY*nS,nV);
-% Make a GLM, with just a linear and quadratic regressor (see Hutton et al.
-% 2011)
+% The next thing to do is to make a GLM, with just a linear and quadratic regressor (see Hutton et al. Neuroimage
+% 2011) i.e. solve
+% 
+% Y = X*betas + error
+% 
+% Where X has the model - otherwise known as the design matrix
+% and betas is a column vector that has the co-efficients for the elements in the design matrix (to be estimated)
 X1 =[1:nV].';X2 = X1.^2;
 X = [ones(size(X1)),X1,X2]; %Design matrix
 P = (X'*X)\X'; % Proj. matrix (also pinv(X))
