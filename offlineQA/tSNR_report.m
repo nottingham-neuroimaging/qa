@@ -16,13 +16,24 @@ cmap = data.options.cmap;
 if(data.options.recaulculateTSNR)
     for nf=1:length(scanParams)
         % Create the tSNR maps
-        tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            if isfield(scanParams,'polyROI')
+            %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            newtest = outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI;
+            L = newtest(newtest~=0 & newtest~=inf & ~isnan(newtest));
+%             test = find(newtest);
+%             test2=nanmean(newtest(test));
+            
+%             tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
+%             tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
+            fprintf('POLY_ROI_TSNR: %.4f\n', mean(L));
+            end
     end
 end
 
 for nf=1:length(scanParams)
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
-    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box);
+    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation);
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
 end
 
