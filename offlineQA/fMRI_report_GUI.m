@@ -48,6 +48,8 @@ set(gui_handle.scan_table,'dat',dat);
 
 gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15+10 7 30 3],'',@editROI);
 
+%gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
+
 
 % Passing data to the handle object.
 data = guidata(gui_handle.main_fig);
@@ -55,6 +57,7 @@ data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
 data.roiEditBox = gui_handle.roiEditbox;
+%data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
 
 % create the button to go set values to
@@ -66,7 +69,11 @@ gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Option
 
 gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',@drawROI);
 
+gui_handle.polyButton = makeButton(gui_handle.main_fig, [55 3 25 3], 'Draw Poly', @drawPoly);
+
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
+
+gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 140 200 20], @dynTick);
 
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
@@ -86,6 +93,34 @@ dat = cell(length(scanParams),6);
 for nf=1:length(scanParams),
     dat(nf,1:6) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect}];
 end
+end
+
+function tickHandle = makeTick(parentPanel, position, callBackStr)
+fontSize = 14;
+tickHandle = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
+    'string', 'Discard last dynamic?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
+end
+
+function dynTick(hObject, ~)
+data = guidata(hObject);
+
+% problem is everytime you uncheck the box, it doesn't reset to the 'real'
+% last dynamic, since you've already by definition ticked the box before,
+% therefore adds a fudge factor until I get smarter.
+if hObject.Value == 1;
+    for ii = 1:length(data.scanParams);
+      data.scanParams(ii).volumeSelect = data.scanParams(ii).volumeSelect-1;
+      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
+    end
+elseif hObject.Value == 0;
+    for ii = 1:length(data.scanParams);
+      data.scanParams(ii).volumeSelect = data.scan_table.Data{1,6}; %fudge factor, grabs info from the scan_table
+      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
+    end
+    
+end  
+ guidata(data.main_fig,data);
+
 end
 
 
@@ -176,6 +211,40 @@ guidata(hObject,data);
 
 end
 
+function drawPoly(hObject,~)
+data = guidata(hObject);
+dims=data.scanParams(1).dims ;
+for iScan = 2:length(data.scanParams)
+  if ~isequal(dims,data.scanParams(iScan).dims)
+    warndlg('All scans must have the same dimensions to use an ROI');
+    return
+  end
+end
+volume = cbiReadNifti(data.scanParams(1).fileName);
+[polymask, firstSlice, lastSlice] = selectPoly(volume(:,end:-1:1,:,1));
+
+%niftiCoords = poly;
+%niftiCoords(:,2) = size(volume,2) - bb.BoundingBox([2:-1:1],2);
+
+% Quote the nifti-coordinates
+%set(data.polyEditBox,'string',mat2str(niftiCoords'));
+
+% for iScan = firstSlice:lastSlice
+%     poly_box.x(iScan) = poly{iScan}(:,1);
+%     poly_box.y(iScan) = poly{iScan}(:,2);
+%   
+% end
+polymask = (polymask~=0); % makes a mask image of 1s and 0s.
+
+data.scanParams.polyROI = polymask;
+data.scanParams.firstSlice = firstSlice;
+data.scanParams.lastSlice = lastSlice;
+guidata(hObject,data);
+
+
+end
+
+
 function ROI_box = mat2roiBox(roiCoords)
 
   ROI_box.x = roiCoords(1,1);
@@ -238,6 +307,10 @@ function reportOptions(hObject,~)
   colourbarScaleHandle = makeEditbox(option_fig,[28 12 15 3],data.options.cmap_str,'');
   makeText(option_fig,[10 12 15 3],'Colourmap (for tSNR)');
 
+  % orientation options
+  orientationScaleHandle = makeEditbox(option_fig,[28 6 15 3],data.options.orientation,'');
+  makeText(option_fig,[10 6 15 3],'Orientation (1,2 or 3)');
+  
   % Make the Apply button
   optHandles.ApplyButton = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButton);
 
@@ -245,6 +318,8 @@ function reportOptions(hObject,~)
   optHandles = struct;
   optHandles.colourScaleHandle = colourScaleHandle;
   optHandles.colourbarScaleHandle = colourbarScaleHandle;
+  optHandles.orientationScaleHandle = orientationScaleHandle;
+  optHandles.option_fig = option_fig;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
 
@@ -257,6 +332,7 @@ function ApplyButton(hObject,~)
   data = guidata(optionData.main_fig);
   data.options.imgScale = str2num(get(optionData.colourScaleHandle,'string'));
   data.options.cmap_str = get(optionData.colourbarScaleHandle,'string');
+  data.options.orientation = str2num(get(optionData.orientationScaleHandle,'string'));
 
   % Here we look at changing the colourmaps!
   try
@@ -279,7 +355,14 @@ function ApplyButton(hObject,~)
   set(optionData.colourbarScaleHandle,'string',data.options.cmap_str);
   % Now set the new colourmap  
   data.options.cmap = cmap;
+  
+  for nf=1:length(data.scanParams)
+      data.scanParams(nf).orientation = data.options.orientation;
+  end
+  
   guidata(optionData.main_fig,data);
+  
+  close(optionData.option_fig);
 end
 
 function rerunHTML(hObject,~)
@@ -328,10 +411,14 @@ function selectDynamics(hObject, ~)
 
   % Make the colorscale options
   
-  dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams.volumeSelectFirst,'');
+%   if length(data.scanParams) > 1
+%       disp('!!!CAUTION, selecting dynamics for FIRST SCAN ONLY!!!')
+%   end
+%   
+  dynSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams(1).volumeSelectFirst,'');
   makeText(option_fig,[14 15 15 3],'Select First Dynamic');
   
-  dyn2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams.volumeSelect,'');
+  dyn2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams(1).volumeSelect,'');
   makeText(option_fig,[14 9 15 3],'Select Last Dynamic');
   
 
@@ -342,11 +429,11 @@ function selectDynamics(hObject, ~)
   optHandles = struct;
   optHandles.dynSelectionHandle = dynSelectionHandle;
   optHandles.dyn2SelectionHandle = dyn2SelectionHandle;
- 
+  optHandles.option_fig = option_fig;
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
   
-  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams.volumeSelectFirst, data.scanParams.volumeSelect)
+  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(1).volumeSelectFirst, data.scanParams(1).volumeSelect)
 end
 
 function ApplyButtonDyn(hObject,~)
@@ -354,15 +441,24 @@ function ApplyButtonDyn(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   
-  data.scanParams.volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
-  data.scanParams.volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+  for i = 1:length(data.scanParams);
+      data.scanParams(i).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+      data.scanParams(i).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+      set(optionData.dyn2SelectionHandle,'string',data.scanParams(i).volumeSelect);
+      set(optionData.dynSelectionHandle,'string',data.scanParams(i).volumeSelectFirst);
+  end
+  
+  %data.scanParams(1).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+  %data.scanParams(1).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
 
-  set(optionData.dyn2SelectionHandle,'string',data.scanParams.volumeSelect);
-  set(optionData.dynSelectionHandle,'string',data.scanParams.volumeSelectFirst);
+  %set(optionData.dyn2SelectionHandle,'string',data.scanParams(1).volumeSelect);
+  %set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
 
-  %data.scanParams.volumeSelect = dyns;
+  %data.scanParams(1).volumeSelect = dyns;
   guidata(optionData.main_fig,data);
   
+  
+  close(optionData.option_fig);
 end
 
 function scanParams = updateScanParams(scanParams,dat)
@@ -385,6 +481,7 @@ function generateDefaultOptions(main_fig)
   options.imgScale = 100;
   options.cmap = hot(255).';
   options.cmap_str = 'hot(255)';
+  options.orientation = 3;
   data = guidata(main_fig);
   % check
   data.options = options;

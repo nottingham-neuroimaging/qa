@@ -70,9 +70,37 @@ end
 
 if(~isempty(cropTimeSeries))
     im_data = im_data(:,:,:,cropTimeSeries(1):cropTimeSeries(2));
+    nV = size(im_data,4);
 end
 
+%quick thing to check iSNR
+% signalpugs = im_data(:,:,:,nV-1);
+% noisepugs = im_data(:,:,:,nV);
+% isnrpugs = mean(signalpugs,4)./noisepugs;
+% isnrpugs2 = isnrpugs(~isnan(isnrpugs(:)) & ~isinf(isnrpugs(:)));
+% fprintf('iSNR: %.4f\n', mean(isnrpugs2));
+
+% To correct for drift correction, we remove a linear trend for the data
+% (simplistic at the moment - compared to using high-pass filtering)
+% Here we reshape the data to vectorise it.
+reshaped_data = reshape(im_data,nX*nY*nS,nV);
+% Make a GLM, with just a linear and quadratic regressor (see Hutton et al.
+% 2011)
+X1 =[1:nV].';X2 = X1.^2;
+X = [ones(size(X1)),X1,X2]; %Design matrix
+P = (X'*X)\X'; % Proj. matrix (also pinv(X))
+% find solution of GLM
+betas = P*(reshaped_data.');
+
+% Now remove the linear and quadratic trend only..
+detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
+im_data = reshape(detrended_data,nX,nY,nS,nV);
+% Now this is standard...
+
 tsnrData=mean(im_data,4)./std(im_data,1,4);
+tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
+
+save('meanTSNR', 'tsnrData');
 
 % save('meanTSNR', 'tsnrData'); This was for debugging purposes.
 

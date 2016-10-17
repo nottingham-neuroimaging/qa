@@ -19,7 +19,8 @@ for nf=1:length(filenames)
     % Some of the characters in this contain non-unicode characters, so
     % remove them here. 
     unicodenotes = unicode2native(hdr.descrip);
-    scanParams(nf).notes = hdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));    
+    scanParams(nf).notes = hdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    scanParams(nf).orientation = 3;
 end
 
 end
