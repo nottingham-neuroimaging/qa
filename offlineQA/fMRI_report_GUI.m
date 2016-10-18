@@ -448,7 +448,7 @@ function selectDynamics(hObject, ~)
   optHandles.main_fig = data.main_fig;
   guidata(option_fig,optHandles);
   
-  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(1).volumeSelectFirst, data.scanParams(1).volumeSelect)
+%   fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(1).volumeSelectFirst, data.scanParams(1).volumeSelect)
 end
 
 function ApplyButtonDyn(hObject,~)
@@ -470,6 +470,7 @@ function ApplyButtonDyn(hObject,~)
   %set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
 
   %data.scanParams(1).volumeSelect = dyns;
+  fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(i).volumeSelectFirst, data.scanParams(i).volumeSelect)
   guidata(optionData.main_fig,data);
   
   
