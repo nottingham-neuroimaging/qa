@@ -6,7 +6,7 @@ This folder contains a collection of code desiged to run quality assurance algor
 - ROI for tSNR/iSNR
 - Options to regenerate a HTML report
 
-## Techincal details
+## Technical details
 To calculate the fMRI report, we calculate the tSNR maps after drift correction by default. The components of the scanner drift are modelled as a linear and quadratic function of scan number. These two additive components are regressed out by the use of a GLM.
 
 ## Current version:
