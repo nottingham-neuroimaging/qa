@@ -1,4 +1,4 @@
-function [polymask, firstSlice, lastSlice] = selectPoly(volume)
+function [polymask, firstSlice, lastSlice, ign] = selectPoly(volume)
 %selectPoly - follows selectCropRegion function, but implements a polygon,
 %rather than a rectangle
 
@@ -128,18 +128,22 @@ end
 %bb = regionprops(poly, 'BoundingBox');
 
     switch questdlg('Does this look OK?', 'Confirm crop');
-        case 'Cancel'
+        case {'Cancel', 'No'}
             % Cancel
-            poly = volume;
+            ign = 1; % Have a look at drawPoly in report_GUI to see what this does...
             close(hFigure);
             disp('Crop aborted');
             return
         case 'Yes'
             % Okay
+            ign = 0; % don't ignore, keep the mask
             OK = 1;
-        case 'No'
-            % No
-            disp('Repeating crop');
+%         case 'No'
+%             % No
+%             clear polymask firstSlice lastSlice
+%             close(hFigure);
+%             [polymask, firstSlice, lastSlice] = selectPoly(volume);
+%             disp('Repeating crop');
     end
 end
 

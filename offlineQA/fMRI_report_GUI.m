@@ -221,7 +221,22 @@ for iScan = 2:length(data.scanParams)
   end
 end
 volume = cbiReadNifti(data.scanParams(1).fileName);
-[polymask, firstSlice, lastSlice] = selectPoly(volume(:,end:-1:1,:,1));
+[polymask, firstSlice, lastSlice, ign] = selectPoly(volume(:,end:-1:1,:,1));
+
+if ign==1; % this is a dodgy way to quickly get rid of any masks if the user pressed 'cancel' in 'selectPoly'
+    clear polymask firstSlice lastSlice
+%     guidata(hObject, data)
+else
+    
+polymask = (polymask~=0); % makes a mask image of 1s and 0s.
+
+data.scanParams.polyROI = polymask;
+data.scanParams.firstSlice = firstSlice;
+data.scanParams.lastSlice = lastSlice;
+guidata(hObject,data);
+end
+
+    
 
 %niftiCoords = poly;
 %niftiCoords(:,2) = size(volume,2) - bb.BoundingBox([2:-1:1],2);
@@ -234,12 +249,12 @@ volume = cbiReadNifti(data.scanParams(1).fileName);
 %     poly_box.y(iScan) = poly{iScan}(:,2);
 %   
 % end
-polymask = (polymask~=0); % makes a mask image of 1s and 0s.
-
-data.scanParams.polyROI = polymask;
-data.scanParams.firstSlice = firstSlice;
-data.scanParams.lastSlice = lastSlice;
-guidata(hObject,data);
+% polymask = (polymask~=0); % makes a mask image of 1s and 0s.
+% 
+% data.scanParams.polyROI = polymask;
+% data.scanParams.firstSlice = firstSlice;
+% data.scanParams.lastSlice = lastSlice;
+% guidata(hObject,data);
 
 
 end
