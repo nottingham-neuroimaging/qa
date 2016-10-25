@@ -63,6 +63,11 @@ nV = size(Data,4);
 if dynNOISEscan==1
     im_data=Data(:,:,:,1:nV-1);
     noise_data=Data(:,:,:,nV);
+    if(~isempty(cropTimeSeries))
+        if cropTimeSeries(2) == nV
+            cropTimeSeries(2) = cropTimeSeries(2)-1;
+        end
+    end
 else
     im_data=Data;
     noise_data = zeros(nX,nY,nS);
