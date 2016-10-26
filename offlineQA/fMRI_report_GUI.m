@@ -483,8 +483,8 @@ for nf=1:length(scanParams)
     scanParams(nf).dynNOISEscan = dat{nf,4};
     if scanParams(nf).dynNOISEscan %check if there is noise scan and user forgot to change the last scan number
       hdr = cbiReadNiftiHeader(scanParams(nf).fileName);
-      if  dat{nf,6} == hdr.dim(6)
-        dat{nf,6} = dat{nf,6}-1;
+      if  scanParams(nf).volumeSelect == hdr.dim(5)
+        scanParams(nf).volumeSelect = scanParams(nf).volumeSelect-1;
       end
     end
     %scanParams(nf).volumeSelect = dat{nf,5};
