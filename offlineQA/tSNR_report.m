@@ -78,7 +78,7 @@ for nf=1:length(scanParams)
     % Reorder, just so that we have a match of the ROIs with the image
     % (from rotation)
     slice_image = permute(slice_image(:,end:-1:1,:),[2 1 3]);    
-    image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+    image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width,:);
     tSNR_ROI(nf) = mean(image_cropped(:));
   end
 end
@@ -93,12 +93,12 @@ for nf=1:length(scanParams)
 
     img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);
     img_slice = permute(img_slice(:,end:-1:1,:),[2 1 3]);
-    image_cropped = img_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+    image_cropped = img_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width,:);
 
 
     noise_slice = noiseImage(:,:,scanParams(nf).ROI_box.slice);
     noise_slice = permute(noise_slice(:,end:-1:1,:),[2 1 3]);
-    noise_cropped = noise_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width);
+    noise_cropped = noise_slice(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width,:);
 
 
     iSNR(nf) = mean(image_cropped(:))/std(noise_cropped(:));
