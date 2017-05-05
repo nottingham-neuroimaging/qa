@@ -299,7 +299,7 @@ function reportOptions(hObject,~)
 
 
   % create the panel
-  figureHeight = 25;
+  figureHeight = 30;
   figureWidth = 50;
   % position = [60 25 110 60];
   option_fig = figure('Units','Character',...
@@ -315,22 +315,26 @@ function reportOptions(hObject,~)
   data = guidata(hObject);
 
   % Make the colorscale options
-  colourScaleHandle = makeEditbox(option_fig,[28 18 15 3],data.options.imgScale,'');
-  makeText(option_fig,[10 18 15 3],'Color scale (for tSNR)');
+  colourScaleHandle = makeEditbox(option_fig,[28 23 15 3],data.options.imgScale,'');
+  makeText(option_fig,[10 23 15 3],'Color scale (for tSNR)');
 
   % colourbar options
-  colourbarScaleHandle = makeEditbox(option_fig,[28 12 15 3],data.options.cmap_str,'');
-  makeText(option_fig,[10 12 15 3],'Colourmap (for tSNR)');
+  colourbarScaleHandle = makeEditbox(option_fig,[28 18 15 3],data.options.cmap_str,'');
+  makeText(option_fig,[10 18 15 3],'Colourmap (for tSNR)');
+  
+  colourMeanScaleHandle = makeEditbox(option_fig,[28 12 15 3],data.options.imgScaleMean,'');
+  makeText(option_fig,[10 12 15 3],'Colour scale (mean)');
 
   % orientation options
-  orientationScaleHandle = makeEditbox(option_fig,[28 6 15 3],data.options.orientation,'');
-  makeText(option_fig,[10 6 15 3],'Orientation (1,2 or 3)');
+  orientationScaleHandle = makeEditbox(option_fig,[28 7 15 3],data.options.orientation,'');
+  makeText(option_fig,[10 7 15 3],'Orientation (1,2 or 3)');
   
   % Make the Apply button
   optHandles.ApplyButton = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButton);
 
   % Set all the information to the guidata
   optHandles = struct;
+  optHandles.colourMeanScaleHandle = colourMeanScaleHandle;
   optHandles.colourScaleHandle = colourScaleHandle;
   optHandles.colourbarScaleHandle = colourbarScaleHandle;
   optHandles.orientationScaleHandle = orientationScaleHandle;
@@ -348,6 +352,7 @@ function ApplyButton(hObject,~)
   data.options.imgScale = str2num(get(optionData.colourScaleHandle,'string'));
   data.options.cmap_str = get(optionData.colourbarScaleHandle,'string');
   data.options.orientation = str2num(get(optionData.orientationScaleHandle,'string'));
+  data.options.imgScaleMean = str2num(get(optionData.colourMeanScaleHandle, 'string'));
 
   % Here we look at changing the colourmaps!
   try
@@ -394,7 +399,7 @@ function rerunHTML(hObject,~)
 
   scanParams = updateScanParams(scanParams,dat);
   [tSNR_ROI,iSNR] = tSNR_report(scanParams,data.main_fig);
-  mean_image_report(scanParams);
+  mean_image_report(scanParams, data.main_fig);
 
   if any(~isnan(tSNR_ROI))
     tSNR_ROI
@@ -495,6 +500,7 @@ function generateDefaultOptions(main_fig)
   options = struct;
   options.recaulculateTSNR = 1;
   options.imgScale = 100;
+  options.imgScaleMean = [];
   options.cmap = hot(255).';
   options.cmap_str = 'hot(255)';
   options.orientation = 3;

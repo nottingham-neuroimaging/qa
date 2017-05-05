@@ -1,10 +1,11 @@
-function mean_image_report(scanParams)
+function mean_image_report(scanParams, figHandle)
 
 % Function to create the mean image;
-
+data = guidata(figHandle);
 fontScale = 20;
 cmap = gray(255).';
-imgScale = [];
+imgScale = data.options.imgScaleMean;
+%imgScale = [];
 
 % Mean map, creating the images..
 for nf=1:length(scanParams)
