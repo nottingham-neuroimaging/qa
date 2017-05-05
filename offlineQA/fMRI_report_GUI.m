@@ -280,7 +280,7 @@ dat = get(data.scan_table,'dat');
 scanParams = updateScanParams(scanParams,dat);
 disp('Running report....');
 [tSNR_ROI,iSNR] = tSNR_report(scanParams,data.main_fig);
-mean_image_report(scanParams);
+mean_image_report(scanParams,data.main_fig);
 
 if any(~isnan(tSNR_ROI))
   tSNR_ROI
