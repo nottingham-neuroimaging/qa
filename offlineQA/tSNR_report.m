@@ -61,8 +61,10 @@ for nf=1:length(scanParams)
     % if you set it to 0, then you're including those values in the mean,
     % and hence the tSNR will drop. Need to remove them here, but set them
     % to zero in generateSliceSummary (line74), for visualization
-    if scanParams.mask == 1
+    for ii = 1:length(scanParams)
+    if scanParams(ii).mask == 1
     data2 = data2(data2>0.05*max(data2(:)));
+    end
     end
     
     fprintf('Max TSNR: %.4f\n', max(data2))
