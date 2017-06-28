@@ -32,7 +32,9 @@ if(data.options.recaulculateTSNR)
 end
 
 if ~isfield(scanParams, 'mask')
-    scanParams.mask = 0;
+    for ii = 1:length(scanParams)
+    scanParams(ii).mask = 0;
+    end
 end
     
 for nf=1:length(scanParams)
