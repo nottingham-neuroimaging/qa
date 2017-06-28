@@ -31,9 +31,13 @@ if(data.options.recaulculateTSNR)
     end
 end
 
+if ~isfield(scanParams, 'mask')
+    scanParams.mask = 0;
+end
+    
 for nf=1:length(scanParams)
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
-    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation);
+    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation, scanParams(nf).mask);
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
 end
 
@@ -52,6 +56,15 @@ for nf=1:length(scanParams)
     line([0 0],ylim,'Color','black');  %y-axis
     line(mean(data2)*[1 1],ylim,'Color','red','lineStyle','--');  %Mean 
     print(figH,['QA_report/' scanParams(nf).outputBaseName '_tSNR_HIST.png'],'-dpng');
+    
+    % mask values less than 5% of the mean (optional)
+    % if you set it to 0, then you're including those values in the mean,
+    % and hence the tSNR will drop. Need to remove them here, but set them
+    % to zero in generateSliceSummary (line74), for visualization
+    if scanParams.mask == 1
+    data2 = data2(data2>0.05*max(data2(:)));
+    end
+    
     fprintf('Max TSNR: %.4f\n', max(data2))
     fprintf('Mean TSNR: %.4f\n', mean(data2))
     clear data data2;
