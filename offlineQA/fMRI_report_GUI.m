@@ -135,11 +135,15 @@ function maskTick(hObject, ~)
 data = guidata(hObject);
 
 if hObject.Value == 1;
-    data.scanParams.mask = 1;
+    for ii = 1:length(data.scanParams)
+        data.scanParams(ii).mask = 1;
+    end
 elseif hObject.Value == 0;
-    data.scanParams.mask = 0;
-end  
- guidata(data.main_fig,data);
+    for ii = 1:length(data.scanParams)
+        data.scanParams(ii).mask = 0;
+    end
+end
+guidata(data.main_fig,data);
 
 end
 
