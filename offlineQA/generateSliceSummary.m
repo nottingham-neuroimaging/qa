@@ -1,4 +1,4 @@
-function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap,ROI_box,orientation)
+function [image_matrix] = generateSliceSummary(filename,sliceChoice,zoomedSize,fontScale,imgScale,cmap,ROI_box,orientation, mask)
 % Function here to generate summary images, saves them as pngs for everyone
 % to see.
 % usage:
@@ -71,6 +71,13 @@ for sc=1:length(sliceChoice),
         dat2 = (dat/max(dat(:)));
     end
     
+    if ieNotDefined('mask')
+        mask = 0;
+        
+    elseif mask == 1
+        % masking 5% of max values (optional)
+        dat2(dat2<0.05*max(dat2(:))) = 0;
+    end
     
     dat2 = uint8(reshape((meshData2Colors(dat2(:),cmap,[0 1])).'*255,[size(dat) 3]));
 %     keyboard

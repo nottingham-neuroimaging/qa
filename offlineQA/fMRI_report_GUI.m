@@ -46,7 +46,7 @@ dat = createCellArray(scanParams);
 
 set(gui_handle.scan_table,'dat',dat);
 
-gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[15+10 7 30 3],'',@editROI);
+gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[12 7 30 3],'',@editROI);
 
 %gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
 
@@ -67,13 +67,15 @@ gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML
 
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
-gui_handle.roiButton = makeButton(gui_handle.main_fig,[45+10 7 25 3],'Draw ROI',@drawROI);
+gui_handle.roiButton = makeButton(gui_handle.main_fig,[44.5 7 25 3],'Draw ROI',@drawROI);
 
-gui_handle.polyButton = makeButton(gui_handle.main_fig, [55 3 25 3], 'Draw Poly', @drawPoly);
+gui_handle.polyButton = makeButton(gui_handle.main_fig, [44.5 3 25 3], 'Draw Poly', @drawPoly);
 
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
-gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 140 200 20], @dynTick);
+gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 150 200 20], @dynTick);
+
+gui_handle.maskTick = makeTick2(gui_handle.main_fig, [450 120 200 20], @maskTick);
 
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
@@ -101,6 +103,12 @@ tickHandle = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
     'string', 'Discard last dynamic?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
 end
 
+function tickHandleMask = makeTick2(parentPanel, position, callBackStr)
+fontSize = 14;
+tickHandleMask = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
+    'string', 'Mask 5% of Max Signal?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
+end
+
 function dynTick(hObject, ~)
 data = guidata(hObject);
 
@@ -118,6 +126,18 @@ elseif hObject.Value == 0;
       %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
     end
     
+end  
+ guidata(data.main_fig,data);
+
+end
+
+function maskTick(hObject, ~)
+data = guidata(hObject);
+
+if hObject.Value == 1;
+    data.scanParams.mask = 1;
+elseif hObject.Value == 0;
+    data.scanParams.mask = 0;
 end  
  guidata(data.main_fig,data);
 
