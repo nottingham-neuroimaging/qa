@@ -96,8 +96,13 @@ for nf=1:length(scanParams)
     % (from rotation)
     slice_image = permute(slice_image(:,end:-1:1,:),[2 1 3]);    
     image_cropped = slice_image(scanParams(nf).ROI_box.y:scanParams(nf).ROI_box.y+scanParams(nf).ROI_box.height,scanParams(nf).ROI_box.x:scanParams(nf).ROI_box.x+scanParams(nf).ROI_box.width,:);
-    tSNR_ROI(nf) = mean(image_cropped(:));
+    tSNR_ROI(nf) = nanmean(image_cropped(:));
   end
+  
+  if ~isempty(tSNR_ROI)
+      fprintf('tSNR_ROI = %.4f\n', nanmean(tSNR_ROI))
+  end
+ 
 end
 
 iSNR = nan(length(scanParams),1);
