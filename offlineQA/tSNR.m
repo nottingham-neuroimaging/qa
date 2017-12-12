@@ -132,6 +132,8 @@ Hdr.dim(5)=1;
 meanImg=squeeze(mean(im_data,4));
 outputFilename = [outputBaseName '_Mean.hdr'];
 cbiWriteNifti(outputFilename,meanImg,Hdr);
+fprintf('\n mean of mean image = %.4f \n', mean(meanImg(:)))
+%fprintf('\n 
 
 disp(['Saved ' outputFilename]);
 
