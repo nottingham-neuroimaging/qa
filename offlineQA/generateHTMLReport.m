@@ -43,7 +43,7 @@ for nf=1:length(scanParams)
     fprintf(fileID,'%s',['<h3>' scanParams(nf).fileName '</h3><br>']);
     fprintf(fileID,'%s',['<center><a href=' scanParams(nf).fileName(1:end-7) '_tSNR_IMAGE.png>'  ...
         '<img src=' scanParams(nf).fileName(1:end-7) '_tSNR_IMAGE.png width=800></a> <br>' ]);
-    fprintf(fileID,'%s',['<img src=cbar.png height=50><a href=' scanParams(nf).outputBaseName '_tSNR_HIST.png><img src=' scanParams(nf).outputBaseName '_tSNR_HIST.png height=80></a><br></center>']);
+    fprintf(fileID,'%s',['<img src=cbar.png height=50><br><a href=' scanParams(nf).outputBaseName '_tSNR_HIST.png><img src=' scanParams(nf).outputBaseName '_tSNR_HIST.png height=80></a><br></center>']);
     fprintf(fileID,'%s',['<p> Notes: ' scanParams(nf).notes '</p></center><br><br><br>']);
 end
 

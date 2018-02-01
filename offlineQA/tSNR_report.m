@@ -82,7 +82,7 @@ hh(1,:,:) = cmap.';
 figH = figure('visible','off');
 h = imagesc(linspace(0,imgScale,size(cmap,2)),0,hh);
 % keyboard
-set(figH,'PaperPosition',[0.25 0.25 6 1]);
+set(figH,'PaperPosition',[0.25 0.25 10 3],'units','character');
 set(gca,'YTick',[],'fontSize',20);
 print(figH,['QA_report/cbar.png'],'-dpng');
 
