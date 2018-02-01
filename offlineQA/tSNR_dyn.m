@@ -9,7 +9,7 @@ function [] = tSNR_dyn(dataFilename, varargin)
 %         dynamic selection (through the GUI at least).
 %
 % ma 2016/08/12 
-%
+% ka 2018/01/01 adding in freesurfer support.
 % see also tSNR, tSNR_report, cbiReadNifti, varargin
 
 validInputArgs = {'cropTimeSeries'};
@@ -23,7 +23,8 @@ end
 [tsnrData, outputFilenameTSNR] = tSNR(dataFilename, varargin{:}); % need the {:}, syntax issue
 
 fname = outputFilenameTSNR;
-data = cbiReadNifti(fname);
+data_struct = MRIread(fname);
+data = data_struct.vol;
 data2 = data(~isnan(data(:)) & ~isinf(data(:)));
 
 fprintf('Max TSNR: %.4f\n', max(data2))
