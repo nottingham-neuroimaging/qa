@@ -37,7 +37,10 @@ if(nargin<8)
     orientation = 3;
 end
 
-data = cbiReadNifti(filename);
+% Now loading in data using freesurfer's MRIread.
+data_struct = MRIread(filename);
+data = data_struct.vol;
+
 data = mean(data,4);
 % This here changes the image orientation if you need to..
 switch orientation

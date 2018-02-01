@@ -7,12 +7,16 @@ scanParams = struct;
 
 
 for nf=1:length(filenames)
-    hdr = cbiReadNiftiHeader(filenames{nf});
+    % Only read the nifti header from freesurfer's MRIread.
+    data_struct = MRIread(filenames{nf},1);
+    hdr = data_struct.niftihdr;
+    hdr.hdr_name = data_struct.fspec;
+
     scanParams(nf).fileName = filenames{nf};
     scanParams(nf).dynNOISEscan = 0;
     scanParams(nf).volumeSelect = [hdr.dim(5)];
     scanParams(nf).volumeSelectFirst = [hdr.dim(5)/hdr.dim(5)];
-    scanParams(nf).outputBaseName = hdr.hdr_name(1:end-4);
+    scanParams(nf).outputBaseName = hdr.hdr_name(1:end-7);
     scanParams(nf).slices = 1:hdr.dim(4);
     scanParams(nf).dims = hdr.dim(2:4);
     scanParams(nf).ROI_box = [];

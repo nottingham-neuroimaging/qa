@@ -49,8 +49,10 @@ if ieNotDefined('outputBaseName')
     outputBaseName = [pathname stripext(dataFilename)];    
 end
 
-% Reads the data from the file name.
-[Data, Hdr]=cbiReadNifti(dataFilename);
+% Reads the data from the file name, using MRIread's in-built function, note that this is different
+data_struct = MRIread(dataFilename);
+Data = data_struct.vol;
+Hdr = data_struct.niftihdr;
 
 
 % get data dimensions
@@ -113,8 +115,14 @@ save('meanTSNR', 'tsnrData');
 % save out temporal SNR map
 Hdr.dim(5)=1;
 
-outputFilenameTSNR = [outputBaseName '_tSNR.hdr'];
-cbiWriteNifti(outputFilenameTSNR,tsnrData,Hdr);
+outputFilenameTSNR = [outputBaseName '_tSNR.nii.gz'];
+
+% now make a new structure to save the data, based on what MRIwrite needs.
+data_struct_save = data_struct;
+data_struct_save.niftihdr = Hdr;
+data_struct_save.vol = tsnrData;
+MRIwrite(data_struct_save,outputFilenameTSNR);
+
 disp(['Saved ' outputFilenameTSNR]);
 
 % save out temporal SNR map and noise (as first and second volume)
@@ -125,13 +133,23 @@ output(:,:,:,2)=squeeze(noise_data);
 output(:,:,:,3)=squeeze(mean(im_data,4));
 output(:,:,:,4)=squeeze(std(im_data,1,4));
 
-outputFilename = [outputBaseName '_tSNR_N_M_V.hdr'];
-cbiWriteNifti(outputFilename,output,Hdr);
+outputFilename = [outputBaseName '_tSNR_N_M_V.nii.gz'];
+
+% now make a new structure to save the data, based on what MRIwrite needs.
+data_struct_save = data_struct;
+data_struct_save.niftihdr = Hdr;
+data_struct_save.vol = output;
+MRIwrite(data_struct_save,outputFilename);
 
 Hdr.dim(5)=1;
 meanImg=squeeze(mean(im_data,4));
-outputFilename = [outputBaseName '_Mean.hdr'];
-cbiWriteNifti(outputFilename,meanImg,Hdr);
+outputFilename = [outputBaseName '_Mean.nii.gz'];
+
+% now make a new structure to save the data, based on what MRIwrite needs.
+data_struct_save = data_struct;
+data_struct_save.niftihdr = Hdr;
+data_struct_save.vol = meanImg;
+MRIwrite(data_struct_save,outputFilename);
 fprintf('\n mean of mean image = %.4f \n', mean(meanImg(:)))
 %fprintf('\n 
 

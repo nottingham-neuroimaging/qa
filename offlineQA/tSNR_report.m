@@ -45,7 +45,8 @@ end
 
 % Now calculate the histograms and save them
 for nf=1:length(scanParams)
-    data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
+    data_struct = MRIread(['QA_report/' scanParams(nf).outputBaseName '_tSNR.nii.gz']);
+    data = data_struct.vol;
     data2 = data(~isnan(data(:)) & ~isinf(data(:)));
     figH = figure;
     set(figH,'PaperPosition',[0.25 0.25 6 4],'visible','off');
@@ -90,7 +91,8 @@ tSNR_ROI = nan(length(scanParams),1);
 for nf=1:length(scanParams)
   if ~isempty(scanParams(nf).ROI_box)
     % First load image
-    img = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR']);
+    img_struct = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR.nii.gz']);
+    img = img_struct.vol;
     slice_image = img(:,:,scanParams(nf).ROI_box.slice,1);
     % Reorder, just so that we have a match of the ROIs with the image
     % (from rotation)
@@ -108,9 +110,11 @@ end
 iSNR = nan(length(scanParams),1);
 for nf=1:length(scanParams)
   if ~isempty(scanParams(nf).ROI_box) && scanParams(nf).dynNOISEscan
-    nI = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
+    nI_struct = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V.nii.gz']);
+    nI = nI_struct.vol;    
     noiseImage = nI(:,:,:,2);
-    img = cbiReadNifti(scanParams(nf).fileName);
+    img_struct = MRIread(scanParams(nf).fileName);
+    img = img_struct.vol;    
     img_data = img(:,:,:,scanParams(nf).volumeSelect);
 
     img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);
