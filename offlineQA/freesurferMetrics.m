@@ -86,4 +86,6 @@ function [tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,out
 		tSeries.parcellh(nr-1,:) = mean(parcel_tSeries(useInds,:));
 	end
 
+	tSNR.struct_names_lh = ctab_lh.struct_names;
+	tSNR.struct_names_rh = ctab_rh.struct_names;
 end

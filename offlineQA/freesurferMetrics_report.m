@@ -8,7 +8,7 @@ function freesurferMetrics_report(figHandle)
 	data.freesurfersubject = 'S1_me';			
 
 
-	if(data.options.recaulculateTSNR)
+	% if(data.options.recaulculateTSNR)
     	for nf=1:length(scanParams)
     		output = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_surface'];
     		fname_tSNR = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_tSNR.nii.gz'];
@@ -20,9 +20,40 @@ function freesurferMetrics_report(figHandle)
     		tSNR_across_scans{nf}.parcellh = tSNR.parcellh;
 
     		tSeries_across_scans{nf} = [tSeries.parcellh;tSeries.parcelrh];
-
+    		scanNames{nf} = scanParams(nf).fileName;
     	end
-	end
+	% end
 
+	left_bar = [];
+	right_bar = [];
+	for nf=1:length(scanParams)
+		left_bar = [left_bar tSNR_across_scans{nf}.parcellh];
+		right_bar = [right_bar tSNR_across_scans{nf}.parcelrh];
+	end
 	% next thing after this is to generate PNGs etc
+	
+	figH = figure('color','white','visible','off');
+	barh([1:35],left_bar);
+	set(gca,'YTickLabel',tSNR.struct_names_lh(2:end),'YTick',[1:length(tSNR.struct_names_lh(2:end))]);
+	xlabel('tSNR');
+	ylabel('Regions')
+	legend(scanNames,'Location','SouthOutside','Interpreter','none');
+	title(['LH ' data.freesurfersubject],'Interpreter','none')
+	set(gca,'fontSize',18)
+	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
+	print(figH,['QA_report/tSNR_bar_left.png'],'-dpng');
+
+
+	figH = figure('color','white','visible','off');
+	barh([1:35],right_bar);
+	set(gca,'YTickLabel',tSNR.struct_names_rh(2:end),'YTick',[1:length(tSNR.struct_names_rh(2:end))]);
+	xlabel('tSNR');
+	ylabel('Regions')
+	legend(scanNames,'Location','SouthOutside','Interpreter','none');
+	title(['RH ' data.freesurfersubject])
+	set(gca,'fontSize',18)
+	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
+	print(figH,['QA_report/tSNR_bar_right.png'],'-dpng');
+
+	keyboard;
 end
