@@ -67,11 +67,12 @@ function [tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,out
 		parcelInds = find(label_rh==ctab_rh.table(nr,5));
 		% now work at the parcel level to do averaging, make sure no zero's are in there (thereby making mistakes)
 		% just work off the tSNR as this is better to look at
-		parcel_tSNR = tSNR.rh(parcelInds);
-		parcel_tSeries = tSeries.rh(parcelInds);
+		parcel_tSNR = tSNR.rh(parcelInds);		
+		parcel_tSeries = squeeze(tSeries.rh(1,parcelInds,1,:));
+
 		useInds = intersect(find(parcel_tSNR>0),find(~isnan(parcel_tSNR)));
 		tSNR.parcelrh(nr-1,:) = mean(parcel_tSNR(useInds));
-		tSeries.parcelrh(nr-1,:) = mean(parcel_tSNR(useInds));
+		tSeries.parcelrh(nr-1,:) = mean(parcel_tSeries(useInds,:));
 	end
 
 	for nr = 2:length(ctab_lh.struct_names),
@@ -79,10 +80,10 @@ function [tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,out
 		% now work at the parcel level to do averaging, make sure no zero's are in there (thereby making mistakes)
 		% just work off the tSNR as this is better to look at
 		parcel_tSNR = tSNR.lh(parcelInds);
-		parcel_tSeries = tSeries.rh(parcelInds);
+		parcel_tSeries = squeeze(tSeries.lh(1,parcelInds,1,:));
 		useInds = intersect(find(parcel_tSNR>0),find(~isnan(parcel_tSNR)));
 		tSNR.parcellh(nr-1,:) = mean(parcel_tSNR(useInds));
-		tSeries.parcellh(nr-1,:) = mean(parcel_tSNR(useInds));
+		tSeries.parcellh(nr-1,:) = mean(parcel_tSeries(useInds,:));
 	end
 
 end
