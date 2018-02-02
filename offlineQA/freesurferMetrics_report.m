@@ -42,7 +42,7 @@ function freesurferMetrics_report(figHandle)
 	set(gca,'fontSize',18)
 	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
 	print(figH,['QA_report/tSNR_bar_left.png'],'-dpng');
-
+	close(figH);
 
 	figH = figure('color','white','visible','off');
 	barh([1:35],right_bar);
@@ -54,17 +54,16 @@ function freesurferMetrics_report(figHandle)
 	set(gca,'fontSize',18)
 	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
 	print(figH,['QA_report/tSNR_bar_right.png'],'-dpng');
-
+	close(figH);
 	for nf=1:length(scanParams)	
 		% Make a 3-way plot here
-		figH = figure('color','white','visible','on');
+		figH = figure('color','white','visible','off');
 		corrs = corr(zscore(tSeries_across_scans{nf}.'));
 
 		subplot(3,1,1)
 		imagesc(zscore(tSeries_across_scans{nf}.').');
 		xlabel('Volumes')
-		ylabel('Regions')
-		% set(gca,'YTickLabel',tSNR.struct_names_rh(2:end),'YTick',[1:length(tSNR.struct_names_rh(2:end))]);		
+		ylabel('Regions')		
 		colorbar
 		set(gca,'fontSize',18)
 		h = title([data.freesurfersubject ' ' scanNames{nf}]);
@@ -80,6 +79,7 @@ function freesurferMetrics_report(figHandle)
 		set(figH,'PaperPosition',[0.25 0.25 20 40],'units','character');	
 		output_png = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_connectivity.png'];
 		print(figH,output_png,'-dpng');
+		close(figH);
 
 	end
 
