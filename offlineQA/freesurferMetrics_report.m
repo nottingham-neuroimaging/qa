@@ -55,5 +55,33 @@ function freesurferMetrics_report(figHandle)
 	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
 	print(figH,['QA_report/tSNR_bar_right.png'],'-dpng');
 
-	keyboard;
+	for nf=1:length(scanParams)	
+		% Make a 3-way plot here
+		figH = figure('color','white','visible','on');
+		corrs = corr(zscore(tSeries_across_scans{nf}.'));
+
+		subplot(3,1,1)
+		imagesc(zscore(tSeries_across_scans{nf}.').');
+		xlabel('Volumes')
+		ylabel('Regions')
+		% set(gca,'YTickLabel',tSNR.struct_names_rh(2:end),'YTick',[1:length(tSNR.struct_names_rh(2:end))]);		
+		colorbar
+		set(gca,'fontSize',18)
+		h = title([data.freesurfersubject ' ' scanNames{nf}]);
+		set(h,'Interpreter','none');
+		subplot(3,1,3)		
+		bins = linspace(-0.5,1,100);
+		hist(corrs(:),bins);
+		xlabel('Corr');ylabel('count');
+		set(gca,'fontSize',18)
+		subplot(3,1,2)
+		imagesc(corrs);caxis([-0.5 1]);axis image;axis off;colorbar
+		set(gca,'fontSize',18)
+		set(figH,'PaperPosition',[0.25 0.25 20 40],'units','character');	
+		output_png = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_connectivity.png'];
+		print(figH,output_png,'-dpng');
+
+	end
+
+	
 end
