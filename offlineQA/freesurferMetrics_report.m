@@ -50,7 +50,7 @@ function freesurferMetrics_report(figHandle)
 	xlabel('tSNR');
 	ylabel('Regions')
 	legend(scanNames,'Location','SouthOutside','Interpreter','none');
-	title(['RH ' data.freesurfersubject])
+	title(['RH ' data.freesurfersubject],'Interpreter','none');
 	set(gca,'fontSize',18)
 	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
 	print(figH,['QA_report/tSNR_bar_right.png'],'-dpng');
