@@ -5,7 +5,7 @@ function freesurferMetrics_report(figHandle)
 	subjects_dir = data.subjects_dir;
 
 	% A parameter that needs to be inputted really in the GUI	
-	data.freesurfersubject = 'S1_me';			
+	data.freesurfersubject = 'S3_me';			
 
 
 	% if(data.options.recaulculateTSNR)
@@ -14,10 +14,11 @@ function freesurferMetrics_report(figHandle)
     		fname_tSNR = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_tSNR.nii.gz'];
     		fname_tSeries = data.scanParams(nf).fileName;
     		subject = data.freesurfersubject;
-    		[tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,output,subjects_dir);
+    		[tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,output,subjects_dir);
 
     		tSNR_across_scans{nf}.parcelrh = tSNR.parcelrh;
     		tSNR_across_scans{nf}.parcellh = tSNR.parcellh;
+    		tSNR_across_scans{nf}.WM = tSNRWM;
 
     		tSeries_across_scans{nf} = [tSeries.parcellh;tSeries.parcelrh];
     		scanNames{nf} = scanParams(nf).fileName;
@@ -26,9 +27,13 @@ function freesurferMetrics_report(figHandle)
 
 	left_bar = [];
 	right_bar = [];
+	left_wm = [];
+	right_wm = [];
 	for nf=1:length(scanParams)
 		left_bar = [left_bar tSNR_across_scans{nf}.parcellh];
 		right_bar = [right_bar tSNR_across_scans{nf}.parcelrh];
+		left_wm = [left_wm tSNR_across_scans{nf}.WM.left];
+		right_wm = [right_wm tSNR_across_scans{nf}.WM.right];
 	end
 	% next thing after this is to generate PNGs etc
 	
@@ -55,6 +60,40 @@ function freesurferMetrics_report(figHandle)
 	set(figH,'PaperPosition',[0.25 0.25 30 50],'units','character');	
 	print(figH,['QA_report/tSNR_bar_right.png'],'-dpng');
 	close(figH);
+
+	% now get it ordred and look at WM as well.
+% 	keyboard
+    [~,sortInds] = sort(sum(left_bar,2));
+    figH = figure('color','white','Visible','off');
+    plot(1:35,left_bar(sortInds(end:-1:1),:),'.-','MarkerSize',10);
+    title(['LH ' data.freesurfersubject],'Interpreter','none');
+    legend(scanNames,'Location','SouthOutside','Interpreter','none');
+    set(gca,'XTickLabel',tSNR.struct_names_lh(sortInds(end:-1:1)+1),'XTick',[1:length(tSNR.struct_names_lh(2:end))],'XTickLabelRotation',45,'fontSize',14);
+	set(figH,'PaperPosition',[0.25 0.25 50 30],'units','character');	
+	print(figH,['QA_report/tSNR_line_left.png'],'-dpng');
+    close(figH);
+    
+    figH = figure('color','white','visible','off');
+    [~,sortInds] = sort(sum(right_bar,2));
+    plot(1:35,right_bar(sortInds(end:-1:1),:),'.-','MarkerSize',10);
+    legend(scanNames,'Location','SouthOutside','Interpreter','none');
+    title(['RH ' data.freesurfersubject],'Interpreter','none');
+    set(gca,'XTickLabel',tSNR.struct_names_rh(sortInds(end:-1:1)+1),'XTick',[1:length(tSNR.struct_names_rh(2:end))],'XTickLabelRotation',45,'fontSize',14);
+	set(figH,'PaperPosition',[0.25 0.25 50 30],'units','character');	
+	print(figH,['QA_report/tSNR_line_right.png'],'-dpng');
+    close(figH);
+
+    
+    % keyboard
+    figH = figure('color','white','visible','off');
+    bar([left_wm;right_wm])
+    legend(scanNames,'Location','SouthOutside','Interpreter','none');
+    title(['WM tSNR ' data.freesurfersubject],'Interpreter','none');
+    set(gca,'XTickLabel',{'LH','RH'},'XTick',[1 2],'fontSize',14);
+	set(figH,'PaperPosition',[0.25 0.25 20 15],'units','character');	
+	print(figH,['QA_report/tSNR_wm.png'],'-dpng');
+    close(figH);
+    
 	for nf=1:length(scanParams)	
 		% Make a 3-way plot here
 		figH = figure('color','white','visible','off');
