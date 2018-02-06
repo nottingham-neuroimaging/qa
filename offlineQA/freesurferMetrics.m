@@ -1,4 +1,4 @@
-function [tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,output,subjects_dir)
+function [tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,output,subjects_dir)
 % This here is another part of the story, adding in freesurfer metrics. Will have to think about how it actually works.
 
 % Firstly get the subject's file, then do mri_vol2surf assuming that the subject has already been aligned to its native space
@@ -88,4 +88,18 @@ function [tSNR tSeries] = freesurferMetrics(fname_tSNR,fname_tSeries,subject,out
 
 	tSNR.struct_names_lh = ctab_lh.struct_names;
 	tSNR.struct_names_rh = ctab_rh.struct_names;
+
+	% Now for the white matter tSNR
+	unix_string = ['$FREESURFER_HOME/bin/mri_vol2vol --mov $SUBJECTS_DIR/' subject '/mri/ribbon.mgz --targ ' which(fname_tSNR) ' --o QA_report/temp_mask.mgz --regheader --interp nearest'];
+	maskImg = MRIread('QA_report/temp_mask.mgz');
+	maskImg = maskImg.vol;
+	left_wm = find(maskImg==2);
+	right_wm = find(maskImg==41);
+	tSNRvol = MRIread(fname_tSNR);
+	tSNRvol = tSNRvol.vol;
+    tSNRvol(isnan(tSNRvol)) = 0;
+	
+
+	tSNRWM.left = mean(tSNRvol(left_wm));
+	tSNRWM.right = mean(tSNRvol(right_wm));
 end
