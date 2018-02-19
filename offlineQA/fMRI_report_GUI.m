@@ -46,7 +46,9 @@ dat = createCellArray(scanParams);
 
 set(gui_handle.scan_table,'dat',dat);
 
-gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[12 7 30 3],'',@editROI);
+% taking this off at the moment will replace with something freesurfer subject instead as this is primarily for Freesurfer integration!
+
+% gui_handle.roiEditbox = makeEditbox(gui_handle.main_fig,[12 7 30 3],'',@editROI);
 
 %gui_handle.polyEditbox = makeEditbox(gui_handle.main_fig, [25 3 30 3],'',@editROI);
 
@@ -68,19 +70,12 @@ gui_handle.htmlButton = makeButton(gui_handle.main_fig,[44.5 18 25 3],'Redo HTML
 
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Options',@reportOptions);
 
-gui_handle.roiButton = makeButton(gui_handle.main_fig,[44.5 7 25 3],'Draw ROI',@drawROI);
-
-gui_handle.polyButton = makeButton(gui_handle.main_fig, [44.5 3 25 3], 'Draw Poly', @drawPoly);
-
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
-gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 150 200 20], @dynTick);
 
-gui_handle.maskTick = makeTick2(gui_handle.main_fig, [450 120 200 20], @maskTick);
-
-if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
-  set(gui_handle.roiButton,'enable','off');
-end
+% if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
+%   set(gui_handle.roiButton,'enable','off');
+% end
 
 % Make default options
 generateDefaultOptions(gui_handle.main_fig);
@@ -97,57 +92,6 @@ for nf=1:length(scanParams),
     dat(nf,1:6) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect}];
 end
 end
-
-function tickHandle = makeTick(parentPanel, position, callBackStr)
-fontSize = 14;
-tickHandle = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
-    'string', 'Discard last dynamic?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
-end
-
-function tickHandleMask = makeTick2(parentPanel, position, callBackStr)
-fontSize = 14;
-tickHandleMask = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
-    'string', 'Mask 5% of Max Signal?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
-end
-
-function dynTick(hObject, ~)
-data = guidata(hObject);
-
-% problem is everytime you uncheck the box, it doesn't reset to the 'real'
-% last dynamic, since you've already by definition ticked the box before,
-% therefore adds a fudge factor until I get smarter.
-if hObject.Value == 1;
-    for ii = 1:length(data.scanParams);
-      data.scanParams(ii).volumeSelect = data.scanParams(ii).volumeSelect-1;
-      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
-    end
-elseif hObject.Value == 0;
-    for ii = 1:length(data.scanParams);
-      data.scanParams(ii).volumeSelect = data.scan_table.Data{1,6}; %fudge factor, grabs info from the scan_table
-      %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
-    end
-    
-end  
- guidata(data.main_fig,data);
-
-end
-
-function maskTick(hObject, ~)
-data = guidata(hObject);
-
-if hObject.Value == 1;
-    for ii = 1:length(data.scanParams)
-        data.scanParams(ii).mask = 1;
-    end
-elseif hObject.Value == 0;
-    for ii = 1:length(data.scanParams)
-        data.scanParams(ii).mask = 0;
-    end
-end
-guidata(data.main_fig,data);
-
-end
-
 
 function buttonHandle = makeButton(parentPanel,position,boxStr,callBackStr)
 fontSize = 14;
@@ -205,84 +149,6 @@ end
 
 end
 
-function drawROI(hObject,~)
-data = guidata(hObject);
-dims=data.scanParams(1).dims ;
-for iScan = 2:length(data.scanParams)
-  if ~isequal(dims,data.scanParams(iScan).dims)
-    warndlg('All scans must have the same dimensions to use an ROI');
-    return
-  end
-end
-volume = cbiReadNifti(data.scanParams(1).fileName);
-roiCoords = selectCropRegion(volume(:,end:-1:1,:,1));
-
-
-% Please note: this looks clunky because the image co-ords used later on
-% uses co-ordinates based on the rotated images. However, what would make
-% sense to the user is to include co-ordinates directly from the nifti 
-% volume.
-
-niftiCoords = roiCoords;
-niftiCoords(:,2) = size(volume,2) - roiCoords([2:-1:1],2);
-
-% Quote the nifti-coordinates
-set(data.roiEditBox,'string',mat2str(niftiCoords'));
-
-for iScan = 1:length(data.scanParams)
-  data.scanParams(iScan).ROI_box = mat2roiBox(roiCoords);
-end
-guidata(hObject,data);
-
-end
-
-function drawPoly(hObject,~)
-data = guidata(hObject);
-dims=data.scanParams(1).dims ;
-for iScan = 2:length(data.scanParams)
-  if ~isequal(dims,data.scanParams(iScan).dims)
-    warndlg('All scans must have the same dimensions to use an ROI');
-    return
-  end
-end
-volume = cbiReadNifti(data.scanParams(1).fileName);
-[polymask, firstSlice, lastSlice, ign] = selectPoly(volume(:,end:-1:1,:,1));
-
-if ign==1; % this is a dodgy way to quickly get rid of any masks if the user pressed 'cancel' in 'selectPoly'
-    clear polymask firstSlice lastSlice
-%     guidata(hObject, data)
-else
-    
-polymask = (polymask~=0); % makes a mask image of 1s and 0s.
-
-data.scanParams.polyROI = polymask;
-data.scanParams.firstSlice = firstSlice;
-data.scanParams.lastSlice = lastSlice;
-guidata(hObject,data);
-end
-
-    
-
-%niftiCoords = poly;
-%niftiCoords(:,2) = size(volume,2) - bb.BoundingBox([2:-1:1],2);
-
-% Quote the nifti-coordinates
-%set(data.polyEditBox,'string',mat2str(niftiCoords'));
-
-% for iScan = firstSlice:lastSlice
-%     poly_box.x(iScan) = poly{iScan}(:,1);
-%     poly_box.y(iScan) = poly{iScan}(:,2);
-%   
-% end
-% polymask = (polymask~=0); % makes a mask image of 1s and 0s.
-% 
-% data.scanParams.polyROI = polymask;
-% data.scanParams.firstSlice = firstSlice;
-% data.scanParams.lastSlice = lastSlice;
-% guidata(hObject,data);
-
-
-end
 
 
 function ROI_box = mat2roiBox(roiCoords)
