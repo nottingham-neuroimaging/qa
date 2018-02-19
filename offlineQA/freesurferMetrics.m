@@ -90,7 +90,8 @@ function [tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subj
 	tSNR.struct_names_rh = ctab_rh.struct_names;
 
 	% Now for the white matter tSNR
-	unix_string = ['$FREESURFER_HOME/bin/mri_vol2vol --mov $SUBJECTS_DIR/' subject '/mri/ribbon.mgz --targ ' which(fname_tSNR) ' --o QA_report/temp_mask.mgz --regheader --interp nearest'];
+	unix_string = ['$FREESURFER_HOME/bin/mri_vol2vol --mov $SUBJECTS_DIR/' subject '/mri/ribbon.mgz --targ ' fname_tSNR ' --o QA_report/temp_mask.mgz --regheader --interp nearest'];
+	system(unix_string);		
 	maskImg = MRIread('QA_report/temp_mask.mgz');
 	maskImg = maskImg.vol;
 	left_wm = find(maskImg==2);
