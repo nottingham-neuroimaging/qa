@@ -4,9 +4,9 @@ function freesurferMetrics_report(figHandle)
 	scanParams = data.scanParams;
 	subjects_dir = data.subjects_dir;
 
-	% A parameter that needs to be inputted really in the GUI	
-	data.freesurfersubject = 'S3_me';			
-
+	% A parameter that needs to be inputted really in the GUI				
+	% data.freesurfersubject = 'memb_1';
+	% keyboard
 
 	% if(data.options.recaulculateTSNR)
     	for nf=1:length(scanParams)
