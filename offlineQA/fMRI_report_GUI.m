@@ -58,7 +58,7 @@ data = guidata(gui_handle.main_fig);
 data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
-data.roiEditBox = gui_handle.roiEditbox;
+% data.roiEditBox = gui_handle.roiEditbox;
 data.subjects_dir = '/Applications/freesurfer/subjects/'
 %data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
@@ -73,6 +73,11 @@ gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Option
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
 
+gui_handle.freesurferSubjectbox = makeEditbox(gui_handle.main_fig,[12 3 30 3],'fsaverage',@freesurferSubject);
+
+gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 3 30 3],'Freesurfer Metrics',@freesurfer_report);
+
+makeText(gui_handle.main_fig,[12 7 30 3],'Subject');
 % if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
 %   set(gui_handle.roiButton,'enable','off');
 % end
@@ -115,6 +120,21 @@ end
 
 function resize_table(hObject,~)
 % do nothing at the moment, but will add the feature later?
+end
+
+
+
+function freesurferSubject(hObject,~)
+  data = guidata(hObject);
+  % subject = 
+  % freesurferSubjectbox
+  % keyboard
+  if ~isempty(get(hObject,'string'))
+      data.freesurfersubject = get(hObject,'string');
+  else
+    return
+  end
+  guidata(hObject,data);
 end
 
 function editROI(hObject,toto)
@@ -183,6 +203,10 @@ end
 generateHTMLReport(scanParams);
 % now get the data from the table and reset the scan Params
 
+end
+
+function freesurfer_report(hObject,~)
+  freesurferMetrics_report(hObject);
 end
 
 function reportOptions(hObject,~)
