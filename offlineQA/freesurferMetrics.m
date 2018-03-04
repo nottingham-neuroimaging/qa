@@ -27,8 +27,8 @@ function [tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subj
 	% This section is clunky, could make more streamlined
 
 	% transform the tSNR
-	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.lh.mgz --hemi lh'];
-	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.rh.mgz --hemi rh'];
+	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.lh.mgz --hemi lh --interp linear'];
+	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.rh.mgz --hemi rh --interp linear'];
 
 	system(unix_string_lh);
 	system(unix_string_rh);

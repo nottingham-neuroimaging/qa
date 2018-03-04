@@ -27,4 +27,5 @@ for nf=1:length(filenames)
     scanParams(nf).orientation = 3;
 end
 
+    scanParams(1).createFSreport_html = 0;
 end

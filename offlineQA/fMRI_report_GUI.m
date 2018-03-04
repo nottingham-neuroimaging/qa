@@ -60,6 +60,7 @@ data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
 % data.roiEditBox = gui_handle.roiEditbox;
 data.subjects_dir = '/Applications/freesurfer/subjects/'
+data.freesurfersubject = 'fsaverage';
 %data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
 
@@ -73,7 +74,7 @@ gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 18 25 3],'Option
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
 
-gui_handle.freesurferSubjectbox = makeEditbox(gui_handle.main_fig,[12 3 30 3],'fsaverage',@freesurferSubject);
+gui_handle.freesurferSubjectbox = makeEditbox(gui_handle.main_fig,[12 3 30 3],data.freesurfersubject,@freesurferSubject);
 
 gui_handle.optionsButton = makeButton(gui_handle.main_fig,[75.5 3 30 3],'Freesurfer Metrics',@freesurfer_report);
 
@@ -207,6 +208,10 @@ end
 
 function freesurfer_report(hObject,~)
   freesurferMetrics_report(hObject);
+  data = guidata(hObject);
+  data.scanParams(1).createFSreport_html = 1;
+  generateHTMLReport(data.scanParams)
+  guidata(hObject,data);
 end
 
 function reportOptions(hObject,~)
