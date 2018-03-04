@@ -21,6 +21,11 @@ fprintf(fileID,'\n');
 fprintf(fileID,'%s','<tr><td width=300px><a href="mean.html"><h2>Mean Images</h2></a></td>');
 fprintf(fileID,'%s',['<td><a href="mean.html"><img src=' scanParams(1).fileName(1:end-7) '_Mean_IMAGE.png width=200></a></td></tr>']);
 fprintf(fileID,'\n');
+	if(scanParams(1).createFSreport_html)
+		fprintf(fileID,'%s','<tr><td width=300px><a href="fsmetrics.html"><h2>Freesurfer metrics</h2></a></td>');
+		fprintf(fileID,'%s',['<td><a href="fsmetrics.html"><img src=tSNR_line_left.png width=200></a></td></tr>']);
+		fprintf(fileID,'\n');
+	end
 fprintf(fileID,'%s','</table>');
 fprintf(fileID,'%s','</center></div>');
 fprintf(fileID,'%s','</html>');
@@ -73,6 +78,30 @@ end
 fprintf(fileID,'%s','</div>');
 fprintf(fileID,'%s','</html>');
 fclose(fileID);
+
+if(scanParams(1).createFSreport_html)
+	% ============== Now create the fsmetrics page!...
+
+	fileID = fopen('QA_report/fsmetrics.html','w');
+	% Make the header first
+	fprintf(fileID,'%s','<html><title>Freesurfer Metrics Report</title>');
+	fprintf(fileID,'%s','<head><link rel="stylesheet" href="websiteStyle.css"></head><div id="header"><h1>Quality Assurance report: </h1><div id="navigation"><a href="index.html">Summary</a></div></div>');
+	fprintf(fileID,'\n');
+	fprintf(fileID,'%s','<div id="content">');
+	fprintf(fileID,'%s','<br><h2>Freesurfer Metrics</h2>');
+	fprintf(fileID,'%s',['<br><h3><tSNR Left Hemisphere</h3><br>']);
+    fprintf(fileID,'%s',['<center><a href=tSNR_bar_left.png>'  ...
+        '<img src=tSNR_bar_left.png width=800></a> <br>' ]); 
+	fprintf(fileID,'%s',['<h3>tSNR Right Hemisphere</h3><br>']);
+    fprintf(fileID,'%s',['<center><a href=tSNR_bar_right.png>'  ...
+        '<img src=tSNR_bar_right.png width=800></a> <br>' ]); 
+	fprintf(fileID,'%s',['<h3>tSNR white Matter</h3><br>']);
+    fprintf(fileID,'%s',['<center><a href=tSNR_wm.png>'  ...
+        '<img src=tSNR_wm.png width=800></a> <br>' ]); 
+	fprintf(fileID,'%s','</div>');
+	fprintf(fileID,'%s','</html>');
+	fclose(fileID);
+end
 
 % Wrap up with a message!
 
