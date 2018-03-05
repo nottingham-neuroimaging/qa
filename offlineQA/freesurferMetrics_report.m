@@ -122,5 +122,65 @@ function freesurferMetrics_report(figHandle)
 
 	end
 
+
+	% Now make the figures for each view for the tSNR on a surface.
+	for nf=1:length(scanParams)	
+		% Set up the surfaces, with the overlays
+		fname_tSNR = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_surface.tSNR'];
+		[figH,camH] = displayOverlaysOnSurface(fname_tSNR,data.freesurfersubject,subjects_dir,data.options.cmap,[0 data.options.imgScale]);
+
+		% Now save the different orientations, just doing inferoir and superior -- you can add some later if so desired
+		% right view
+		view([90 0]);
+		set(camH,'Position',[1.1945e+03 0 0]);
+		% Save a temporary figure
+		savePng(figH,['QA_report/temp']);
+		rightImg = imread(['QA_report/temp.png']);
+
+		% left view
+		view([-90 0]);
+		set(camH,'Position',[-1.1945e+03 0 0]);
+		% Save a temporary figure
+		savePng(figH,['QA_report/temp']);
+		leftImg = imread(['QA_report/temp.png']);
+
+
+		% Superior view
+		view([0 90]);
+		set(camH,'Position',[0 0 1.1945e+03]); 		
+		% Save a temporary figure
+		savePng(figH,['QA_report/temp']);
+		superiorImg = imread(['QA_report/temp.png']);
+
+		% Inferior view
+		view([0 -90]);
+		set(camH,'Position',[0 0 -1.1945e+03]); 				
+		% Save a temporary figure
+		savePng(figH,['QA_report/temp']);
+		inferiorImg = imread(['QA_report/temp.png']);
+
+		combinedImage = [leftImg,rightImg,superiorImg,inferiorImg];
+		summaryImage = [pwd '/QA_report/' data.scanParams(nf).outputBaseName '_tSNR_summarySurface.png'];
+		imwrite(combinedImage,summaryImage);
+		disp(['Saving surface images.... ' num2str(100*nf/length(scanParams)) '% done...']);
+	end
+
 	
+end
+
+
+
+% A subfunction to save the images as a PNG
+function savePng(figH,fname,parameters)
+
+if(nargin<3)
+    width = 10;height = 10;
+else
+    width = parameters(1);
+    height = parameters(2);
+end
+
+set(figH,'PaperPosition',[0.25 0.25 width height],'InvertHardCopy','off');
+set(figH,'Color',[0 0 0]);
+print(figH,[fname '.png'],'-dpng','-opengl');
 end

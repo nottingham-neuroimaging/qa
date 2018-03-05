@@ -1,6 +1,11 @@
-function [figure_handle,cam_handle] = displayOverlaysOnSurface(surfaceOverlay,subject,subjectsFolder)
+function [figure_handle,cam_handle] = displayOverlaysOnSurface(surfaceOverlay,subject,subjectsFolder,cmap,crange)
+
+	if(nargin<5)
+		cmap = hot(256).';
+		crange = [0 300];
+	end
 	% subjectsFolder = ['/Applications/freesurfer/subjects/'];	
-	figure_handle = figure('color','black','visible','on');
+	figure_handle = figure('color','black','visible','off');
 	% set(figure_handle
 	hold on;
 	[surfaceHandle_left] = visualizeInflatedMapFreesurfer(subject,'lh',subjectsFolder);
@@ -19,8 +24,7 @@ function [figure_handle,cam_handle] = displayOverlaysOnSurface(surfaceOverlay,su
 	data_left = MRIread([surfaceOverlay '.lh.mgz']);
 	data_right = MRIread([surfaceOverlay '.rh.mgz']);
 
-	cmap = hot(256).';
-	% cmap = cmap(:,end:-1:1);
+		
 
 	FaceVData_left = faceVDataCurv_left;
 	FaceVData_right = faceVDataCurv_right;
@@ -28,8 +32,8 @@ function [figure_handle,cam_handle] = displayOverlaysOnSurface(surfaceOverlay,su
 	data_left = data_left.vol(1,:,1,1);
 	data_right = data_right.vol(1,:,1,1);
 	
-	cols_left = meshData2Colors(data_left, cmap, [0 300], 1).';
-	cols_right = meshData2Colors(data_right, cmap, [0 300], 1).';
+	cols_left = meshData2Colors(data_left, cmap, crange, 1).';
+	cols_right = meshData2Colors(data_right, cmap, crange, 1).';
 
 	inds_left = find(data_left>0);
 	inds_right = find(data_right>0);
