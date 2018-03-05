@@ -59,7 +59,12 @@ data.scanParams = scanParams;
 data.scan_table = gui_handle.scan_table;
 data.main_fig = gui_handle.main_fig;
 % data.roiEditBox = gui_handle.roiEditbox;
-data.subjects_dir = '/Applications/freesurfer/subjects/'
+data.subjects_dir = getenv('SUBJECTS_DIR');
+if(isempty(data.subjects_dir)))
+  disp('SUBJECTS_DIR not defined!, setting to default: /Applications/freesurfer/subjects/ if this is incrorrect');
+  disp('set the environment variable SUBJECTS_DIR to the directory you want, see: setenv for more help');
+  data.subjects_dir = '/Applications/freesurfer/subjects/'
+end
 data.freesurfersubject = 'fsaverage';
 %data.polyEditBox = gui_handle.polyEditbox;
 guidata(gui_handle.main_fig,data);
