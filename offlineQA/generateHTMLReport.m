@@ -92,15 +92,24 @@ if(scanParams(1).createFSreport_html)
 	fprintf(fileID,'\n');
 	fprintf(fileID,'%s','<div id="content">');
 	fprintf(fileID,'%s','<br><h2>Freesurfer Metrics</h2>');
-	fprintf(fileID,'%s',['<br><h3><tSNR Left Hemisphere</h3><br>']);
-    fprintf(fileID,'%s',['<center><a href=tSNR_bar_left.png>'  ...
-        '<img src=tSNR_bar_left.png width=800></a> <br>' ]); 
-	fprintf(fileID,'%s',['<h3>tSNR Right Hemisphere</h3><br>']);
-    fprintf(fileID,'%s',['<center><a href=tSNR_bar_right.png>'  ...
-        '<img src=tSNR_bar_right.png width=800></a> <br>' ]); 
+	fprintf(fileID,'%s','<center><br><h3>tSNR GM</h3></center>');
+	fprintf(fileID,'%s',['<br><br><center><table width=700><tr>']);
+	fprintf(fileID,'%s',['<td><a href=tSNR_bar_left.png>'  ...
+        '<img src=tSNR_bar_left.png width=350></a></td>' ]); 
+	fprintf(fileID,'%s',['<td><a href=tSNR_bar_right.png>'  ...
+        '<img src=tSNR_bar_right.png width=350></a></td>' ]); 
+	fprintf(fileID,'%s',['</tr></center></table><br><br>']);
 	fprintf(fileID,'%s',['<h3>tSNR white Matter</h3><br>']);
     fprintf(fileID,'%s',['<center><a href=tSNR_wm.png>'  ...
         '<img src=tSNR_wm.png width=800></a> <br>' ]); 
+
+	fprintf(fileID,'%s','<center><br><h3>tSNR GM Ranked by highest tSNR</h3></center>');
+	fprintf(fileID,'%s',['<br><br><center><table width=700><tr>']);
+	fprintf(fileID,'%s',['<td><a href=tSNR_line_left.png>'  ...
+        '<img src=tSNR_line_left.png width=700></a></td></tr>' ]); 
+	fprintf(fileID,'%s',['<tr><td><a href=tSNR_line_right.png>'  ...
+        '<img src=tSNR_line_right.png width=700></a></td>' ]); 
+	fprintf(fileID,'%s',['</tr></center></table><br><br>']);
 	fprintf(fileID,'%s','</div>');
 	fprintf(fileID,'%s','</html>');
 	fclose(fileID);
