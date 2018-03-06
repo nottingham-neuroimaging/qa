@@ -27,15 +27,15 @@ function [tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subj
 	% This section is clunky, could make more streamlined
 
 	% transform the tSNR
-	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.lh.mgz --hemi lh --interp linear'];
-	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.rh.mgz --hemi rh --interp linear'];
+	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.lh.mgz --hemi lh --interp trilinear'];
+	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' fname_tSNR ' --regheader ' subject ' --o ' output '.tSNR.rh.mgz --hemi rh --interp trilinear'];
 
 	system(unix_string_lh);
 	system(unix_string_rh);
 
 	% transform the time series
-	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' which(fname_tSeries) ' --regheader ' subject ' --o ' output '.tSeries.lh.mgz --hemi lh'];
-	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' which(fname_tSeries) ' --regheader ' subject ' --o ' output '.tSeries.rh.mgz --hemi rh'];
+	unix_string_lh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' which(fname_tSeries) ' --regheader ' subject ' --o ' output '.tSeries.lh.mgz --hemi lh --interp trilinear'];
+	unix_string_rh = ['$FREESURFER_HOME/bin/mri_vol2surf --mov ' which(fname_tSeries) ' --regheader ' subject ' --o ' output '.tSeries.rh.mgz --hemi rh --interp trilinear'];
 
 	system(unix_string_lh);
 	system(unix_string_rh);
@@ -55,10 +55,9 @@ function [tSNR tSeries tSNRWM] = freesurferMetrics(fname_tSNR,fname_tSeries,subj
 
 	tSeries.lh = tSeries_lh_struct.vol;
 	tSeries.rh = tSeries_rh_struct.vol;
-
-
-	[vertices_lh label_lh ctab_lh] = read_annotation([subjects_dir subject '/label/lh.' parcellation]);
-	[vertices_rh label_rh ctab_rh] = read_annotation([subjects_dir subject '/label/rh.' parcellation]);
+	
+	[vertices_lh label_lh ctab_lh] = read_annotation([subjects_dir '/' subject '/label/lh.' parcellation]);
+	[vertices_rh label_rh ctab_rh] = read_annotation([subjects_dir '/' subject '/label/rh.' parcellation]);
 
 	% now for each hemispehre go through and grab the annotation files, get the time series perform tSNR qa, show the time series as a plot AND then 
 	% do a simple correlation analysis. 

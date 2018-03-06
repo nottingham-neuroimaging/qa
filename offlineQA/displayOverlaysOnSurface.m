@@ -49,7 +49,7 @@ end
 
 function [surfaceHandle] = visualizeInflatedMapFreesurfer(subject,hemi,subjectsFolder)	
 	
-	[vertFull facesFull] = read_surf([subjectsFolder subject '/surf/' hemi '.inflated']);
+	[vertFull facesFull] = read_surf([subjectsFolder '/' subject '/surf/' hemi '.inflated']);
 	switch hemi
 		case 'lh'
 			vertFull(:,1) = vertFull(:,1) - 50;
@@ -58,7 +58,7 @@ function [surfaceHandle] = visualizeInflatedMapFreesurfer(subject,hemi,subjectsF
 	end
 		
 	% curvData = read_curv([subjectsFolder subject '/surf/' hemi '.curv']);	
-	curvData = read_curv([subjectsFolder subject '/surf/' hemi '.curv']);
+	curvData = read_curv([subjectsFolder '/' subject '/surf/' hemi '.curv']);
 	% figure_handle = figure;
 	msh_curvature           = -curvData.';
 	mod_depth               = 0.5;
