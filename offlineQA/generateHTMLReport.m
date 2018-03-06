@@ -16,14 +16,14 @@ fprintf(fileID,'\n');
 fprintf(fileID,'%s','<div id="content">');
 % Make the table:
 fprintf(fileID,'%s','<br><br><center><table><tr><td width=300px><a href="tSNR.html"><h2>tSNR report</h2></a></td>');
-fprintf(fileID,'%s',['<td><a href="tSNR.html"><img src=' scanParams(1).fileName(1:end-7) '_tSNR_IMAGE.png width=200></a></td></tr>']);
+fprintf(fileID,'%s',['<td><a href="tSNR.html"><img src=' scanParams(1).outputBaseName '_tSNR_IMAGE.png width=200></a></td></tr>']);
 fprintf(fileID,'\n');
 fprintf(fileID,'%s','<tr><td width=300px><a href="mean.html"><h2>Mean Images</h2></a></td>');
-fprintf(fileID,'%s',['<td><a href="mean.html"><img src=' scanParams(1).fileName(1:end-7) '_Mean_IMAGE.png width=200></a></td></tr>']);
+fprintf(fileID,'%s',['<td><a href="mean.html"><img src=' scanParams(1).outputBaseName '_Mean_IMAGE.png width=200></a></td></tr>']);
 fprintf(fileID,'\n');
 	if(scanParams(1).createFSreport_html)
 		fprintf(fileID,'%s','<tr><td width=300px><a href="fssurface.html"><h2>tSNR on Freesurfer surfaces</h2></a></td>');
-		fprintf(fileID,'%s',['<td><a href="fssurface.html"><img src=' scanParams(1).fileName(1:end-7) '_tSNR_summarySurface.png width=200></a></td></tr>']);
+		fprintf(fileID,'%s',['<td><a href="fssurface.html"><img src=' scanParams(1).outputBaseName '_tSNR_summarySurface.png width=200></a></td></tr>']);
 		fprintf(fileID,'\n');
 		fprintf(fileID,'%s','<tr><td width=300px><a href="fsmetrics.html"><h2>Freesurfer metrics</h2></a></td>');
 		fprintf(fileID,'%s',['<td><a href="fsmetrics.html"><img src=tSNR_line_left.png width=200></a></td></tr>']);
@@ -49,8 +49,8 @@ fprintf(fileID,'%s','<br><h2>tSNR</h2>');
 
 for nf=1:length(scanParams)
     fprintf(fileID,'%s',['<h3>' scanParams(nf).fileName '</h3><br>']);
-    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).fileName(1:end-7) '_tSNR_IMAGE.png>'  ...
-        '<img src=' scanParams(nf).fileName(1:end-7) '_tSNR_IMAGE.png width=800></a> <br>' ]);
+    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).outputBaseName '_tSNR_IMAGE.png>'  ...
+        '<img src=' scanParams(nf).outputBaseName '_tSNR_IMAGE.png width=800></a> <br>' ]);
     fprintf(fileID,'%s',['<img src=cbar.png height=50><br><a href=' scanParams(nf).outputBaseName '_tSNR_HIST.png><img src=' scanParams(nf).outputBaseName '_tSNR_HIST.png height=80></a><br></center>']);
     fprintf(fileID,'%s',['<p> Notes: ' scanParams(nf).notes '</p></center><br><br><br>']);
 end
@@ -74,8 +74,8 @@ fprintf(fileID,'%s','<br><h2>Mean Images</h2>');
 
 for nf=1:length(scanParams)
     fprintf(fileID,'%s',['<h3>' scanParams(nf).fileName '</h3><br>']);
-    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).fileName(1:end-7) '_Mean_IMAGE.png>'  ...
-        '<img src=' scanParams(nf).fileName(1:end-7) '_Mean_IMAGE.png width=800></a> <br>' ]);    
+    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).outputBaseName '_Mean_IMAGE.png>'  ...
+        '<img src=' scanParams(nf).outputBaseName '_Mean_IMAGE.png width=800></a> <br>' ]);    
     fprintf(fileID,'%s',['<p>Notes: ' scanParams(nf).notes '</p></center><br><br><br>']);
 end
 fprintf(fileID,'%s','</div>');
@@ -129,8 +129,8 @@ if(scanParams(1).createFSreport_html)
 	fprintf(fileID,'%s','<br><h2>Freesurfer Surfaces</h2>');
 	for nf=1:length(scanParams)
 	    fprintf(fileID,'%s',['<h3>' scanParams(nf).fileName '</h3><br>']);
-	    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).fileName(1:end-7) '_tSNR_summarySurface.png>'  ...
-	        '<img src=' scanParams(nf).fileName(1:end-7) '_tSNR_summarySurface.png width=800></a> <br>' ]);    
+	    fprintf(fileID,'%s',['<center><a href=' scanParams(nf).outputBaseName '_tSNR_summarySurface.png>'  ...
+	        '<img src=' scanParams(nf).outputBaseName '_tSNR_summarySurface.png width=800></a> <br>' ]);    
 	    fprintf(fileID,'%s',['<p>Notes: ' scanParams(nf).notes '</p></center><br><br><br>']);
 	end	
 	fprintf(fileID,'%s','</div>');
