@@ -15,7 +15,7 @@ cmap = data.options.cmap;
 % 
 if(data.options.recaulculateTSNR)
     for nf=1:length(scanParams)
-        % Create the tSNR maps
+        % Create the tSNR maps            
             [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
             if isfield(scanParams,'polyROI')
             %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);

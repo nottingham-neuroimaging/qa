@@ -52,7 +52,25 @@ end
 % Reads the data from the file name, using MRIread's in-built function, note that this is different
 data_struct = MRIread(dataFilename);
 Data = data_struct.vol;
-Hdr = data_struct.niftihdr;
+
+[fspec,~,fmt] = MRIfspec(dataFilename);
+% Just a flag here to make sure it works properly.
+switch fmt
+    case {'img','hdr'},
+        % Hdr = data_struct.analyzehdr;
+        % Hdr.dim = Hdr.dime.dim;
+        % Hdr.descrip = Hdr.hist.descrip;        
+        % hdr = cbiReadNiftiHeader('scan10.hdr')
+        [Data,Hdr] = cbiReadNifti(dataFilename);        
+    case {'nii','nii.gz'},
+        Hdr = data_struct.niftihdr;        
+    otherwise 
+        disp('Format not supported!!, change format to either analyze pair or nifti/niftigz');
+end
+
+
+% Hdr = data_struct.niftihdr;
+
 
 
 % get data dimensions
@@ -110,18 +128,17 @@ tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 
 save('meanTSNR', 'tsnrData');
 
-% save('meanTSNR', 'tsnrData'); This was for debugging purposes.
-
 % save out temporal SNR map
 Hdr.dim(5)=1;
 
-outputFilenameTSNR = [outputBaseName '_tSNR.nii.gz'];
+outputFilenameTSNR = [outputBaseName '_tSNR'];
 
 % now make a new structure to save the data, based on what MRIwrite needs.
 data_struct_save = data_struct;
 data_struct_save.niftihdr = Hdr;
 data_struct_save.vol = tsnrData;
-MRIwrite(data_struct_save,outputFilenameTSNR);
+% MRIwrite(data_struct_save,outputFilenameTSNR);
+save_nifti(fmt,Hdr,data_struct_save,outputFilenameTSNR);
 
 disp(['Saved ' outputFilenameTSNR]);
 
@@ -133,26 +150,45 @@ output(:,:,:,2)=squeeze(noise_data);
 output(:,:,:,3)=squeeze(mean(im_data,4));
 output(:,:,:,4)=squeeze(std(im_data,1,4));
 
-outputFilename = [outputBaseName '_tSNR_N_M_V.nii.gz'];
+outputFilename = [outputBaseName '_tSNR_N_M_V'];
 
 % now make a new structure to save the data, based on what MRIwrite needs.
 data_struct_save = data_struct;
 data_struct_save.niftihdr = Hdr;
 data_struct_save.vol = output;
-MRIwrite(data_struct_save,outputFilename);
+save_nifti(fmt,Hdr,data_struct_save,outputFilename);
+% MRIwrite(data_struct_save,outputFilename);
 
 Hdr.dim(5)=1;
 meanImg=squeeze(mean(im_data,4));
-outputFilename = [outputBaseName '_Mean.nii.gz'];
+outputFilename = [outputBaseName '_Mean'];
 
 % now make a new structure to save the data, based on what MRIwrite needs.
 data_struct_save = data_struct;
 data_struct_save.niftihdr = Hdr;
 data_struct_save.vol = meanImg;
-MRIwrite(data_struct_save,outputFilename);
+save_nifti(fmt,Hdr,data_struct_save,outputFilename);
+% MRIwrite(data_struct_save,outputFilename);
 fprintf('\n mean of mean image = %.4f \n', mean(meanImg(:)))
 %fprintf('\n 
 
 disp(['Saved ' outputFilename]);
 
 return
+end
+
+
+% A function here to save a compressed nifti. Unforunately MRIread is having trouble saving an analyze formatted nifti, then saving it (i think it is assuming it is a SPM nifti, not sure)
+% either way, we use mrTools to load in the nifti-pair, save it then use mri_convert to make a compressed nifti and delete the other one.
+function save_nifti(fmt,Hdr,data_struct_save,outputFilename)
+    switch fmt
+    case {'img','hdr'},
+        cbiWriteNifti([outputFilename '.hdr'],data_struct_save.vol,Hdr);
+        unix_command  = ['mri_convert ' outputFilename '.hdr ' outputFilename '.nii.gz'];
+        system(unix_command);
+        unix_command = ['rm ' outputFilename '.nii'];
+        system(unix_command);
+    case {'nii','nii.gz'},
+        MRIwrite(data_struct_save,[outputFilename '.nii.gz']);
+    end
+end
