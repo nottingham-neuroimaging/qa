@@ -179,15 +179,16 @@ end
 
 
 % A function here to save a compressed nifti. Unforunately MRIread is having trouble saving an analyze formatted nifti, then saving it (i think it is assuming it is a SPM nifti, not sure)
-% either way, we use mrTools to load in the nifti-pair, save it then use mri_convert to make a compressed nifti and delete the other one.
+% either way, we use mrTools to load in the nifti-pair, save it then use mri_convert to make a compressed nifti.
 function save_nifti(fmt,Hdr,data_struct_save,outputFilename)
     switch fmt
     case {'img','hdr'},
         cbiWriteNifti([outputFilename '.hdr'],data_struct_save.vol,Hdr);
         unix_command  = ['mri_convert ' outputFilename '.hdr ' outputFilename '.nii.gz'];
         system(unix_command);
-        unix_command = ['rm ' outputFilename '.nii'];
-        system(unix_command);
+        % not removing the file just in case people want to load it into mrTools! they are small anyway.
+        % unix_command = ['rm ' outputFilename '.nii'];
+        % system(unix_command);
     case {'nii','nii.gz'},
         MRIwrite(data_struct_save,[outputFilename '.nii.gz']);
     end
