@@ -12,8 +12,9 @@ To calculate the fMRI report, we calculate the tSNR maps after drift correction 
 ## Some dependencies:
 + Having freesurfer tools ready (i.e. the environment variables and the Matlab files in the path)
 + setting up the subjects-dir directory environment variable i.e.
-	setenv(‘SUBJECTS_DIR’,’/path/to/subjects/dir’);
+setenv(‘SUBJECTS_DIR’,’/path/to/subjects/dir’);
 + have a freesurfer segmentation ready. 
++ mrTools is still needed (if you have saved things in nifti analyze-pair)
 
 ## Freesurfer Branch:
 
