@@ -30,3 +30,4 @@ generate a webpage in QA_report/index.html.
 
 + check the heat maps and change the max values etc using “options” then click on Redo HTML to check if its correct
 + Add the right subject name and then click “Freesurfer Metrics” : This will take a little while, so be patient! :o) the surfaces and figures are generated in the background so don’t expect any figures to pop up.
++ Make sure FS-FAST matlab utilities have been added to the path properly, and make sure the matlab toolbox path has also been added
