@@ -137,8 +137,8 @@ cbiWriteNifti(outputFilename,meanImg,Hdr);
 mymean = mean(im_data,4);
 mystd = std(im_data,1,4);
 %mytsnrval = mymean ./ mystd;
-fprintf('\n mean of mean image = %.4f \n', mean(mymean(:)))
-fprintf('\n std of mean image = %.4f \n', mean(mystd(:)))
+%fprintf('\n mean of mean image = %.4f \n', mean(mymean(:)))
+%fprintf('\n std of mean image = %.4f \n', mean(mystd(:)))
 
 %fprintf('\n 
 
