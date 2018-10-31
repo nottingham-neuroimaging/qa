@@ -13,10 +13,13 @@ cmap = data.options.cmap;
 % figures that show all the stuff in them, which is what the
 % options structure is for.
 % 
-if(data.options.recaulculateTSNR)
+if(data.options.recalculateTSNR)
     for nf=1:length(scanParams)
         % Create the tSNR maps
-            [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
+            [outputFilenameTSNR] = tSNR(scanParams(nf).fileName,'dynNOISEscan',scanParams(nf).dynNOISEscan,...
+                'cropTimeSeries',[scanParams(nf).volumeSelectFirst scanParams(nf).volumeSelect],...
+                'outputBaseName',['QA_report/' scanParams(nf).outputBaseName],...
+                'cropSlices', [scanParams(nf).sliceSelectFirst scanParams(nf).sliceSelectLast]);
             if isfield(scanParams,'polyROI')
             %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
             newtest = outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI;
@@ -39,7 +42,9 @@ end
     
 for nf=1:length(scanParams)
     tSNRFnames{nf} = scanParams(nf).outputBaseName;
-    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],scanParams(nf).slices,[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation, scanParams(nf).mask);
+    image_matrix = generateSliceSummary(['QA_report/' scanParams(nf).outputBaseName '_tSNR'],...
+    [scanParams(nf).sliceSelectFirst:scanParams(nf).sliceSelectLast],[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation, scanParams(nf).mask);
+
     imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_tSNR_IMAGE.png'],'PNG')    
 end
 

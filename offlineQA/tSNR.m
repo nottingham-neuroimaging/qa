@@ -19,7 +19,7 @@ function [tsnrData, outputFilenameTSNR] = tSNR(dataFilename,varargin)
 %
 
 
-validInputArgs = {'dynNOISEscan', 'temporalFilter', 'cropTimeSeries', 'outputBaseName' ... % dyn NOISE scan at the end of time series to compute image SNR
+validInputArgs = {'dynNOISEscan', 'temporalFilter', 'cropTimeSeries', 'outputBaseName', 'cropSlices',... % dyn NOISE scan at the end of time series to compute image SNR
     
 
 };
@@ -40,6 +40,8 @@ if ieNotDefined('cropTimeSeries')
     cropTimeSeries=[];
 end
 
+if ieNotDefined('cropSlices'), cropSlices = []; end
+
 if ieNotDefined('dataFilename')
     % get data_filename
     [dataFilename,pathname] = uigetfile({'*.hdr';'*.nii';'*.img'},'Select file ');
@@ -59,13 +61,30 @@ nY = size(Data,2);
 nS = size(Data,3);
 nV = size(Data,4);
 
+im_data = Data;
 
-if dynNOISEscan==1
-    im_data=Data(:,:,:,1:nV-1);
-    noise_data=Data(:,:,:,nV);
-else
-    im_data=Data;
-    noise_data = zeros(nX,nY,nS);
+if ~isempty(cropSlices)
+    im_data = im_data(:,:,cropSlices(1):cropSlices(2),:);
+    nS = size(im_data,3);
+    
+    if dynNOISEscan==1
+        im_data = im_data(:,:,:,1:nV-1);
+        noise_data=im_data(:,:,:,nV);
+    else
+        noise_data = zeros(nX,nY,nS);
+    end
+    
+elseif isempty(cropSlices)
+    
+    
+    if dynNOISEscan==1
+        im_data=Data(:,:,:,1:nV-1);
+        noise_data=Data(:,:,:,nV);
+    else
+        im_data=Data;
+        noise_data = zeros(nX,nY,nS);
+    end
+    
 end
 
 if(~isempty(cropTimeSeries))
@@ -134,8 +153,8 @@ outputFilename = [outputBaseName '_Mean.hdr'];
 cbiWriteNifti(outputFilename,meanImg,Hdr);
 
 %disp stuff
-mymean = mean(im_data,4);
-mystd = std(im_data,1,4);
+% mymean = mean(im_data,4);
+% mystd = std(im_data,1,4);
 %mytsnrval = mymean ./ mystd;
 %fprintf('\n mean of mean image = %.4f \n', mean(mymean(:)))
 %fprintf('\n std of mean image = %.4f \n', mean(mystd(:)))
