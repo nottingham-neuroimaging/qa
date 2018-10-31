@@ -76,9 +76,11 @@ for nf=1:length(scanParams)
     
     fprintf('Max TSNR: %.4f\n', max(data2))
     fprintf('Mean TSNR: %.4f\n', mean(data2))
-    clear data data2;
+    themeans(nf) = mean(data2);
+    %clear data data2;
 end
-
+fprintf('Grand mean: %.4f\n', mean(themeans));
+clear data data2
 % Make a colorbar ... save the colorbar that is the same for all the scans.
 hh = ones(1,size(cmap.',1),3);
 hh(1,:,:) = cmap.';
