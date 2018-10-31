@@ -73,6 +73,8 @@ gui_handle.polyButton = makeButton(gui_handle.main_fig, [44.5 3 25 3], 'Draw Pol
 
 gui_handle.dynButton = makeButton(gui_handle.main_fig,[44.5 11 25 3],'Select Dynamics',@selectDynamics);
 
+gui_handle.sliceButton = makeButton(gui_handle.main_fig,[12.5 11 25 3],'Select Slices',@selectSlices);
+
 gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 150 200 20], @dynTick);
 
 gui_handle.maskTick = makeTick2(gui_handle.main_fig, [450 120 200 20], @maskTick);
@@ -90,10 +92,12 @@ end
 
 
 function dat = createCellArray(scanParams)
-dat = cell(length(scanParams),6);
+dat = cell(length(scanParams),8);
 % Here just assigning dat
-for nf=1:length(scanParams),
-    dat(nf,1:6) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},{scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect}];
+for nf=1:length(scanParams)
+    dat(nf,1:8) = [{scanParams(nf).fileName},{nf},{scanParams(nf).notes},...
+        {scanParams(nf).dynNOISEscan},{scanParams(nf).volumeSelectFirst},{scanParams(nf).volumeSelect},...
+        {scanParams(nf).sliceSelectFirst}, {scanParams(nf).sliceSelectLast}];
 end
 end
 
@@ -115,13 +119,13 @@ data = guidata(hObject);
 % problem is everytime you uncheck the box, it doesn't reset to the 'real'
 % last dynamic, since you've already by definition ticked the box before,
 % therefore adds a fudge factor until I get smarter.
-if hObject.Value == 1;
-    for ii = 1:length(data.scanParams);
+if hObject.Value == 1
+    for ii = 1:length(data.scanParams)
       data.scanParams(ii).volumeSelect = data.scanParams(ii).volumeSelect-1;
       %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
     end
-elseif hObject.Value == 0;
-    for ii = 1:length(data.scanParams);
+elseif hObject.Value == 0
+    for ii = 1:length(data.scanParams)
       data.scanParams(ii).volumeSelect = data.scan_table.Data{1,6}; %fudge factor, grabs info from the scan_table
       %set(data.dyn2SelectionHandle,'string',data.scanParams(ii).volumeSelect);
     end
@@ -134,11 +138,11 @@ end
 function maskTick(hObject, ~)
 data = guidata(hObject);
 
-if hObject.Value == 1;
+if hObject.Value == 1
     for ii = 1:length(data.scanParams)
         data.scanParams(ii).mask = 1;
     end
-elseif hObject.Value == 0;
+elseif hObject.Value == 0
     for ii = 1:length(data.scanParams)
         data.scanParams(ii).mask = 0;
     end
@@ -296,7 +300,7 @@ end
 
 function runReport(hObject,~)
 data = guidata(hObject);
-data.options.recaulculateTSNR = 1;
+data.options.recalculateTSNR = 1;
 guidata(hObject,data);
 scanParams = data.scanParams;
 dat = get(data.scan_table,'dat');
@@ -418,7 +422,7 @@ function rerunHTML(hObject,~)
   dat = get(data.scan_table,'dat');
 
   % Re-run the tSNR report and mean image report, but this time don't recalculate the tSNR maps as it doesn't make sense to.  
-  data.options.recaulculateTSNR = 0; % Flag here makes sure we don't recalculate the maps, it is just to resave the figures.
+  data.options.recalculateTSNR = 0; % Flag here makes sure we don't recalculate the maps, it is just to resave the figures.
   guidata(data.main_fig,data);
 
   scanParams = updateScanParams(scanParams,dat);
@@ -485,7 +489,7 @@ function ApplyButtonDyn(hObject,~)
   optionData = guidata(hObject);
   data = guidata(optionData.main_fig);
   
-  for i = 1:length(data.scanParams);
+  for i = 1:length(data.scanParams)
       data.scanParams(i).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
       data.scanParams(i).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
       set(optionData.dyn2SelectionHandle,'string',data.scanParams(i).volumeSelect);
@@ -506,6 +510,71 @@ function ApplyButtonDyn(hObject,~)
   close(optionData.option_fig);
 end
 
+function selectSlices(hObject, ~)
+
+% create the panel
+  figureHeight = 25;
+  figureWidth = 50;
+  % position = [60 25 110 60];
+  option_fig = figure('Units','Character',...
+      'windowstyle', 'normal', 'resize', 'off','visible','on',...
+      'menubar','none','Toolbar','none','numbertitle','off', ...
+      'name','Select Slices');
+  position = get(option_fig,'outerposition');
+  position(3) = figureWidth;
+  position(2) = position(2) + position(4) - figureHeight;
+  position(4) = figureHeight;
+  set(option_fig,'outerposition',position);
+
+  data = guidata(hObject);
+   
+  sliceSelectionHandle = makeEditbox(option_fig,[30 15 15 3],data.scanParams(1).sliceSelectFirst,'');
+  makeText(option_fig,[14 15 15 3],'Select First Slice');
+  
+  slice2SelectionHandle = makeEditbox(option_fig,[30 9 15 3],data.scanParams(1).sliceSelectLast,'');
+  makeText(option_fig,[14 9 15 3],'Select Last Slice');
+  
+
+  % Make the Apply button
+  optHandles.ApplyButtonSlice = makeButton(option_fig,[15 2 15 3],'Apply',@ApplyButtonSlice);
+
+  % Set all the information to the guidata
+  optHandles = struct;
+  optHandles.sliceSelectionHandle = sliceSelectionHandle;
+  optHandles.slice2SelectionHandle = slice2SelectionHandle;
+  optHandles.option_fig = option_fig;
+  optHandles.main_fig = data.main_fig;
+  guidata(option_fig,optHandles);
+  
+%   fprintf('Dynamic scans chosen: %.d to %.d\n' ,data.scanParams(1).volumeSelectFirst, data.scanParams(1).volumeSelect)
+end
+
+function ApplyButtonSlice(hObject,~)
+% Select Dynamics button
+  optionData = guidata(hObject);
+  data = guidata(optionData.main_fig);
+  
+  for i = 1:length(data.scanParams)
+      data.scanParams(i).sliceSelectLast = str2num(get(optionData.slice2SelectionHandle, 'string'));
+      data.scanParams(i).sliceSelectFirst = str2num(get(optionData.sliceSelectionHandle, 'string'));
+      set(optionData.slice2SelectionHandle,'string',data.scanParams(i).sliceSelectLast);
+      set(optionData.sliceSelectionHandle,'string',data.scanParams(i).sliceSelectFirst);
+  end
+  
+  %data.scanParams(1).volumeSelect = str2num(get(optionData.dyn2SelectionHandle, 'string'));
+  %data.scanParams(1).volumeSelectFirst = str2num(get(optionData.dynSelectionHandle, 'string'));
+
+  %set(optionData.dyn2SelectionHandle,'string',data.scanParams(1).volumeSelect);
+  %set(optionData.dynSelectionHandle,'string',data.scanParams(1).volumeSelectFirst);
+
+  %data.scanParams(1).volumeSelect = dyns;
+  fprintf('Slices chosen: %.d to %.d\n' ,data.scanParams(i).sliceSelectFirst, data.scanParams(i).sliceSelectLast)
+  guidata(optionData.main_fig,data);
+  
+  
+  close(optionData.option_fig);
+end
+
 function scanParams = updateScanParams(scanParams,dat)
 for nf=1:length(scanParams)
     scanParams(nf).notes = dat{nf,3};
@@ -516,13 +585,14 @@ for nf=1:length(scanParams)
         scanParams(nf).volumeSelect = scanParams(nf).volumeSelect-1;
       end
     end
+    
     %scanParams(nf).volumeSelect = dat{nf,5};
 end
 end
 
 function generateDefaultOptions(main_fig)
   options = struct;
-  options.recaulculateTSNR = 1;
+  options.recalculateTSNR = 1;
   options.imgScale = 100;
   options.imgScaleMean = [];
   options.cmap = hot(255).';

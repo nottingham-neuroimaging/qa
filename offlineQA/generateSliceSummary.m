@@ -51,7 +51,7 @@ end
 
 if(orientation~=3)
     sliceChoice = 1:size(data,3);    
-    if(~isempty(ROI_box));
+    if(~isempty(ROI_box))
         disp('Note that ROI will not draw in this orientation... will fix in future!!');
         ROI_box=[];
     end
@@ -59,8 +59,8 @@ if(orientation~=3)
 end
 
 %     figure;
-for sc=1:length(sliceChoice),
-    dat = data(:,:,sliceChoice(sc)).';
+for sc=1:length(sliceChoice)
+    dat = data(:,:,sc).';
     if(~isempty(imgScale))
         if(imgScale>0)
             dat2 = (dat/imgScale);
@@ -121,7 +121,7 @@ elseif(length(sliceChoice)>no_columns)
     newMatrix(1:length(sliceChoice)) = dats;
     
     % Need to do this faster perhaps..
-    for j=length(sliceChoice)+1:totalImages,
+    for j=length(sliceChoice)+1:totalImages
         newMatrix{j} = uint8(zeros(size(dats{1})));
     end
     image_matrix = cell2mat(newMatrix(reshape(1:totalImages,no_columns,no_rows).'));
