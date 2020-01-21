@@ -53,8 +53,8 @@ for nf=1:length(scanParams)
     data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
     data2 = data(~isnan(data(:)) & ~isinf(data(:)));
     figH = figure;
-    set(figH,'PaperPosition',[0.25 0.25 6 4],'visible','off');
-    hist(data2(:),200);
+    set(figH,'PaperPosition',[0.25 0.25 15 8],'visible','off');
+    histogram(data2(:),200);
 
     xlim([mean(data2)-2*std(data2(:)) mean(data2)+2*std(data2(:))])
     set(gca,'fontSize',20);
@@ -69,17 +69,17 @@ for nf=1:length(scanParams)
     % and hence the tSNR will drop. Need to remove them here, but set them
     % to zero in generateSliceSummary (line74), for visualization
     for ii = 1:length(scanParams)
-    if scanParams(ii).mask == 1
-    data2 = data2(data2>0.05*max(data2(:)));
-    end
+        if scanParams(ii).mask == 1
+            data2 = data2(data2>0.05*max(data2(:)));
+        end
     end
     
     fprintf('Max TSNR: %.4f\n', max(data2))
     fprintf('Mean TSNR: %.4f\n', mean(data2))
-    themeans(nf) = mean(data2);
+    %themeans(nf) = mean(data2);
     %clear data data2;
 end
-fprintf('Grand mean: %.4f\n', mean(themeans));
+%fprintf('Grand mean: %.4f\n', mean(themeans));
 clear data data2
 % Make a colorbar ... save the colorbar that is the same for all the scans.
 hh = ones(1,size(cmap.',1),3);
@@ -88,8 +88,8 @@ hh(1,:,:) = cmap.';
 figH = figure('visible','off');
 h = imagesc(linspace(0,imgScale,size(cmap,2)),0,hh);
 % keyboard
-set(figH,'PaperPosition',[0.25 0.25 6 1]);
-set(gca,'YTick',[],'fontSize',20);
+set(figH,'PaperPosition',[0.25 0.25 8 1.8]);
+set(gca,'YTick',[],'fontSize',16);
 print(figH,['QA_report/cbar.png'],'-dpng');
 
 % Another function now to look at specific ROIs and noise calculations
