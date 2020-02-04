@@ -49,6 +49,7 @@ for nf=1:length(scanParams)
 end
 
 % Now calculate the histograms and save them
+tmpSave = cell(length(scanParams),2);
 for nf=1:length(scanParams)
     data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
     data2 = data(~isnan(data(:)) & ~isinf(data(:)));
@@ -76,9 +77,17 @@ for nf=1:length(scanParams)
     
     fprintf('Max TSNR: %.4f\n', max(data2))
     fprintf('Mean TSNR: %.4f\n', mean(data2))
+    % save out to csv file
+    
+    tmpSave{nf,1} = mean(data2);
+    tmpSave{nf,2} = char(extractfield(scanParams(nf),'fileName'));
     %themeans(nf) = mean(data2);
     %clear data data2;
 end
+% save out to csvfile
+fprintf('Writing to csv...\n')
+writecell(tmpSave,'mean_tSNR_data.csv');
+
 %fprintf('Grand mean: %.4f\n', mean(themeans));
 clear data data2
 % Make a colorbar ... save the colorbar that is the same for all the scans.
