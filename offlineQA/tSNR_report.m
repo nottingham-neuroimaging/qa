@@ -79,14 +79,20 @@ for nf=1:length(scanParams)
     fprintf('Mean TSNR: %.4f\n', mean(data2))
     % save out to csv file
     
-    tmpSave{nf,1} = mean(data2);
-    tmpSave{nf,2} = char(extractfield(scanParams(nf),'fileName'));
+%     keyboard
+%     tmpSave(nf,1) = round(mean(data2));
+%     tmpSave{nf,2} = char(extractfield(scanParams(nf),'fileName'));
+    
+    T(nf,1) = table(mean(data2));
+    T(nf,2) = table(extractfield(scanParams(nf),'fileName'));
+    
     %themeans(nf) = mean(data2);
     %clear data data2;
 end
 % save out to csvfile
-fprintf('Writing to csv...\n')
-writecell(tmpSave,'mean_tSNR_data.csv');
+%fprintf('Writing to csv...\n')
+%writecell(tmpSave,'mean_tSNR_data.csv');
+writetable(T,'mean_tSNR_data.txt')
 
 %fprintf('Grand mean: %.4f\n', mean(themeans));
 clear data data2
