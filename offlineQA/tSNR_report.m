@@ -49,7 +49,11 @@ for nf=1:length(scanParams)
 end
 
 % Now calculate the histograms and save them
-tmpSave = cell(length(scanParams),2);
+%tmpSave = cell(length(scanParams),2);
+% make space
+myMean = zeros(length(scanParams),1);
+myfilename = cell(length(scanParams),1);
+    
 for nf=1:length(scanParams)
     data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
     data2 = data(~isnan(data(:)) & ~isinf(data(:)));
@@ -79,20 +83,21 @@ for nf=1:length(scanParams)
     fprintf('Mean TSNR: %.4f\n', mean(data2))
     % save out to csv file
     
-%     keyboard
-%     tmpSave(nf,1) = round(mean(data2));
-%     tmpSave{nf,2} = char(extractfield(scanParams(nf),'fileName'));
+    %T(nf,1) = table(mean(data2));
+    %T(nf,2) = table(extractfield(scanParams(nf),'fileName'));
     
-    T(nf,1) = table(mean(data2));
-    T(nf,2) = table(extractfield(scanParams(nf),'fileName'));
+    % fill up separately here
+    myMean(nf,1) = mean(data2);
+    myfilename(nf,1) = extractfield(scanParams(nf),'fileName');    
     
     %themeans(nf) = mean(data2);
     %clear data data2;
 end
+
+% make table outside of loop, prevents warning message
+T = table(myMean, myfilename);
 % save out to csvfile
-%fprintf('Writing to csv...\n')
-%writecell(tmpSave,'mean_tSNR_data.csv');
-writetable(T,'mean_tSNR_data.txt')
+writetable(T,'mean_tSNR_data.csv')
 
 %fprintf('Grand mean: %.4f\n', mean(themeans));
 clear data data2
