@@ -88,8 +88,10 @@ for nf=1:length(scanParams)
     
     % fill up separately here
     myMean(nf,1) = mean(data2);
-    myfilename(nf,1) = extractfield(scanParams(nf),'fileName');    
+    %myfilename(nf,1) = extractfield(scanParams(nf),'fileName');    
     
+    % remove dependency on extractfield
+    myfilename{nf,1} = scanParams(nf).fileName;    
     %themeans(nf) = mean(data2);
     %clear data data2;
 end
