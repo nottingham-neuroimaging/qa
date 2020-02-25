@@ -110,7 +110,7 @@ end
 function tickHandleMask = makeTick2(parentPanel, position, callBackStr)
 fontSize = 14;
 tickHandleMask = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
-    'string', 'Mask 5% of Max Signal?', 'Value',0,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
+    'string', 'Mask 5% of Max Signal?', 'Value',1,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
 end
 
 function dynTick(hObject, ~)
