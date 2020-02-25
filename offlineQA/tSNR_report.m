@@ -52,6 +52,8 @@ end
 %tmpSave = cell(length(scanParams),2);
 % make space
 myMean = zeros(length(scanParams),1);
+myMedian = zeros(length(scanParams),1);
+
 myfilename = cell(length(scanParams),1);
     
 for nf=1:length(scanParams)
@@ -79,8 +81,10 @@ for nf=1:length(scanParams)
         end
     end
     
-    fprintf('Max TSNR: %.4f\n', max(data2))
+    %fprintf('Max TSNR: %.4f\n', max(data2))
+    fprintf('Median TSNR: %.4f\n', median(data2))
     fprintf('Mean TSNR: %.4f\n', mean(data2))
+    
     % save out to csv file
     
     %T(nf,1) = table(mean(data2));
@@ -88,6 +92,7 @@ for nf=1:length(scanParams)
     
     % fill up separately here
     myMean(nf,1) = mean(data2);
+    myMedian(nf,1) = median(data2);
     %myfilename(nf,1) = extractfield(scanParams(nf),'fileName');    
     
     % remove dependency on extractfield
@@ -97,7 +102,7 @@ for nf=1:length(scanParams)
 end
 
 % make table outside of loop, prevents warning message
-T = table(myMean, myfilename);
+T = table(myMean,myMedian, myfilename);
 % save out to csvfile
 writetable(T,'mean_tSNR_data.csv')
 
@@ -128,7 +133,7 @@ for nf=1:length(scanParams)
     tSNR_ROI(nf) = nanmean(image_cropped(:));
   end
   
-  if ~isempty(tSNR_ROI)
+  if ~isnan(tSNR_ROI)
       fprintf('tSNR_ROI = %.4f\n', nanmean(tSNR_ROI))
   end
  
