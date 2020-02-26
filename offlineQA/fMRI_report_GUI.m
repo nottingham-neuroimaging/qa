@@ -7,7 +7,6 @@
 
 function scanParams = fMRI_report_GUI(scanParams)
 
-
 % create the figure
 figureHeight = 60;
 figureWidth = 110;
@@ -79,6 +78,9 @@ gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 150 200 20], @dynTick);
 
 gui_handle.maskTick = makeTick2(gui_handle.main_fig, [450 120 200 20], @maskTick);
 
+%gui_handle.deleteImgTick = makeTick3(gui_handle.main_fig, [450 180 200 20], @deleteImgTick);
+
+
 if isempty(which('selectCropRegion')) %check that selectCropRegion exists on the path
   set(gui_handle.roiButton,'enable','off');
 end
@@ -112,6 +114,12 @@ fontSize = 14;
 tickHandleMask = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
     'string', 'Mask 5% of Max Signal?', 'Value',1,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
 end
+
+% function tickHandleDeleteImage = makeTick3(parentPanel, position, callBackStr)
+% fontSize = 14;
+% tickHandleDeleteImage = uicontrol( 'parent', parentPanel, 'style', 'checkbox',...
+%     'string', 'Delete tSNR.hdr/img data?', 'Value',1,'Position', position,'fontSize', fontSize,'Callback', callBackStr);
+% end
 
 function dynTick(hObject, ~)
 data = guidata(hObject);
@@ -150,6 +158,25 @@ end
 guidata(data.main_fig,data);
 
 end
+
+% function deleteImgTick(hObject, ~)
+% data = guidata(hObject);
+% 
+% if hObject.Value == 1
+%     
+%     for ii = 1:length(data.scanParams)
+%         data.scanParams(ii).delOut = 1;
+%     end
+% elseif hObject.Value == 0
+%     
+%     for ii = 1:length(data.scanParams)
+%         data.scanParams(ii).delOut = 0;
+%     end
+% 
+% end
+% guidata(data.main_fig,data);
+% 
+% end
 
 
 function buttonHandle = makeButton(parentPanel,position,boxStr,callBackStr)
@@ -317,8 +344,12 @@ if any(~isnan(iSNR))
   iSNR
 end
 
+
+
 generateHTMLReport(scanParams);
 % now get the data from the table and reset the scan Params
+
+
 
 end
 
