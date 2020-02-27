@@ -1,6 +1,10 @@
 # README.md
 ## qa - quality assurance of fMRI data  
 
+<center>
+<img src="fMRI_report_app/logo.png" alt="fMRI_report_app logo" width="200"/>
+</center>
+
 ### What is this?  
 * A MATLAB-based toolbox to allow quick and easy temporal signal-to-noise-ratio analysis of routine brain/fMRI NIFTI data.
 * This is important to ascertain the stability of the scanner, and benchmark the quality of your raw data before any further processing.
@@ -13,7 +17,11 @@
 
 * In both versions, you will select fMRI data and generate mean images and tSNR maps. The difference is that `fMRI_report` was written using old-school GUIDElines, whereas the newer `fMRI_report_app` version has the same functionality but is now in the form of a more user-friendly app, especially for debugging/portability etc.
 
-![fMRI_report_app screenshot](fMRI_report_app/fMRI_report_image.png)
+<center>
+<img src="fMRI_report_app/fMRI_report_image.png" alt="fMRI_report_app screenshot" width="500"/>
+</center>
+
+[comment]: # (fMRI_report_app/fMRI_report_image.png)
 
 --------------------
 
