@@ -1,5 +1,6 @@
 # README.md
 ## qa - quality assurance of fMRI data  
+
 ### What is this?  
 * A MATLAB-based toolbox to allow quick and easy temporal signal-to-noise-ratio analysis of routine brain/fMRI NIFTI data.
 * This is important to ascertain the stability of the scanner, and benchmark the quality of your raw data before any further processing.
