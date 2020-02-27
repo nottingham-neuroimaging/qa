@@ -1,0 +1,105 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="548740033" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
+    <param.appname>fMRI_report_app</param.appname>
+    <param.authnamewatermark>Michael Asghar</param.authnamewatermark>
+    <param.email>michael.asghar@nottingham.ac.uk</param.email>
+    <param.company>University of Nottingham</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary>Runs tSNR analysis of 4D fMRI data</param.summary>
+    <param.description />
+    <param.screenshot>${PROJECT_ROOT}/logo.png</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms>
+      <item>maci64</item>
+    </param.platforms>
+    <param.output>${PROJECT_ROOT}</param.output>
+    <param.guid>f3285e0a-3ed2-472c-95cb-ba16fe952687</param.guid>
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.description />
+      <param.version />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.output />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}/fMRI_report_app.mlapp</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>/Users/ppzma/Documents/MATLAB/mgl/utils/ieNotDefined.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiCreateNiftiHeader.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiHomogeneousToQuaternion.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiMatlabDatatype2Nifti.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiNiftiDatatype2Matlab.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiQuaternionToHomogeneous.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiReadNifti.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiReadNiftiHeader.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiSetNiftiQform.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiSizeofNifti.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiWriteNifti.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiWriteNiftiHeader.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/ImageProcessing/color2RGB.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/ImageProcessing/selectCropRegion.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/cellArray.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/evalargs.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/fixBadChars.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/getLastDir.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/getext.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/loadMrDefaults.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mlrIsFile.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrDefaultsFilename.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrDisp.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrDisp.mexmaci64</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrErrorDlg.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrGetPref.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrStr2num.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/mrWarnDlg.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/setext.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/MatlabUtilities/stripext.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getArrayDimensions.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getMonitorPositions.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getSubplotPosition.m</file>
+      <file>${PROJECT_ROOT}/generateHTMLReport_app.m</file>
+      <file>${PROJECT_ROOT}/generateSliceSummary_app.m</file>
+      <file>${PROJECT_ROOT}/mean_image_report_app.m</file>
+      <file>${PROJECT_ROOT}/meshData2Colors_app.m</file>
+      <file>${PROJECT_ROOT}/rescale2_app.m</file>
+      <file>${PROJECT_ROOT}/selectPoly_app.m</file>
+      <file>${PROJECT_ROOT}/setInitialParams_app.m</file>
+      <file>${PROJECT_ROOT}/tSNR_app.m</file>
+      <file>${PROJECT_ROOT}/tSNR_report_app.m</file>
+      <file>/Users/ppzma/Documents/MATLAB/qa/offlineQA/rescale2.m</file>
+    </fileset.depfun>
+    <fileset.resources />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/ppzma/Documents/MATLAB/qa" name="fMRI_report_app" optional="false">/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2019b.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.14.6</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
