@@ -17,10 +17,16 @@
 
 * In both versions, you will select fMRI data and generate mean images and tSNR maps. The difference is that `fMRI_report` was written using old-school GUIDElines, whereas the newer `fMRI_report_app` version has the same functionality but is now in the form of a more user-friendly app, especially for debugging/portability etc.
 
+### Dependencies  
+* For `fMRI_report`, there is a zipped folder that contains the toolbox's dependencies, such as some [mrTools][] and [mgl][] functions. Feel free to ignore if you have already installed these.
+* If you are running MATLAB **2016a** or later, you can install the app version by navigating to the app tab in the main MATLAB window (third one along, top left), then clicking **install app**. You can then select the `fMRI_report_app.mlappinstall` file and it should appear in your app toolbar.
+
 <center>
 <img src="fMRI_report_app/fMRI_report_image.png" alt="fMRI_report_app screenshot" width="500"/>
 </center>
 
+[mrTools]: https://github.com/julienbesle/mrTools
+[mgl]: https://github.com/justingardner/mgl
 [comment]: # (fMRI_report_app/fMRI_report_image.png)
 
 --------------------
