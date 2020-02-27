@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2671410628" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="2926287687" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
     <param.appname>fMRI_report_app</param.appname>
     <param.authnamewatermark>Michael Asghar</param.authnamewatermark>
     <param.email>michael.asghar@nottingham.ac.uk</param.email>
@@ -32,6 +32,7 @@
       <file>${PROJECT_ROOT}/fMRI_report_app.mlapp</file>
     </fileset.main>
     <fileset.depfun>
+      <file>/Users/ppzma/Documents/MATLAB/matlab-schemer/logo.png</file>
       <file>/Users/ppzma/Documents/MATLAB/mgl/utils/ieNotDefined.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiCreateNiftiHeader.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiHomogeneousToQuaternion.m</file>
@@ -67,7 +68,6 @@
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getSubplotPosition.m</file>
       <file>${PROJECT_ROOT}/generateHTMLReport_app.m</file>
       <file>${PROJECT_ROOT}/generateSliceSummary_app.m</file>
-      <file>${PROJECT_ROOT}/logo.png</file>
       <file>${PROJECT_ROOT}/logo2.png</file>
       <file>${PROJECT_ROOT}/mean_image_report_app.m</file>
       <file>${PROJECT_ROOT}/meshData2Colors_app.m</file>
