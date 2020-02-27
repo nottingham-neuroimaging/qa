@@ -1,4 +1,4 @@
-function colors = meshData2Colors_app(data, cmap, range, scaleFlag);
+function colors = meshData2Colors_app(data, cmap, range, scaleFlag)
 %
 %   colors = meshData2Colors(data, cmap, range, [scaleFlag]);
 %
@@ -55,7 +55,7 @@ if scaleFlag==1
     data(isnan(data)) = range(1);    
     
     % scale data into number of colors in map:
-    cmapIndices = rescale2(data, range, [1 nMap]);    
+    cmapIndices = rescale2_app(data, range, [1 nMap]);    
     
     % now map colormap to each data point, given the color map:
     colors = cmap(:,cmapIndices);

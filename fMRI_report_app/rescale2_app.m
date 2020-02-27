@@ -1,4 +1,4 @@
-function res = rescale2(mtx,mtxRng,resRng,roundflag)
+function res = rescale2_app(mtx,mtxRng,resRng,roundflag)
 %
 % res = rescale(mtx,[clipMin,clipMax],[resMin,resMax],[roundflag = 1])
 %
