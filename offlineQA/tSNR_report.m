@@ -21,7 +21,7 @@ if(data.options.recalculateTSNR)
                 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName],...
                 'cropSlices', [scanParams(nf).sliceSelectFirst scanParams(nf).sliceSelectLast]);
             if isfield(scanParams,'polyROI')
-                if ~isempty(scanParams.polyROI)
+                %if ~isempty(scanParams.polyROI)
                     %polyroitsnr = tSNR(scanParams.polyROI, 'outputBaseName',['QA_report/' scanParams(nf).outputBaseName]);
                     newtest = outputFilenameTSNR(:,:,scanParams.firstSlice:scanParams.lastSlice).*scanParams.polyROI;
                     L = newtest(newtest~=0 & newtest~=inf & ~isnan(newtest));
@@ -31,14 +31,15 @@ if(data.options.recalculateTSNR)
                     %             tSNR_poly = mean(scanParams.polyROI)./std(scanParams.polyROI,1);
                     %             tSNR_poly = tSNR_poly(~isnan(tSNR_poly(:)) & ~isinf(tSNR_poly(:)));
                     fprintf('POLY_ROI_TSNR: %.4f\n', mean(L));
-                end
+                %end
             end
     end
 end
 
 if ~isfield(scanParams, 'mask')
+    %keyboard
     for ii = 1:length(scanParams)
-    scanParams(ii).mask = 0;
+        scanParams(ii).mask = 1; %by default do some masking, this is a fudge factor temporarily while I figure out why it won't ggrab field from GUI
     end
 end
     

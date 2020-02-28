@@ -23,6 +23,7 @@ for nf=1:length(filenames)
     unicodenotes = unicode2native(hdr.descrip);
     scanParams(nf).notes = hdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
     scanParams(nf).orientation = 3;
+    scanParams(nf).mask = 1;
 end
 
 end

@@ -1,11 +1,15 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2926287687" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="3212587984" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
     <param.appname>fMRI_report_app</param.appname>
     <param.authnamewatermark>Michael Asghar</param.authnamewatermark>
     <param.email>michael.asghar@nottingham.ac.uk</param.email>
     <param.company>University of Nottingham</param.company>
-    <param.icon />
-    <param.icons />
+    <param.icon>${PROJECT_ROOT}/fMRI_report_app_resources/icon_24.png</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}/fMRI_report_app_resources/icon_48.png</file>
+      <file>${PROJECT_ROOT}/fMRI_report_app_resources/icon_24.png</file>
+      <file>${PROJECT_ROOT}/fMRI_report_app_resources/icon_16.png</file>
+    </param.icons>
     <param.summary>Runs tSNR analysis of 4D fMRI data</param.summary>
     <param.description />
     <param.screenshot>${PROJECT_ROOT}/logo.png</param.screenshot>
@@ -19,8 +23,6 @@
     <param.output>${PROJECT_ROOT}</param.output>
     <param.guid>f3285e0a-3ed2-472c-95cb-ba16fe952687</param.guid>
     <unset>
-      <param.icon />
-      <param.icons />
       <param.description />
       <param.version />
       <param.products.name />
@@ -32,7 +34,6 @@
       <file>${PROJECT_ROOT}/fMRI_report_app.mlapp</file>
     </fileset.main>
     <fileset.depfun>
-      <file>/Users/ppzma/Documents/MATLAB/matlab-schemer/logo.png</file>
       <file>/Users/ppzma/Documents/MATLAB/mgl/utils/ieNotDefined.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiCreateNiftiHeader.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/File/Nifti/cbiHomogeneousToQuaternion.m</file>
@@ -68,6 +69,7 @@
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getSubplotPosition.m</file>
       <file>${PROJECT_ROOT}/generateHTMLReport_app.m</file>
       <file>${PROJECT_ROOT}/generateSliceSummary_app.m</file>
+      <file>${PROJECT_ROOT}/logo.png</file>
       <file>${PROJECT_ROOT}/logo2.png</file>
       <file>${PROJECT_ROOT}/mean_image_report_app.m</file>
       <file>${PROJECT_ROOT}/meshData2Colors_app.m</file>

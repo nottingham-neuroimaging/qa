@@ -113,9 +113,11 @@ reshaped_data = reshape(im_data,nX*nY*nS,nV);
 % and betas is a column vector that has the co-efficients for the elements in the design matrix (to be estimated)
 X1 =[1:nV].';X2 = X1.^2;
 X = [ones(size(X1)),X1,X2]; %Design matrix
-P = (X'*X)\X'; % Proj. matrix (also pinv(X))
+P = (X'*X)\X'; % Proj. matrix (also pinv(X))  could also 
 % find solution of GLM
 betas = P*(reshaped_data.');
+
+%betas_oneline = X \ reshaped_data';
 
 % Now remove the linear and quadratic trend only..
 detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
