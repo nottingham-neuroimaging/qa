@@ -77,7 +77,7 @@ gui_handle.sliceButton = makeButton(gui_handle.main_fig,[12.5 11 25 3],'Select S
 gui_handle.dynTick = makeTick(gui_handle.main_fig, [450 150 200 20], @dynTick);
 
 gui_handle.maskTick = makeTick2(gui_handle.main_fig, [450 120 200 20], @maskTick);
-
+%set(gui_handle.main_fig,'
 %gui_handle.deleteImgTick = makeTick3(gui_handle.main_fig, [450 180 200 20], @deleteImgTick);
 
 
@@ -88,8 +88,9 @@ end
 % Make default options
 generateDefaultOptions(gui_handle.main_fig);
 set(gui_handle.main_fig,'visible','on');
-
+%data = guidata(hObject);
 drawnow;
+%data = guidata(hObject);
 end
 
 
@@ -145,6 +146,9 @@ end
 
 function maskTick(hObject, ~)
 data = guidata(hObject);
+
+
+%keyboard
 
 if hObject.Value == 1
     for ii = 1:length(data.scanParams)

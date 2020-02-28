@@ -21,7 +21,7 @@ function fMRI_report()
 
 	% intialize intial parameters from the nifti headers.
 	scanParams = setInitialParams(filenames);
-
+    
 	% Now run the GUI.
 	scanParams = fMRI_report_GUI(scanParams);
 
