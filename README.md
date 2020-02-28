@@ -2,7 +2,7 @@
 ## qa - quality assurance of fMRI data  
 
 <center>
-<img src="fMRI_report_app/logo.png" alt="fMRI_report_app logo" width="200"/>
+<img src="fMRI_report_app/aesthetics/logo.png" alt="fMRI_report_app logo" width="200"/>
 </center>
 
 ### What is this?  
@@ -22,7 +22,11 @@
 * If you are running MATLAB **2016a** or later, you can install the app version by navigating to the app tab in the main MATLAB window (third one along, top left), then clicking **install app**. You can then select the `fMRI_report_app.mlappinstall` file and it should appear in your app toolbar.
 
 <center>
-<img src="fMRI_report_app/fMRI_report_image.png" alt="fMRI_report_app screenshot" width="500"/>
+<img src="fMRI_report_app/aesthetics/biglogo.png" alt="fMRI_report_app logo" width="200"/>
+</center>
+
+<center>
+<img src="fMRI_report_app/aesthetics/fMRI_report_image.png" alt="fMRI_report_app screenshot" width="500"/>
 </center>
 
 [mrTools]: https://github.com/julienbesle/mrTools
