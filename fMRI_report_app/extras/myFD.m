@@ -1,8 +1,21 @@
 function[] = myFD(scanParams)
+%myFD - This determines the framewise displacement a la Power et al 2012 doi:10.1016/j.neuroimage.2011.10.018
+%
+%      usage: [  ] = myFD(  )
+%         by: ppzma, Michael Asghar
+%       date: Mar 03, 2020
+%        $Id$
+%     inputs: scanParams (from the fMRI_report_app app)
+%    outputs: 
+%
+%    purpose: Ideally, want to show some spike analysis, so this is a quick
+%             way using image processing tools to determine framewise 
+%              displacement using the translation and rotation matrices 
+%               using imregister.m // 
+%               This function will print out a plot of FD versus dynamics
+%
+%        See Also imregtform imregister
 
-%cd /Volumes/hades/brain_acq_analysis_demo_feb2020/data/test/
-
-%[data, ~] = cbiReadNifti('HDREMODEL_001_v1_1_RCR_mc_shft_al.nii');
 fprintf('Finding framewise displacement, this will take a minute... \n\n');
 tic
 clc
@@ -35,7 +48,7 @@ for xx = 1:length(scanParams)
         if ii == 1
             fixed = moving;
         else
-            fixed = data(:,:,:,ii-1);
+            fixed = data(:,:,:,ii-1); % between each frame / rolling window
         end
         % calculate the transformation of every frame to the previous frame
         tform(ii) = imregtform(moving,fixed,'rigid',optimizer,metric);
@@ -50,7 +63,7 @@ for xx = 1:length(scanParams)
     end
     %toc
     
-    % grab all matrices from each frame
+   
     tform_mat = cat(3,tform.T);
     tform_mat_diffs = zeros(4,4,length(tform));
     frame_trans_sum = zeros(length(tform),1);
