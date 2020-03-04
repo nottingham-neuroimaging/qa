@@ -15,8 +15,8 @@ function[] = myFD(scanParams)
 %               This function will print out a plot of FD versus dynamics
 %
 %        See Also imregtform imregister
-
-fprintf('Finding framewise displacement, this will take a minute... \n\n');
+%clc
+%fprintf('Finding framewise displacement, this will take a minute... \n\r');
 tic
 clc
 for xx = 1:length(scanParams)
@@ -29,11 +29,12 @@ for xx = 1:length(scanParams)
     %nV = size(data,4);
     nV = scanParams(xx).volumeSelect;
     
-    moving_reg = zeros(nX,nY,nS,nV);
+    %moving_reg = zeros(nX,nY,nS,nV);
     
     %tform = zeros(1,nV);
-    
-    fixed = data(:,:,:,1);
+    % make space
+    tform = repmat(affine3d([1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1]),1,nV);
+    %fixed = data(:,:,:,1);
     %fixed = mean(data,4);
     [optimizer, metric] = imregconfig('monomodal');
     %figure('Position',[100 100 1000 1000])
@@ -57,7 +58,7 @@ for xx = 1:length(scanParams)
         
         currPrc = (ii ./ nV ).* 100;
         
-        fprintf('\b\b\b\b\b\b\b%.3f%%',currPrc)
+        fprintf('\b\b\b\b\b\b\b\b\b%.3f %%\r',currPrc)
         
         %clc
     end
@@ -125,6 +126,8 @@ for xx = 1:length(scanParams)
     xlabel('time (dynamics)')
     ylabel('Framewise displacement (mm)')
     ylim([0 2])
+    
+    title(['FILE: ' scanParams(xx).fileName],'Interpreter','none')
     
     
 end
