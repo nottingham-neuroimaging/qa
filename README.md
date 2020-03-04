@@ -28,7 +28,7 @@ Github Pages: <https://nottingham-neuroimaging.github.io/qa/>
 </center>
 
 <center>
-<img src="fMRI_report_app/aesthetics/fMRI_report_image.png" alt="fMRI_report_app screenshot" width="500"/>
+<img src="fMRI_report_app/aesthetics/fMRI_report_image2.png" alt="fMRI_report_app screenshot" width="500"/>
 </center>
 
 [mrTools]: https://github.com/julienbesle/mrTools
