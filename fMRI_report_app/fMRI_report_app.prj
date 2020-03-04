@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="876352062" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="349831053" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
     <param.appname>fMRI_report_app</param.appname>
     <param.authnamewatermark>Michael Asghar</param.authnamewatermark>
     <param.email>michael.asghar@nottingham.ac.uk</param.email>
@@ -69,6 +69,7 @@
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/Plot/getSubplotPosition.m</file>
       <file>${PROJECT_ROOT}/aesthetics/logo.png</file>
       <file>${PROJECT_ROOT}/aesthetics/logo2.png</file>
+      <file>${PROJECT_ROOT}/extras/myFD.m</file>
       <file>${PROJECT_ROOT}/generateHTMLReport_app.m</file>
       <file>${PROJECT_ROOT}/generateSliceSummary_app.m</file>
       <file>${PROJECT_ROOT}/mean_image_report_app.m</file>

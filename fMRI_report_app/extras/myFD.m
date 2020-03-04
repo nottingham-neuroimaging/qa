@@ -21,13 +21,17 @@ tic
 clc
 for xx = 1:length(scanParams)
     
-    [data, ~] = cbiReadNifti(scanParams(xx).fileName);
+    [data_orig, ~] = cbiReadNifti(scanParams(xx).fileName);
+    
+    % here crop the data based on the dynamics chosen:
+    
+    data = data_orig(:,:,:,scanParams(xx).volumeSelectFirst:scanParams(xx).volumeSelect);
     
     nX = size(data,1);
     nY = size(data,2);
     nS = size(data,3);
-    %nV = size(data,4);
-    nV = scanParams(xx).volumeSelect;
+    nV = size(data,4);
+    %nV = scanParams(xx).volumeSelect;
     
     %moving_reg = zeros(nX,nY,nS,nV);
     
