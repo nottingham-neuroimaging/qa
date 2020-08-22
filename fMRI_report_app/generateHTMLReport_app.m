@@ -6,7 +6,7 @@ function generateHTMLReport_app(scanParams)
 fileID = fopen('QA_report/index.html','w');
 
 % Make the header first
-[path,~] = fileparts(which('generateHTMLReport.m'));
+[path,~] = fileparts(which('generateHTMLReport_app.m'));
 copyfile([path filesep 'websiteStyle.css'],'QA_report/')
 
 
