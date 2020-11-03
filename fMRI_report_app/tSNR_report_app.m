@@ -111,7 +111,7 @@ end
 % make table outside of loop, prevents warning message
 T = table(myMean,myMedian, myfilename);
 % save out to csvfile
-writetable(T,'mean_tSNR_data.csv');
+writetable(T,'mean_tSNR_data.csv','WriteVariableNames',0);
 
 %fprintf('Grand mean: %.4f\n', mean(themeans));
 clear data data2
