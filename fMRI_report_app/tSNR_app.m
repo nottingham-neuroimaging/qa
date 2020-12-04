@@ -68,8 +68,9 @@ if ~isempty(cropSlices)
     nS = size(im_data,3);
     
     if dynNOISEscan==1
-        im_data = im_data(:,:,:,1:nV-1);
         noise_data=im_data(:,:,:,nV);
+        im_data = im_data(:,:,:,1:nV-1);
+        %noise_data=im_data(:,:,:,nV);
     else
         noise_data = zeros(nX,nY,nS);
     end
@@ -91,14 +92,6 @@ if(~isempty(cropTimeSeries))
     im_data = im_data(:,:,:,cropTimeSeries(1):cropTimeSeries(2));
     nV = size(im_data,4);
 end
-
-%quick thing to check iSNR
-% signalpugs = im_data(:,:,:,nV-1);
-% noisepugs = im_data(:,:,:,nV);
-% isnrpugs = mean(signalpugs,4)./noisepugs;
-% isnrpugs2 = isnrpugs(~isnan(isnrpugs(:)) & ~isinf(isnrpugs(:)));
-% fprintf('iSNR: %.4f\n', mean(isnrpugs2));
-
 % To correct for scanner drift, we remove a linear and quadratic trend for the data
 % (simplistic at the moment - compared to using high-pass filtering)
 % 
@@ -126,6 +119,26 @@ tsnrData=mean(im_data,4)./std(im_data,1,4);
 tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 
 save('meanTSNR', 'tsnrData');
+
+
+%quick thing to check iSNR
+signalpugs = im_data(:,:,:,1:nV-1);
+meansignalpugs = mean(signalpugs,4);
+noisepugs = im_data(:,:,:,nV);
+% meansignalpugs = meansignalpugs(:);
+% noisepugs = noisepugs(:);
+% isnr_vec = meansignalpugs./noisepugs;
+
+% compute std across noise
+std_noise=std(noisepugs);
+iSNR=meansignalpugs./std_noise;
+
+    
+%isnrpugs2 = reshape(isnr_vec,nX,nY,nS);
+%isnrpugs2(isnrpugs2>1000) = 0; % This thresholds the tSNR so it's not super high
+
+%fprintf('iSNR: %.4f\n',nanmean(isnrpugs2(:)));
+fprintf('mean iSNR: %.4f\n',mean(iSNR(:)));
 
 % save('meanTSNR', 'tsnrData'); This was for debugging purposes.
 
