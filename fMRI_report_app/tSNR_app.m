@@ -135,7 +135,10 @@ if dynNOISEscan == 1
     
     % compute std across noise
     %noise_data_vec = noise_data(:);
+    noise_data = normalize(noise_data,'range');
     std_noise=std(noise_data);
+    meansignalpugs = normalize(meansignalpugs,'range');
+
     %std_noise = std(noise_data_vec);
     iSNR=meansignalpugs./std_noise;
     
@@ -145,7 +148,10 @@ if dynNOISEscan == 1
     %isnrpugs2(isnrpugs2>1000) = 0; % This thresholds the tSNR so it's not super high
     
     %fprintf('iSNR: %.4f\n',nanmean(isnrpugs2(:)));
-    fprintf('mean iSNR: %.4f\n',nanmean(iSNR(:)));
+    a = iSNR(~isinf(iSNR));
+    b = a(~isnan(a));
+    fprintf('mean iSNR: %.4f\n', mean(b));
+    %fprintf('mean iSNR: %.4f\n',nanmean(iSNR(:)));
     
 end
 
