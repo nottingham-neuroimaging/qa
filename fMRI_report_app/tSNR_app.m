@@ -70,7 +70,9 @@ if ~isempty(cropSlices)
     if dynNOISEscan==1
         noise_data=im_data(:,:,:,nV);
         im_data = im_data(:,:,:,1:nV-1);
-        %noise_data=im_data(:,:,:,nV);
+        if ~isempty(cropTimeSeries)
+            cropTimeSeries(2) = cropTimeSeries(2)-1;
+        end
     else
         noise_data = zeros(nX,nY,nS);
     end
@@ -122,23 +124,30 @@ save('meanTSNR', 'tsnrData');
 
 
 %quick thing to check iSNR
-signalpugs = im_data(:,:,:,1:nV-1);
-meansignalpugs = mean(signalpugs,4);
-noisepugs = im_data(:,:,:,nV);
-% meansignalpugs = meansignalpugs(:);
-% noisepugs = noisepugs(:);
-% isnr_vec = meansignalpugs./noisepugs;
-
-% compute std across noise
-std_noise=std(noisepugs);
-iSNR=meansignalpugs./std_noise;
+if dynNOISEscan == 1
+    %signalpugs = im_data(:,:,:,1:nV);
+    meansignalpugs = mean(im_data,4);
+    %meansignalpugs = meansignalpugs(:);
+    %noisepugs = im_data(:,:,:,nV);
+    % meansignalpugs = meansignalpugs(:);
+    % noisepugs = noisepugs(:);
+    % isnr_vec = meansignalpugs./noisepugs;
+    
+    % compute std across noise
+    %noise_data_vec = noise_data(:);
+    std_noise=std(noise_data);
+    %std_noise = std(noise_data_vec);
+    iSNR=meansignalpugs./std_noise;
+    
 
     
-%isnrpugs2 = reshape(isnr_vec,nX,nY,nS);
-%isnrpugs2(isnrpugs2>1000) = 0; % This thresholds the tSNR so it's not super high
-
-%fprintf('iSNR: %.4f\n',nanmean(isnrpugs2(:)));
-fprintf('mean iSNR: %.4f\n',mean(iSNR(:)));
+    %isnrpugs2 = reshape(isnr_vec,nX,nY,nS);
+    %isnrpugs2(isnrpugs2>1000) = 0; % This thresholds the tSNR so it's not super high
+    
+    %fprintf('iSNR: %.4f\n',nanmean(isnrpugs2(:)));
+    fprintf('mean iSNR: %.4f\n',nanmean(iSNR(:)));
+    
+end
 
 % save('meanTSNR', 'tsnrData'); This was for debugging purposes.
 
