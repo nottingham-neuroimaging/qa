@@ -37,7 +37,9 @@ if(nargin<8)
     orientation = 3;
 end
 
-data = cbiReadNifti(filename);
+%data = cbiReadNifti(filename);
+mydata = MRIread(filename);
+data = mydata.vol;
 data = mean(data,4);
 % This here changes the image orientation if you need to..
 switch orientation

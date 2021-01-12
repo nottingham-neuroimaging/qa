@@ -52,7 +52,11 @@ if ieNotDefined('outputBaseName')
 end
 
 % Reads the data from the file name.
-[Data, Hdr]=cbiReadNifti(dataFilename);
+%[Data, Hdr]=cbiReadNifti(dataFilename);
+mri = MRIread(dataFilename);
+Data = mri.vol;
+Hdr = mri.niftihdr;
+
 
 
 % get data dimensions
@@ -161,7 +165,14 @@ end
 Hdr.dim(5)=1;
 
 outputFilenameTSNR = [outputBaseName '_tSNR.hdr'];
-cbiWriteNifti(outputFilenameTSNR,tsnrData,Hdr);
+%cbiWriteNifti(outputFilenameTSNR,tsnrData,Hdr);
+
+mri.nframes = 1;
+mri.vol = tsnrData;
+mri.niftihdr = Hdr;
+outputFilenameTSNRmri = [outputBaseName '_tSNR.nii'];
+MRIwrite(mri,outputFilenameTSNRmri);
+
 disp(['Saved ' outputFilenameTSNR]);
 
 % save out temporal SNR map and noise (as first and second volume)
@@ -173,12 +184,27 @@ output(:,:,:,3)=squeeze(mean(im_data,4));
 output(:,:,:,4)=squeeze(std(im_data,1,4));
 
 outputFilename = [outputBaseName '_tSNR_N_M_V.hdr'];
-cbiWriteNifti(outputFilename,output,Hdr);
+
+mri.nframes = 1;
+mri.vol = output;
+mri.niftihdr = Hdr;
+outputFilenamemri = [outputBaseName '_tSNR_N_M_V.nii'];
+MRIwrite(mri,outputFilenamemri);
+
+%cbiWriteNifti(outputFilename,output,Hdr);
 
 Hdr.dim(5)=1;
 meanImg=squeeze(mean(im_data,4));
 outputFilename = [outputBaseName '_Mean.hdr'];
-cbiWriteNifti(outputFilename,meanImg,Hdr);
+
+mri.nframes = 1;
+mri.vol = meanImg;
+mri.niftihdr = Hdr;
+outputFilenamemri = [outputBaseName '_Mean.nii'];
+MRIwrite(mri,outputFilenamemri);
+
+%cbiWriteNifti(outputFilename,meanImg,Hdr);
+
 
 %disp stuff
 % mymean = mean(im_data,4);
