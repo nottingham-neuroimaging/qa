@@ -21,7 +21,9 @@ tic
 clc
 for xx = 1:length(scanParams)
     
-    [data_orig, ~] = cbiReadNifti(scanParams(xx).fileName);
+    mydata = MRIread(scanParams(xx).fileName);
+    %[data_orig, ~] = cbiReadNifti(scanParams(xx).fileName);
+    data_orig = mydata.vol;
     
     % here crop the data based on the dynamics chosen:
     
