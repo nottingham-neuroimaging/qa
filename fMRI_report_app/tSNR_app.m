@@ -55,7 +55,12 @@ end
 %[Data, Hdr]=cbiReadNifti(dataFilename);
 mri = MRIread(dataFilename);
 Data = mri.vol;
-Hdr = mri.niftihdr;
+
+if isfield(mri,'analyzehdr')
+    Hdr = mri;
+else
+    Hdr = mri.niftihdr;
+end
 
 
 

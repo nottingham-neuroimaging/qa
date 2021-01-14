@@ -27,8 +27,13 @@ for nf=1:length(filenames)
     scanParams(nf).ROI_box = [];
     % Some of the characters in this contain non-unicode characters, so
     % remove them here. 
-    unicodenotes = unicode2native(hdr.niftihdr.descrip);
-    scanParams(nf).notes = hdr.niftihdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    if isfield(hdr,'analyzehdr') % MRIread nuance
+        unicodenotes = unicode2native(hdr.analyzehdr.hist.descrip);
+        scanParams(nf).notes = hdr.analyzehdr.hist.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    else
+        unicodenotes = unicode2native(hdr.niftihdr.descrip);
+        scanParams(nf).notes = hdr.niftihdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    end
     scanParams(nf).orientation = 3;
 end
 
