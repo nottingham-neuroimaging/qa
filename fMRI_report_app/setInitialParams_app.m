@@ -27,7 +27,7 @@ for nf=1:length(filenames)
     scanParams(nf).ROI_box = [];
     % Some of the characters in this contain non-unicode characters, so
     % remove them here. 
-    if isfield(hdr,'analyzehdr') % MRIread nuance
+    if isfield(hdr,'analyzehdr') && ~isempty(hdr.analyzehdr) % MRIread nuance
         unicodenotes = unicode2native(hdr.analyzehdr.hist.descrip);
         scanParams(nf).notes = hdr.analyzehdr.hist.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
     else
