@@ -57,7 +57,11 @@ mri = MRIread(dataFilename);
 Data = mri.vol;
 
 if isfield(mri,'analyzehdr')
-    Hdr = mri;
+    if ~isempty(mri.analyzehdr)
+        Hdr = mri;
+    else
+        Hdr = mri.niftihdr;
+    end
 else
     Hdr = mri.niftihdr;
 end
@@ -126,7 +130,7 @@ detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
 im_data = reshape(detrended_data,nX,nY,nS,nV);
 % Now this is standard...
 
-tsnrData=mean(im_data,4)./std(im_data,1,4);
+tsnrData=mean(im_data,4)./std(im_data,0,4);
 tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 
 save('meanTSNR', 'tsnrData');
