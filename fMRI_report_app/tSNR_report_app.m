@@ -65,8 +65,12 @@ myfilename = cell(length(scanParams),1);
     
 for nf=1:length(scanParams)
     %data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
-    mydata = MRIread(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
-    data = mydata.vol;
+    %mydata = MRIread(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
+    
+    data = niftiread(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
+    
+    %data = mydata.vol;
+    
     data2 = data(~isnan(data(:)) & ~isinf(data(:)));
     figH = figure;
     set(figH,'PaperPosition',[0.25 0.25 15 8],'visible','off');
@@ -134,8 +138,11 @@ for nf=1:length(scanParams)
   if ~isempty(scanParams(nf).ROI_box)
     % First load image
     %img = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR']);
-    myimg = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR']);
-    img = myimg.vol;
+    %myimg = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR']);
+    img = niftiread(['QA_report/' tSNRFnames{nf} '_tSNR']);
+    
+    %img = myimg.vol;
+    
     slice_image = img(:,:,scanParams(nf).ROI_box.slice,1);
     % Reorder, just so that we have a match of the ROIs with the image
     % (from rotation)
@@ -158,12 +165,17 @@ iSNR = nan(length(scanParams),1);
 for nf=1:length(scanParams)
   if ~isempty(scanParams(nf).ROI_box) && scanParams(nf).dynNOISEscan
     %nI = cbiReadNifti(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
-    mynI = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
-    nI = mynI.vol;
+    %mynI = MRIread(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
+    nI = niftiread(['QA_report/' tSNRFnames{nf} '_tSNR_N_M_V']);
+    
+    %nI = mynI.vol;
+    
     noiseImage = nI(:,:,:,2);
     %img = cbiReadNifti(scanParams(nf).fileName);
-    myimg = MRIread(scanParams(nf).fileName);
-    img = myimg.vol;
+    %myimg = MRIread(scanParams(nf).fileName);
+    
+    img = niftiread(scanParams(nf).fileName);
+    %img = myimg.vol;
     img_data = img(:,:,:,scanParams(nf).volumeSelect);
 
     img_slice = img_data(:,:,scanParams(nf).ROI_box.slice);

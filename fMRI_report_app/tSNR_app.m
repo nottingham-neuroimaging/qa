@@ -53,20 +53,22 @@ end
 
 % Reads the data from the file name.
 %[Data, Hdr]=cbiReadNifti(dataFilename);
-mri = MRIread(dataFilename);
-Data = mri.vol;
-
-if isfield(mri,'analyzehdr')
-    if ~isempty(mri.analyzehdr)
-        Hdr = mri;
-    else
-        Hdr = mri.niftihdr;
-    end
-else
-    Hdr = mri.niftihdr;
-end
+%mri = MRIread(dataFilename);
+%Data = mri.vol;
+Data = niftiread(dataFilename);
 
 
+% if isfield(mri,'analyzehdr')
+%     if ~isempty(mri.analyzehdr)
+%         Hdr = mri;
+%     else
+%         Hdr = mri.niftihdr;
+%     end
+% else
+%     Hdr = mri.niftihdr;
+% end
+
+Hdr = niftiinfo(dataFilename);
 
 % get data dimensions
 nX = size(Data,1);
@@ -176,11 +178,13 @@ Hdr.dim(5)=1;
 outputFilenameTSNR = [outputBaseName '_tSNR.hdr'];
 %cbiWriteNifti(outputFilenameTSNR,tsnrData,Hdr);
 
-mri.nframes = 1;
-mri.vol = tsnrData;
-mri.niftihdr = Hdr;
+% mri.nframes = 1;
+% mri.vol = tsnrData;
+% mri.niftihdr = Hdr;
+
 outputFilenameTSNRmri = [outputBaseName '_tSNR.nii'];
-MRIwrite(mri,outputFilenameTSNRmri);
+%MRIwrite(mri,outputFilenameTSNRmri);
+niftiwrite(tsnrData, outputFilenameTSNRmri);
 
 disp(['Saved ' outputFilenameTSNR]);
 
@@ -192,13 +196,14 @@ output(:,:,:,2)=squeeze(noise_data);
 output(:,:,:,3)=squeeze(mean(im_data,4));
 output(:,:,:,4)=squeeze(std(im_data,1,4));
 
-outputFilename = [outputBaseName '_tSNR_N_M_V.hdr'];
+%outputFilename = [outputBaseName '_tSNR_N_M_V.hdr'];
 
-mri.nframes = 1;
-mri.vol = output;
-mri.niftihdr = Hdr;
+% mri.nframes = 1;
+% mri.vol = output;
+% mri.niftihdr = Hdr;
 outputFilenamemri = [outputBaseName '_tSNR_N_M_V.nii'];
-MRIwrite(mri,outputFilenamemri);
+%MRIwrite(mri,outputFilenamemri);
+niftiwrite(output,outputFilenamemri);
 
 %cbiWriteNifti(outputFilename,output,Hdr);
 
@@ -206,11 +211,12 @@ Hdr.dim(5)=1;
 meanImg=squeeze(mean(im_data,4));
 outputFilename = [outputBaseName '_Mean.hdr'];
 
-mri.nframes = 1;
-mri.vol = meanImg;
-mri.niftihdr = Hdr;
+% mri.nframes = 1;
+% mri.vol = meanImg;
+% mri.niftihdr = Hdr;
 outputFilenamemri = [outputBaseName '_Mean.nii'];
-MRIwrite(mri,outputFilenamemri);
+%MRIwrite(mri,outputFilenamemri);
+niftiwrite(meanImg,outputFilenamemri);
 
 %cbiWriteNifti(outputFilename,meanImg,Hdr);
 
