@@ -29,7 +29,7 @@ for nf=1:length(filenames)
     
     %scanParams(nf).outputBaseName = hdr.hdr_name(1:end-4);
     %scanParams(nf).outputBaseName = hdr.fspec(1:end-4);
-    bloop = filenames{1};
+    bloop = filenames{nf};
     scanParams(nf).outputBaseName = bloop(1:end-7);
     %scanParams(nf).slices = 1:hdr.dim(4);
     %scanParams(nf).slices = 1:hdr.depth;
