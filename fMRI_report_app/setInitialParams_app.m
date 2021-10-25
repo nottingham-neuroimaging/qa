@@ -30,7 +30,15 @@ for nf=1:length(filenames)
     %scanParams(nf).outputBaseName = hdr.hdr_name(1:end-4);
     %scanParams(nf).outputBaseName = hdr.fspec(1:end-4);
     bloop = filenames{nf};
-    scanParams(nf).outputBaseName = bloop(1:end-7);
+    % check here for type of nifti
+    substring1 = '.nii.gz';
+    if contains(bloop,substring1)
+        killend = 7;
+    else
+        killend = 4;
+    end
+    
+    scanParams(nf).outputBaseName = bloop(1:end-killend);
     %scanParams(nf).slices = 1:hdr.dim(4);
     %scanParams(nf).slices = 1:hdr.depth;
     scanParams(nf).slices = 1:hdr.ImageSize(3);
