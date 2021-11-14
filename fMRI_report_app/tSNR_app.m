@@ -113,24 +113,28 @@ end
 % (simplistic at the moment - compared to using high-pass filtering)
 % 
 % Here we reshape the data to vectorise it.
-reshaped_data = reshape(im_data,nX*nY*nS,nV);
-% The next thing to do is to make a GLM, with just a linear and quadratic regressor (see Hutton et al. Neuroimage
-% 2011) i.e. solve
-% 
-% Y = X*betas + error
-% 
-% Where X has the model - otherwise known as the design matrix
-% and betas is a column vector that has the co-efficients for the elements in the design matrix (to be estimated)
-X1 =[1:nV].';X2 = X1.^2;
-X = [ones(size(X1)),X1,X2]; %Design matrix
-P = (X'*X)\X'; % Proj. matrix (also pinv(X))
-% find solution of GLM
-betas = P*(reshaped_data.');
-
-% Now remove the linear and quadratic trend only..
-detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
-im_data = reshape(detrended_data,nX,nY,nS,nV);
-% Now this is standard...
+if nV ~= 1
+    reshaped_data = reshape(im_data,nX*nY*nS,nV);
+    % The next thing to do is to make a GLM, with just a linear and quadratic regressor (see Hutton et al. Neuroimage
+    % 2011) i.e. solve
+    %
+    % Y = X*betas + error
+    %
+    % Where X has the model - otherwise known as the design matrix
+    % and betas is a column vector that has the co-efficients for the elements in the design matrix (to be estimated)
+    X1 =[1:nV].';X2 = X1.^2;
+    X = [ones(size(X1)),X1,X2]; %Design matrix
+    P = (X'*X)\X'; % Proj. matrix (also pinv(X))
+    % find solution of GLM
+    betas = P*(reshaped_data.');
+    
+    % Now remove the linear and quadratic trend only..
+    detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
+    im_data = reshape(detrended_data,nX,nY,nS,nV);
+    % Now this is standard...
+else
+    im_data = double(im_data);
+end
 
 tsnrData=mean(im_data,4)./std(im_data,0,4);
 tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
