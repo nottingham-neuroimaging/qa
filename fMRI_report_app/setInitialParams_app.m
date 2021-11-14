@@ -17,7 +17,11 @@ for nf=1:length(filenames)
     scanParams(nf).dynNOISEscan = 0;
     %scanParams(nf).volumeSelect = [hdr.dim(5)];
     %scanParams(nf).volumeSelect = [hdr.nframes];
-    scanParams(nf).volumeSelect = [hdr.ImageSize(4)];
+    if size(hdr.ImageSize,2)<4
+        scanParams(nf).volumeSelect = 1;
+    else
+        scanParams(nf).volumeSelect = [hdr.ImageSize(4)];
+    end
     
     %scanParams(nf).volumeSelectFirst = [hdr.dim(5)/hdr.dim(5)];
     %scanParams(nf).volumeSelectFirst = [hdr.nframes/hdr.nframes];
@@ -48,14 +52,14 @@ for nf=1:length(filenames)
     
     scanParams(nf).ROI_box = [];
     % Some of the characters in this contain non-unicode characters, so
-    % remove them here. 
-%     if isfield(hdr,'analyzehdr') && ~isempty(hdr.analyzehdr) % MRIread nuance
-%         unicodenotes = unicode2native(hdr.analyzehdr.hist.descrip);
-%         scanParams(nf).notes = hdr.analyzehdr.hist.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
-%     else
-%         unicodenotes = unicode2native(hdr.niftihdr.descrip);
-%         scanParams(nf).notes = hdr.niftihdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
-%     end
+    % remove them here.
+    %     if isfield(hdr,'analyzehdr') && ~isempty(hdr.analyzehdr) % MRIread nuance
+    %         unicodenotes = unicode2native(hdr.analyzehdr.hist.descrip);
+    %         scanParams(nf).notes = hdr.analyzehdr.hist.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    %     else
+    %         unicodenotes = unicode2native(hdr.niftihdr.descrip);
+    %         scanParams(nf).notes = hdr.niftihdr.descrip(setdiff(1:length(unicodenotes),find(~unicodenotes)));
+    %     end
     %keyboard
     unicodenotes = unicode2native(hdr.Filemoddate);
     scanParams(nf).notes = hdr.Filemoddate(setdiff(1:length(unicodenotes),find(~unicodenotes)));
