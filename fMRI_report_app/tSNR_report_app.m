@@ -64,10 +64,14 @@ myMedian = zeros(length(scanParams),1);
 myfilename = cell(length(scanParams),1);
 
 
-if scanParams.volumeSelect == 1
+
+for nf = 1:length(scanParams)
     
-    % here add iSNR for just one volume
-    for bloop = 1:length(scanParams)
+    
+    if scanParams(nf).volumeSelect == 1
+        manydyns = 0;
+        % here add iSNR for just one volume
+        %for nf = 1:length(scanParams)
         
         %data = niftiread(scanParams(nf).fileName);
         %data = niftiread(['QA_report/' scanParams(nf).outputBaseName '_Mean']);
@@ -95,20 +99,20 @@ if scanParams.volumeSelect == 1
         outputFilenameISNR = ['QA_report/' scanParams(nf).outputBaseName '_iSNR.nii'];
         niftiwrite(iSNR_flat, outputFilenameISNR);
         
-    end
-    
-
-    
-    
-    
-else
-    
-    for nf=1:length(scanParams)
+        %end
+        
+        
+        
+        
+        
+    else
+        
+        %for nf=1:length(scanParams)
         %data = cbiReadNifti(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
         %mydata = MRIread(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
         
         data = niftiread(['QA_report/' scanParams(nf).outputBaseName '_tSNR']);
-        
+        manydyns = 1;
         %data = mydata.vol;
         
         data2 = data(~isnan(data(:)) & ~isinf(data(:)));
@@ -153,7 +157,10 @@ else
         %themeans(nf) = mean(data2);
         %clear data data2;
     end
-    
+end
+
+
+if manydyns
     % make table outside of loop, prevents warning message
     T = table(myMean,myMedian, myfilename);
     % save out to csvfile
@@ -233,6 +240,7 @@ else
     end
     
 end
+
 
 
 end
