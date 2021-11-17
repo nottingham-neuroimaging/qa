@@ -64,7 +64,7 @@ myMedian = zeros(length(scanParams),1);
 myfilename = cell(length(scanParams),1);
 
 
-if size(scanParams.dims,2) < 4
+if scanParams.volumeSelect == 1
     
     % here add iSNR for just one volume
     for bloop = 1:length(scanParams)

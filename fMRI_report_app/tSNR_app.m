@@ -115,6 +115,7 @@ end
 % Here we reshape the data to vectorise it.
 if nV ~= 1
     reshaped_data = reshape(im_data,nX*nY*nS,nV);
+    reshaped_data = double(reshaped_data);
     % The next thing to do is to make a GLM, with just a linear and quadratic regressor (see Hutton et al. Neuroimage
     % 2011) i.e. solve
     %
@@ -126,7 +127,7 @@ if nV ~= 1
     X = [ones(size(X1)),X1,X2]; %Design matrix
     P = (X'*X)\X'; % Proj. matrix (also pinv(X))
     % find solution of GLM
-    betas = P*(reshaped_data.');
+    betas = P*(double(reshaped_data).');
     
     % Now remove the linear and quadratic trend only..
     detrended_data = (reshaped_data.' - X(:,2:3)*betas(2:3,:)).';
