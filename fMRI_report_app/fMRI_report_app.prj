@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="2874707707" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="719067341" file="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app/fMRI_report_app.prj" location="/Users/ppzma/Documents/MATLAB/qa/fMRI_report_app" name="fMRI_report_app" target="target.mlapps" target-name="Package App">
     <param.appname>fMRI_report_app</param.appname>
     <param.authnamewatermark>Michael Asghar</param.authnamewatermark>
     <param.email>michael.asghar@nottingham.ac.uk</param.email>
@@ -12,7 +12,7 @@
     </param.icons>
     <param.summary>Runs tSNR analysis of 4D fMRI data</param.summary>
     <param.description />
-    <param.screenshot>/private/var/folders/0z/9mhm5dvd4mq0ghp_lkhnlb8w0000gn/T/tpf7777f1e_e191_4ddc_b36f_ba12f08460b4.png</param.screenshot>
+    <param.screenshot>/private/var/folders/0z/9mhm5dvd4mq0ghp_lkhnlb8w0000gn/T/tpde4b4393_0b35_4238_81a3_a0834a989698.png</param.screenshot>
     <param.version>1.0</param.version>
     <param.products.name />
     <param.products.id />
@@ -34,38 +34,6 @@
       <file>${PROJECT_ROOT}/fMRI_report_app.mlapp</file>
     </fileset.main>
     <fileset.depfun>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_fileexists.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_ldbhdr.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_ldbslice.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_mri_struct.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_svbhdr.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fast_svbslice.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_bfiledim.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_bvoldim.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_hdrdatstruct.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_ldbfile.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_lddat2.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_lddat3.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/fmri_svbfile.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/mar.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/qoe.m</file>
-      <file>/Applications/freesurfer/fsfast/toolbox/reshape1d.m</file>
-      <file>/Applications/freesurfer/matlab/MRIfspec.m</file>
-      <file>/Applications/freesurfer/matlab/MRIread.m</file>
-      <file>/Applications/freesurfer/matlab/MRIwrite.m</file>
-      <file>/Applications/freesurfer/matlab/fsgettmppath.m</file>
-      <file>/Applications/freesurfer/matlab/load_analyze.m</file>
-      <file>/Applications/freesurfer/matlab/load_analyze_hdr.m</file>
-      <file>/Applications/freesurfer/matlab/load_mgh.m</file>
-      <file>/Applications/freesurfer/matlab/load_nifti.m</file>
-      <file>/Applications/freesurfer/matlab/load_nifti_hdr.m</file>
-      <file>/Applications/freesurfer/matlab/save_mgh.m</file>
-      <file>/Applications/freesurfer/matlab/save_nifti.m</file>
-      <file>/Applications/freesurfer/matlab/strlen.m</file>
-      <file>/Applications/freesurfer/matlab/vox2rasToQform.m</file>
-      <file>/Applications/freesurfer/matlab/vox2ras_0to1.m</file>
-      <file>/Applications/freesurfer/matlab/vox2ras_1to0.m</file>
-      <file>/Applications/freesurfer/matlab/vox2ras_tkreg.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mgl/utils/ieNotDefined.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/ImageProcessing/color2RGB.m</file>
       <file>/Users/ppzma/Documents/MATLAB/mrTools/mrUtilities/ImageProcessing/selectCropRegion.m</file>
