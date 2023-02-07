@@ -99,8 +99,24 @@ for nf = 1:length(scanParams)
         outputFilenameISNR = ['QA_report/' scanParams(nf).outputBaseName '_iSNR.nii'];
         niftiwrite(iSNR_flat, outputFilenameISNR);
         
-        %end
+       
         
+        figH = figure;
+        %set(figH,'PaperPosition',[0.25 0.25 12 8],'visible','off');
+        
+        imagesc(iSNR_flat);
+        colormap hot
+        colorbar
+        caxis([0 2.5])
+        print(figH,['QA_report/' scanParams(nf).outputBaseName '_iSNR_IMAGE.png'],'-dpng')
+        
+        % create iSNR png
+%         tSNRFnames{nf} = scanParams(nf).outputBaseName;
+%         image_matrix = generateSliceSummary_app(['QA_report/' scanParams(nf).outputBaseName '_iSNR'],...
+%             [scanParams(nf).sliceSelectFirst:scanParams(nf).sliceSelectLast],[],fontScale,imgScale,cmap,scanParams(nf).ROI_box,scanParams(nf).orientation, scanParams(nf).mask);
+%         
+%         imwrite(image_matrix,['QA_report/' scanParams(nf).outputBaseName '_iSNR_IMAGE.png'],'PNG')
+%         
         
         
         
