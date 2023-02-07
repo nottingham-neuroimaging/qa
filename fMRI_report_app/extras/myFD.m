@@ -119,7 +119,7 @@ for xx = 1:length(scanParams)
     end
     
     %figure('Position',[100 100 1000 100])
-    figure
+    fig = figure;
     %axis([0 length 0 2])
     FD = frame_rot_sum + frame_trans_sum;
     X = 1:length(FD);
@@ -132,10 +132,12 @@ for xx = 1:length(scanParams)
     plot(X,FD,'linewidth',2)
     xlabel('time (dynamics)')
     ylabel('Framewise displacement (mm)')
-    ylim([0 2])
+    ylim([0 ceil(max(FD))])
     
     title(['FILE: ' scanParams(xx).fileName],'Interpreter','none')
     
+    thename = [scanParams(xx).mypath scanParams(xx).fileName(1:end-7)];
+    print(fig,'-dpdf',thename)
     
 end
 

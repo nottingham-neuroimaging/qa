@@ -61,55 +61,118 @@ if(orientation~=3)
 
 end
 
-%     figure;
-for sc=1:length(sliceChoice)
-    dat = data(:,:,sc).';
-    if(~isempty(imgScale))
-        if(imgScale>0)
-            dat2 = (dat/imgScale);
+if size(data,3) == 1
+    
+    %keyboard
+    % this is for iSNR
+    
+    %for sc=1:length(sliceChoice)
+        
+        
+        dat = data;
+        if(~isempty(imgScale))
+            if(imgScale>0)
+                dat2 = (dat/imgScale);
+            else
+                dat2 = (dat/max(dat(:)));
+            end
         else
             dat2 = (dat/max(dat(:)));
-        end                
-    else
-        dat2 = (dat/max(dat(:)));
-    end
-    
-    if ieNotDefined('mask')
-        mask = 0;
+        end
         
-    elseif mask == 1
-        % masking 5% of max values (optional)
-        dat2(dat2<0.05*max(dat2(:))) = 0;
+        if ieNotDefined('mask')
+            mask = 0;
+            
+        elseif mask == 1
+            % masking 5% of max values (optional)
+            dat2(dat2<0.05*max(dat2(:))) = 0;
+        end
+        
+        dat2 = uint8(reshape((meshData2Colors_app(dat2(:),cmap,[0 1])).'*255,[size(dat) 3]));
+        %     keyboard
+        
+        % Here is for zooming in.
+%         if(~isempty(zoomedSize))
+%             dat2 = dat2(zoomedSize(1,1):zoomedSize(1,2),zoomedSize(2,1):zoomedSize(2,2),:);
+%         end
+%         dat2 = dat2(end:-1:1,:,:);
+        
+        % Here is a fix in case computer graphics toolbox is not installed.
+        %     try
+        %         dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
+        % %         dat2 = insertString(dat2,[1 1],['slice_' num2str(sliceChoice(sc))],[0 0 255],[255 255 255],fontScale);
+        %     catch
+        %         dat2 = dat2;
+        %     end
+        
+%         if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))
+%             try
+%                 dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
+%             catch
+%                 % BoxColor = [255 255 255];
+%                 dat2(ROI_box.y:ROI_box.height+ROI_box.y,[ROI_box.x-[0 1] ROI_box.width+ROI_box.x+[0 1]],:) = 255;
+%                 dat2([ROI_box.y-[0 1] ROI_box.height+ROI_box.y+[0 1]],ROI_box.x:ROI_box.width+ROI_box.x,:) = 255;
+%             end
+%         end
+        dats{1} = dat2;
+    
+    
+    
+    
+    
+else
+    for sc=1:length(sliceChoice)
+        
+        
+        dat = data(:,:,sc).';
+        if(~isempty(imgScale))
+            if(imgScale>0)
+                dat2 = (dat/imgScale);
+            else
+                dat2 = (dat/max(dat(:)));
+            end
+        else
+            dat2 = (dat/max(dat(:)));
+        end
+        
+        if ieNotDefined('mask')
+            mask = 0;
+            
+        elseif mask == 1
+            % masking 5% of max values (optional)
+            dat2(dat2<0.05*max(dat2(:))) = 0;
+        end
+        
+        dat2 = uint8(reshape((meshData2Colors_app(dat2(:),cmap,[0 1])).'*255,[size(dat) 3]));
+        %     keyboard
+        
+        % Here is for zooming in.
+        if(~isempty(zoomedSize))
+            dat2 = dat2(zoomedSize(1,1):zoomedSize(1,2),zoomedSize(2,1):zoomedSize(2,2),:);
+        end
+        dat2 = dat2(end:-1:1,:,:);
+        
+        % Here is a fix in case computer graphics toolbox is not installed.
+        %     try
+        %         dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
+        % %         dat2 = insertString(dat2,[1 1],['slice_' num2str(sliceChoice(sc))],[0 0 255],[255 255 255],fontScale);
+        %     catch
+        %         dat2 = dat2;
+        %     end
+        
+        if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))
+            try
+                dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
+            catch
+                % BoxColor = [255 255 255];
+                dat2(ROI_box.y:ROI_box.height+ROI_box.y,[ROI_box.x-[0 1] ROI_box.width+ROI_box.x+[0 1]],:) = 255;
+                dat2([ROI_box.y-[0 1] ROI_box.height+ROI_box.y+[0 1]],ROI_box.x:ROI_box.width+ROI_box.x,:) = 255;
+            end
+        end
+        dats{sc} = dat2;
     end
-    
-    dat2 = uint8(reshape((meshData2Colors_app(dat2(:),cmap,[0 1])).'*255,[size(dat) 3]));
-%     keyboard
-    
-    % Here is for zooming in.
-    if(~isempty(zoomedSize))
-        dat2 = dat2(zoomedSize(1,1):zoomedSize(1,2),zoomedSize(2,1):zoomedSize(2,2),:);
-    end
-    dat2 = dat2(end:-1:1,:,:);
-    
-    % Here is a fix in case computer graphics toolbox is not installed.   
-%     try
-%         dat2 = insertText(dat2,[1,1],['slice_' num2str(sliceChoice(sc))],'BoxColor',[0 0 255],'TextColor',[255 255 255],'FontSize',fontScale);
-% %         dat2 = insertString(dat2,[1 1],['slice_' num2str(sliceChoice(sc))],[0 0 255],[255 255 255],fontScale);
-%     catch
-%         dat2 = dat2;
-%     end
-    
-    if(~isempty(ROI_box) && ismember(sc,ROI_box.slice))    
-      try
-        dat2=insertShape(dat2,'Rectangle',[ROI_box.x ROI_box.y ROI_box.width ROI_box.height],'Color',[255 255 255],'LineWidth',3);
-      catch
-        % BoxColor = [255 255 255];
-        dat2(ROI_box.y:ROI_box.height+ROI_box.y,[ROI_box.x-[0 1] ROI_box.width+ROI_box.x+[0 1]],:) = 255;
-        dat2([ROI_box.y-[0 1] ROI_box.height+ROI_box.y+[0 1]],ROI_box.x:ROI_box.width+ROI_box.x,:) = 255;
-      end
-    end
-    dats{sc} = dat2;
 end
+
 
 % Always make sure this is eight
 no_columns = 8;
