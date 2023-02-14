@@ -15,19 +15,24 @@ for xx = 1:length(scanParams)
     nX = size(data,1);
     nY = size(data,2);
     nS = size(data,3);
-    nV = size(data,4);
+    
 
 
     %keyboard
     
     %% run the formula
 
-    stack_mean = mean(data,4);
+    % by default remove last dynamic as it might be a noise scan
+    data = double(data);
+    data = data(:,:,:,1:end-1);
+    nV = size(data,4);
+
+    stack_mean = mean(abs(data),4);
     
     diffShot_stack = zeros(nX,nY,nV-1);
     for ii = 1:nV-1
        
-        %diffShot_stack(:,:,ii) = sum(abs(data(:,:,:,ii)-data(:,:,:,(ii+1))) ./ stack_mean ,3);
+        %diffShot_stack(:,:,ii) = sum(data(:,:,:,ii)-data(:,:,:,(ii+1)) ./ stack_mean ,3);
         diffShot_stack(:,:,ii) = sum(abs(data(:,:,:,ii)-data(:,:,:,(ii+1))), 3 );
        
         imagesc(diffShot_stack(:,:,ii))
@@ -35,6 +40,7 @@ for xx = 1:length(scanParams)
         colorbar
         %myclim = max(max(diffShot_stack(:,:,ii)));
         myclim = max(max(diffShot_stack(:,:,1)));
+        
         clim([0 myclim])
         exportgraphics(gca,[scanParams.mypath extractBefore(scanParams(xx).fileName,'.') 'diffShot_stack_nodiv.gif'],'Append',true)
     end
