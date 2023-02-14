@@ -34,6 +34,9 @@ for xx = 1:length(scanParams)
        
         %diffShot_stack(:,:,ii) = sum(data(:,:,:,ii)-data(:,:,:,(ii+1)) ./ stack_mean ,3);
         diffShot_stack(:,:,ii) = sum(abs(data(:,:,:,ii)-data(:,:,:,(ii+1))), 3 );
+
+        
+
        
         imagesc(diffShot_stack(:,:,ii))
         colormap(viridis)
@@ -52,6 +55,13 @@ figure
 imagesc(diffShot_stack(:,:,1))
 disp('Made a shot to shot diff gif...')
 toc
+
+
+
+
+
+
+
 
 
 
