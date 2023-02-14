@@ -9,6 +9,8 @@ if isempty(volume)
   return
 end
 
+volume = double(volume);
+
 dims=size(volume); 
 [dump,sliceDim]=min(dims); %choose the slice dimension to the be smallest one
 
