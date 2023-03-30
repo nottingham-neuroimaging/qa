@@ -1,6 +1,6 @@
 function generatePPT_app(scanParams)
 % create a programmatic powerpoint to store the means and images
-
+disp('Generating ppt, please wait...')
 import mlreportgen.ppt.*;
 ppt_path = 'QA_report/';
 %cd(ppt_path)
@@ -21,6 +21,7 @@ for nf=1:length(scanParams)
 end
 close(ppt);
 
+disp('...')
 %%
 import mlreportgen.ppt.*;
 ppt_path = 'QA_report/';
@@ -47,5 +48,6 @@ for nf = 1:length(scanParams)
 end
 close(ppt);
 
+disp('... Okay, all done.')
 
 end
