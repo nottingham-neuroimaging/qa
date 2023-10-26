@@ -40,7 +40,12 @@ for xx = 1:length(scanParams)
     
     %tform = zeros(1,nV);
     % make space
-    tform = repmat(affine3d([1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1]),1,nV);
+
+     %prealocating is causing an issue
+    %tform = repmat(affine3d([1 0 0 0; 0 1 0 0; 0 0 1 0; 0 0 0 1]),1,nV);
+
+
+    
     %fixed = data(:,:,:,1);
     %fixed = mean(data,4);
     [optimizer, metric] = imregconfig('monomodal');
