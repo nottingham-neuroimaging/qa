@@ -137,6 +137,55 @@ else
     im_data = double(im_data);
 end
 
+%% add a plot to look at signal and std in a patch
+% magic numbers here
+%quickCrop = [51,70,41,60,round(size(im_data,3)./2)+5];
+quickCrop = [41,60,61,80,round(size(im_data,3)./2)];
+mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
+squatch = squeeze(mypatch);
+bloop = figure;
+tiledlayout(2,2)
+nexttile
+imagesc(im_data(:,:,quickCrop(5),1))
+title(sprintf('slice %d',quickCrop(5)))
+clim([0 max(im_data(:))])
+hold on
+rectangle('Position',[quickCrop(3),quickCrop(1),20,20],...
+         'LineWidth',2,'LineStyle','--')
+colormap viridis
+colorbar
+nexttile
+imagesc(squatch(:,:,1))
+title('patch')
+colormap viridis
+colorbar
+clim([0 max(im_data(:))])
+squatch_rows = mean(squatch,1);
+squatch_rowscols = mean(squatch_rows,2);
+squatch_t = squeeze(squatch_rowscols);
+std_sq = std(squatch,0,3);
+std_sq_rows = mean(std_sq,1);
+a = squatch_t-mean(squatch_t);
+b = std_sq_rows-mean(std_sq_rows);
+nexttile([1 2])
+mye = errorbar(a,b,'LineWidth',2);
+%mye.Marker = "o";
+%mye.MarkerSize = 10;
+mye.Color = 'red';
+mye.CapSize = 10;
+title('mean signal + std error bars')
+ylim([-1000 1000])
+print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
+
+%close(bloop)
+
+%plot(1:length(a),a,'LineWidth',2)
+%hold on
+%plot(1:length(b),b,'LineWidth',2)
+%legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
+
+
+%%
 tsnrData=mean(im_data,4)./std(im_data,0,4);
 tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 
