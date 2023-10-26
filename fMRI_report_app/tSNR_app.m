@@ -165,26 +165,32 @@ squatch_rowscols = mean(squatch_rows,2);
 squatch_t = squeeze(squatch_rowscols);
 std_sq = std(squatch,0,3);
 std_sq_rows = mean(std_sq,1);
+% demean
+% from classic
+
+
 a = squatch_t-mean(squatch_t);
 b = std_sq_rows-mean(std_sq_rows);
+
+
 nexttile([1 2])
-mye = errorbar(a,b,'LineWidth',2);
+%mye = errorbar(a,b,'LineWidth',2);
 %mye.Marker = "o";
 %mye.MarkerSize = 10;
-mye.Color = 'red';
-mye.CapSize = 10;
+%mye.Color = 'red';
+%mye.CapSize = 10;
 %title('mean signal + std error bars')
-title(sprintf('mean %.0f, std %.0f',mean(squatch_t), mean(std_sq_rows)));
-ylim([-1000 1000])
-print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
+
 
 %close(bloop)
 
-%plot(1:length(a),a,'LineWidth',2)
-%hold on
-%plot(1:length(b),b,'LineWidth',2)
-%legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
-
+plot(1:length(a),a,'LineWidth',2)
+hold on
+plot(1:length(b),b,'LineWidth',2)
+legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
+title(sprintf('mean %.0f, std %.0f',mean(squatch_t), mean(std_sq_rows)));
+ylim([-1000 1000])
+print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 %%
 tsnrData=mean(im_data,4)./std(im_data,0,4);
