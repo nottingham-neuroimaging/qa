@@ -139,8 +139,8 @@ end
 
 %% add a plot to look at signal and std in a patch
 % magic numbers here
-%quickCrop = [51,70,41,60,round(size(im_data,3)./2)+5];
-quickCrop = [41,60,61,80,round(size(im_data,3)./2)];
+quickCrop = [51,70,41,60,round(size(im_data,3)./2)+5];
+%quickCrop = [41,60,61,80,round(size(im_data,3)./2)];
 mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 bloop = figure;
@@ -173,7 +173,8 @@ mye = errorbar(a,b,'LineWidth',2);
 %mye.MarkerSize = 10;
 mye.Color = 'red';
 mye.CapSize = 10;
-title('mean signal + std error bars')
+%title('mean signal + std error bars')
+title(sprintf('mean %.0f, std %.0f',mean(squatch_t), mean(std_sq_rows)));
 ylim([-1000 1000])
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
