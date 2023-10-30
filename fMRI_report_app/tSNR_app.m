@@ -139,10 +139,15 @@ end
 
 %% add a plot to look at signal and std in a patch
 % magic numbers here
-quickCrop = [51,70,41,60,round(size(im_data,3)./2)+5];
-%quickCrop = [41,60,61,80,round(size(im_data,3)./2)];
+%quickCrop = [45,65,85,105,round(size(im_data,3)./2)+5]; %9 and 18 and 11 and 20
+quickCrop = [25,45,25,45,round(size(im_data,3)./2)+10]; % 10 and 19 and 13
 mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
+
+patch_tSNR = mean(squatch,3)./std(squatch,0,3);
+patch_tSNR_mean = mean(patch_tSNR(:));
+
+
 bloop = figure;
 tiledlayout(2,2)
 nexttile
@@ -156,41 +161,34 @@ colormap viridis
 colorbar
 nexttile
 imagesc(squatch(:,:,1))
-title('patch')
+title(sprintf('patch tSNR = %d',round(patch_tSNR_mean)))
 colormap viridis
 colorbar
 clim([0 max(im_data(:))])
+
 squatch_rows = mean(squatch,1);
 squatch_rowscols = mean(squatch_rows,2);
 squatch_t = squeeze(squatch_rowscols);
-std_sq = std(squatch,0,3);
-std_sq_rows = mean(std_sq,1);
+std_sq = std(squatch);
+std_sq_rows = mean(std_sq);
+std_sq_rows_sq = squeeze(std_sq_rows);
+
+a = squatch_t-mean(squatch_t);
+b = std_sq_rows_sq-mean(std_sq_rows_sq);
 % demean
 % from classic
 
 
-a = squatch_t-mean(squatch_t);
-b = std_sq_rows-mean(std_sq_rows);
-
-
 nexttile([1 2])
-%mye = errorbar(a,b,'LineWidth',2);
-%mye.Marker = "o";
-%mye.MarkerSize = 10;
-%mye.Color = 'red';
-%mye.CapSize = 10;
-%title('mean signal + std error bars')
-
-
-%close(bloop)
-
 plot(1:length(a),a,'LineWidth',2)
 hold on
 plot(1:length(b),b,'LineWidth',2)
 legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
-title(sprintf('mean %.0f, std %.0f',mean(squatch_t), mean(std_sq_rows)));
-ylim([-1000 1000])
+title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(std_sq_rows_sq)));
+%ylim([-1000 1000])
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
+
+
 
 %%
 tsnrData=mean(im_data,4)./std(im_data,0,4);
