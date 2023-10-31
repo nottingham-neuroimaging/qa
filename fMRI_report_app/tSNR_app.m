@@ -18,38 +18,77 @@ function [tsnrData, outputFilenameTSNR] = tSNR_app(dataFilename,varargin)
 %             It will rint tSNR and iSNR result if there is a dynamic noise scan
 %
 
+% 
+% validInputArgs = {'dynNOISEscan', 'temporalFilter', 'cropTimeSeries', 'outputBaseName', 'cropSlices','imgScale',... % dyn NOISE scan at the end of time series to compute image SNR
+%     };
 
-validInputArgs = {'dynNOISEscan', 'temporalFilter', 'cropTimeSeries', 'outputBaseName', 'cropSlices',... % dyn NOISE scan at the end of time series to compute image SNR
-    
+%eval(evalargs(varargin,[],[],validInputArgs))
 
-};
 
-eval(evalargs(varargin,[],[],validInputArgs))
+charidex = cellfun(@ischar,varargin);
+numbidex = cellfun(@isnumeric,varargin);
+chargin = varargin(charidex);
+numbgin = varargin(numbidex);
+numbgins = cell2mat(numbgin);
 
-% check inputs for the required arguments
-if ieNotDefined('dynNOISEscan')
-    dynNOISEscan=1;
+
+if sum(contains(chargin,'dynNOISEscan'))
+    dynNOISEscan = numbgins(1);
+else
+    dynNOISEscan = 0;
 end
 
-if ieNotDefined('temporalFilter')
-    temporalFilter=0;
-    % Currently not used.
+if sum(contains(chargin,'cropTimeSeries'))
+    cropTimeSeries = [numbgins(2) numbgins(3)];
+else
+    cropTimeSeries = [];
 end
 
-if ieNotDefined('cropTimeSeries')
-    cropTimeSeries=[];
+if sum(contains(chargin,'cropSlices'))
+    cropSlices = [numbgins(4) numbgins(5)];
+else
+    cropSlices = [];
 end
 
-if ieNotDefined('cropSlices'), cropSlices = []; end
+if sum(contains(chargin,'imgScale'))
+    imgScale = numbgins(6);
+end
 
-if ieNotDefined('dataFilename')
-    % get data_filename
+if ~exist('dataFilename','var')
     [dataFilename,pathname] = uigetfile({'*.hdr';'*.nii';'*.img'},'Select file ');
 end
 
-if ieNotDefined('outputBaseName')
-    outputBaseName = [pathname stripext(dataFilename)];    
+if sum(contains(chargin,'outputBaseName'))
+    outputBaseName = chargin{4};
+else
+    outputBaseName = [pathname stripext(dataFilename)];  
 end
+
+
+% check inputs for the required arguments
+% if ieNotDefined('dynNOISEscan')
+%     dynNOISEscan=1;
+% end
+% 
+% if ieNotDefined('temporalFilter')
+%     temporalFilter=0;
+%     % Currently not used.
+% end
+% 
+% if ieNotDefined('cropTimeSeries')
+%     cropTimeSeries=[];
+% end
+% 
+% if ieNotDefined('cropSlices'), cropSlices = []; end
+% 
+% if ieNotDefined('dataFilename')
+%     % get data_filename
+%     [dataFilename,pathname] = uigetfile({'*.hdr';'*.nii';'*.img'},'Select file ');
+% end
+% 
+% if ieNotDefined('outputBaseName')
+%     outputBaseName = [pathname stripext(dataFilename)];    
+% end
 
 % Reads the data from the file name.
 %[Data, Hdr]=cbiReadNifti(dataFilename);
@@ -137,10 +176,21 @@ else
     im_data = double(im_data);
 end
 
+tsnrData=mean(im_data,4)./std(im_data,0,4);
+tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
+
+
 %% add a plot to look at signal and std in a patch
 % magic numbers here
 %quickCrop = [45,65,85,105,round(size(im_data,3)./2)+5]; %9 and 18 and 11 and 20
-quickCrop = [25,45,25,45,round(size(im_data,3)./2)+10]; % 10 and 19 and 13
+
+patchsize = [20 20];
+xpos = round(nX./2)-20;
+ypos = round(nY./2)+10;
+xpatch = xpos+patchsize(1);
+ypatch = ypos+patchsize(2);
+
+quickCrop = [xpos,xpatch,ypos,ypatch,round(size(im_data,3)./2)+10]; % 10 and 19 and 13
 mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 
@@ -151,20 +201,20 @@ patch_tSNR_mean = mean(patch_tSNR(:));
 bloop = figure;
 tiledlayout(2,2)
 nexttile
-imagesc(im_data(:,:,quickCrop(5),1))
-title(sprintf('slice %d',quickCrop(5)))
-clim([0 max(im_data(:))])
+imagesc(tsnrData(:,:,quickCrop(5)))
+title(sprintf('tSNR, slice %d',quickCrop(5)))
+clim([0 imgScale])
 hold on
-rectangle('Position',[quickCrop(3),quickCrop(1),20,20],...
+rectangle('Position',[quickCrop(3),quickCrop(1),patchsize],...
          'LineWidth',2,'LineStyle','--')
-colormap viridis
+colormap inferno
 colorbar
 nexttile
-imagesc(squatch(:,:,1))
+imagesc(patch_tSNR)
 title(sprintf('patch tSNR = %d',round(patch_tSNR_mean)))
-colormap viridis
+colormap inferno
 colorbar
-clim([0 max(im_data(:))])
+clim([0 imgScale])
 
 squatch_rows = mean(squatch,1);
 squatch_rowscols = mean(squatch_rows,2);
@@ -186,13 +236,15 @@ plot(1:length(b),b,'LineWidth',2)
 legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
 title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(std_sq_rows_sq)));
 %ylim([-1000 1000])
+xlabel('time (s)')
+ylabel('demeaned signal')
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 
 
+
 %%
-tsnrData=mean(im_data,4)./std(im_data,0,4);
-tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
+
 
 save('meanTSNR', 'tsnrData');
 
