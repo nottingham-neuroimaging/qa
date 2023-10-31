@@ -185,12 +185,14 @@ tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 %quickCrop = [45,65,85,105,round(size(im_data,3)./2)+5]; %9 and 18 and 11 and 20
 
 patchsize = [20 20];
-xpos = round(nX./2)-20;
-ypos = round(nY./2)+10;
+xpos = round(nX./2)-25; %-20
+ypos = round(nY./2)+5; %+10
 xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
-quickCrop = [xpos,xpatch,ypos,ypatch,round(size(im_data,3)./2)+10]; % 10 and 19 and 13
+thisSlice = round(size(im_data,3).*(2./3));
+
+quickCrop = [xpos,xpatch,ypos,ypatch,thisSlice];
 mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 
