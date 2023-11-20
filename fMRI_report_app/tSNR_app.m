@@ -184,16 +184,25 @@ tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 % magic numbers here
 %quickCrop = [45,65,85,105,round(size(im_data,3)./2)+5]; %9 and 18 and 11 and 20
 
+thr = 0.05.*max(im_data(:));
+im_data_vec = im_data(:);
+clean = im_data_vec>thr;
+cleaned = im_data_vec.*clean;
+
+cleaned_data = reshape(cleaned,[nX,nY,nS,nV]);
+
+
 patchsize = [20 20];
-xpos = round(nX./2)-25; %-20
-ypos = round(nY./2)+5; %+10
+xpos = round(nX./2)-15; %-20
+ypos = round(nY./2); %+10
 xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
-thisSlice = round(size(im_data,3).*(2./3));
+thisSlice = round(size(cleaned_data,3).*(2./3));
+%thisSlice = round(size(cleaned_data,3)./2);
 
 quickCrop = [xpos,xpatch,ypos,ypatch,thisSlice];
-mypatch = im_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
+mypatch = cleaned_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 
 patch_tSNR = mean(squatch,3)./std(squatch,0,3);
@@ -243,20 +252,23 @@ ylabel('demeaned signal')
 %print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 ff = nexttile;
-stat_mean = mean(im_data,4);
+stat_mean = mean(cleaned_data,4);
 imagesc(stat_mean(:,:,quickCrop(5)));
-title(sprintf('mean across time = %d',round(mean(stat_mean(:)))));
+
+
+
+title(sprintf('mean across time = %d',round(mean(nonzeros(stat_mean(:))))));
 colormap(ff,viridis)
 colorbar(ff)
 %clim([0 imgScale])
 
 ff = nexttile;
-stat_std_noise = std(im_data,0,4);
+stat_std_noise = std(cleaned_data,0,4);
 imagesc(stat_std_noise(:,:,quickCrop(5)));
-title(sprintf('std across time = %d',round(mean(stat_std_noise(:)))));
+title(sprintf('std across time = %d',round(mean(nonzeros(stat_std_noise(:))))));
 colormap(ff,viridis)
 colorbar(ff)
-%clim([0 10])
+clim([0 10])
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 
