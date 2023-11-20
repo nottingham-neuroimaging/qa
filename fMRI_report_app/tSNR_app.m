@@ -200,8 +200,8 @@ patch_tSNR = mean(squatch,3)./std(squatch,0,3);
 patch_tSNR_mean = mean(patch_tSNR(:));
 
 
-bloop = figure;
-tiledlayout(2,2)
+bloop = figure('Position',[100 100 850 500]);
+tiledlayout(2,3)
 nexttile
 imagesc(tsnrData(:,:,quickCrop(5)))
 title(sprintf('tSNR, slice %d',quickCrop(5)))
@@ -240,6 +240,23 @@ title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(std_
 %ylim([-1000 1000])
 xlabel('time (s)')
 ylabel('demeaned signal')
+%print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
+
+ff = nexttile;
+stat_mean = mean(im_data,4);
+imagesc(stat_mean(:,:,quickCrop(5)));
+title(sprintf('mean across time = %d',round(mean(stat_mean(:)))));
+colormap(ff,viridis)
+colorbar(ff)
+%clim([0 imgScale])
+
+ff = nexttile;
+stat_std_noise = std(im_data,0,4);
+imagesc(stat_std_noise(:,:,quickCrop(5)));
+title(sprintf('std across time = %d',round(mean(stat_std_noise(:)))));
+colormap(ff,viridis)
+colorbar(ff)
+%clim([0 10])
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 
