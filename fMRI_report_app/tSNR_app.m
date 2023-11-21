@@ -181,7 +181,11 @@ tsnrData(tsnrData>1000) = 0; % This thresholds the tSNR so it's not super high
 
 %% send to stability app
 
-stability_app(im_data,imgScale,outputBaseName);
+if dynNOISEscan == 1
+    stability_app(im_data,imgScale,outputBaseName,noise_data);
+else
+    stability_app(im_data,imgScale,outputBaseName,[]);
+end
 
 
 %%

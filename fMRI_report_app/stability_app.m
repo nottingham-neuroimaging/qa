@@ -1,8 +1,15 @@
-function [] = stability_app(im_data,imgScale,outputBaseName)
+function [] = stability_app(im_data,imgScale,outputBaseName,noise_data)
 %stability_app subfunction of tSNR_app.m, part of fMRI_report_app.m
 % add a plot to look at signal and std in a patch
 %
 % See Also tSNR_app fMRI_report_app
+
+
+if ~isempty(noise_data)
+    runISNR = 1;
+else
+    runISNR = 0;
+end
 
 tsnrData=mean(im_data,4)./std(im_data,0,4);
 
@@ -21,10 +28,18 @@ cleaned_data = reshape(cleaned,[nX,nY,nS,nV]);
 
 patchsize = [20 20];
 xpos = round(nX./2)-15; %-20
-ypos = round(nY./2); %+10
+ypos = round(nY./2)-10; %+10
 xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
+
+tiles= 9; % for tiles
+theRound = round(nS./tiles);
+sliceVec = 1:theRound:nS;
+tiles = length(sliceVec);
+grid = factor(length(sliceVec));
+mylims = [0 2];
+% BROKEN
 thisSlice = round(size(cleaned_data,3).*(2./3));
 %thisSlice = round(size(cleaned_data,3)./2);
 
@@ -34,6 +49,29 @@ squatch = squeeze(mypatch);
 
 patch_tSNR = mean(squatch,3)./std(squatch,0,3);
 patch_tSNR_mean = mean(patch_tSNR(:));
+
+if runISNR
+    %keyboard
+    ricianFactor = 0.66;
+    noise_data_corr = noise_data .* ricianFactor;
+    msig = mean(im_data,4);
+    iSNR = msig./double(noise_data_corr);
+    isnrfig = figure('Position',[100 100 800 600]);
+    tiledlayout(grid(1),grid(2))
+    for ii = 1:tiles
+        nexttile
+        imagesc(iSNR(:,:,sliceVec(ii)))
+        colormap plasma
+        c = colorbar;
+        c.Label
+        %c.Label.String = 'Hz';
+        clim([mylims(1) mylims(2)])
+        axis square
+        title(sprintf('slice %d, iSNR',sliceVec(ii)))
+    end
+    print(isnrfig,[outputBaseName '_iSNR.png'],'-dpng');
+
+end
 
 
 bloop = figure('Position',[100 100 850 500]);
