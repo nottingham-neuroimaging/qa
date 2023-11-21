@@ -33,11 +33,14 @@ xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
 
-tiles= 9; % for tiles
-theRound = round(nS./tiles);
+montage=10; % for tiles
+theRound = round(nS./montage);
 sliceVec = 1:theRound:nS;
 tiles = length(sliceVec);
-grid = factor(length(sliceVec));
+
+grid = factork(length(sliceVec),3);
+
+%grid = factor(length(sliceVec));
 mylims = [0 2];
 % BROKEN
 thisSlice = round(size(cleaned_data,3).*(2./3));
