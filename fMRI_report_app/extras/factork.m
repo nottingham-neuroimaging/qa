@@ -8,6 +8,9 @@ function[gridFactors]=factork(X,M)
 %
 % Michael Asghar - November 2023
 F = X./M;
-F = round(F);
+F = ceil(F);
+if M*F<X
+    error('Your grid will be too small, increase M')
+end
 gridFactors = [M F];
 end
