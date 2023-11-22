@@ -8,5 +8,6 @@ function[gridFactors]=factork(X,M)
 %
 % Michael Asghar - November 2023
 F = X./M;
+F = round(F);
 gridFactors = [M F];
 end

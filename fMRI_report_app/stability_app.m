@@ -60,26 +60,50 @@ if runISNR
     msig = mean(im_data,4);
     iSNR = msig./double(noise_data_corr);
     isnrfig = figure('Position',[100 100 800 600]);
-    tiledlayout(grid(1),grid(2))
-    for ii = 1:tiles
-        nexttile
-        imagesc(iSNR(:,:,sliceVec(ii)))
-        colormap plasma
-        c = colorbar;
-        c.Label
-        %c.Label.String = 'Hz';
-        clim([mylims(1) mylims(2)])
-        axis square
-        title(sprintf('slice %d, iSNR',sliceVec(ii)))
-    end
-    print(isnrfig,[outputBaseName '_iSNR.png'],'-dpng');
 
+    if verLessThan('matlab', '9.7')
+        % Put code to run under MATLAB older than MATLAB 9.7 (2019b) here
+        for ii = 1:tiles
+            subplot(grid(1),grid(2),ii)
+            imagesc(iSNR(:,:,sliceVec(ii)))
+            colormap plasma
+            c = colorbar;
+            c.Label
+            clim([mylims(1) mylims(2)])
+            axis square
+            title(sprintf('slice %d, iSNR',sliceVec(ii)))
+        end
+        print(isnrfig,[outputBaseName '_iSNR.png'],'-dpng');
+
+    else
+        % Put code to run under MATLAB 9.7 (2019b) and newer here
+
+        tiledlayout(grid(1),grid(2))
+        for ii = 1:tiles
+            nexttile
+            imagesc(iSNR(:,:,sliceVec(ii)))
+            colormap plasma
+            c = colorbar;
+            c.Label
+            %c.Label.String = 'Hz';
+            clim([mylims(1) mylims(2)])
+            axis square
+            title(sprintf('slice %d, iSNR',sliceVec(ii)))
+        end
+        print(isnrfig,[outputBaseName '_iSNR.png'],'-dpng');
+
+    end
 end
 
 
 bloop = figure('Position',[100 100 850 500]);
-tiledlayout(2,3)
-nexttile
+
+if verLessThan('matlab', '9.7')
+    subplot(2,3,1)
+else
+    tiledlayout(2,3)
+    nexttile
+end
 imagesc(tsnrData(:,:,quickCrop(5)))
 title(sprintf('tSNR, slice %d',quickCrop(5)))
 clim([0 imgScale])
@@ -88,7 +112,13 @@ rectangle('Position',[quickCrop(3),quickCrop(1),patchsize],...
     'LineWidth',2,'LineStyle','--')
 colormap inferno
 colorbar
-nexttile
+
+if verLessThan('matlab', '9.7')
+    subplot(2,3,2)
+else
+    nexttile
+end
+
 imagesc(patch_tSNR)
 title(sprintf('patch tSNR = %d',round(patch_tSNR_mean)))
 colormap inferno
@@ -107,8 +137,12 @@ b = std_sq_rows_sq-mean(std_sq_rows_sq);
 % demean
 % from classic
 
+if verLessThan('matlab', '9.7')
+    subplot(2,3,[4 5])
+else
+    nexttile([1 2])
+end
 
-nexttile([1 2])
 plot(1:length(a),a,'LineWidth',2)
 hold on
 plot(1:length(b),b,'LineWidth',2)
@@ -119,7 +153,13 @@ xlabel('time (s)')
 ylabel('demeaned signal')
 %print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
-ff = nexttile;
+if verLessThan('matlab', '9.7')
+    ff = subplot(2,3,3);
+else
+    ff = nexttile;
+end
+
+
 stat_mean = mean(cleaned_data,4);
 imagesc(stat_mean(:,:,quickCrop(5)));
 
@@ -130,7 +170,12 @@ colormap(ff,viridis)
 colorbar(ff)
 %clim([0 imgScale])
 
-ff = nexttile;
+if verLessThan('matlab', '9.7')
+    ff = subplot(2,3,6);
+else
+    ff = nexttile;
+end
+
 oddSlices = 1:2:size(cleaned_data,4);
 evenSlices = 2:2:size(cleaned_data,4);
 ODD = cleaned_data(:,:,:,oddSlices);
@@ -156,3 +201,7 @@ print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 
 end
+
+
+
+
