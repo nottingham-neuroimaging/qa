@@ -27,8 +27,8 @@ cleaned_data = reshape(cleaned,[nX,nY,nS,nV]);
 
 
 patchsize = [20 20];
-xpos = round(nX./2)-15; %-20
-ypos = round(nY./2)-10; %+10
+xpos = round(nX./2)-30; %-20
+ypos = round(nY./2); %+10
 xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
@@ -41,24 +41,26 @@ tiles = length(sliceVec);
 grid = factork(length(sliceVec),3);
 
 %grid = factor(length(sliceVec));
-mylims = [0 2];
+mylims = [0 100];
 % BROKEN
 thisSlice = round(size(cleaned_data,3).*(2./3));
+%thisSlice = round(size(cleaned_data,3).*(2./3));
 %thisSlice = round(size(cleaned_data,3)./2);
-
+%thisSlice = 19;
 quickCrop = [xpos,xpatch,ypos,ypatch,thisSlice];
 mypatch = cleaned_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 
 patch_tSNR = mean(squatch,3)./std(squatch,0,3);
-patch_tSNR_mean = mean(patch_tSNR(:));
+patch_tSNR_mean = nanmean(patch_tSNR(:));
 
 if runISNR
     %keyboard
-    ricianFactor = 0.66;
-    noise_data_corr = noise_data .* ricianFactor;
+    ricianFactor = 0.655;
+    %noise_data_corr = noise_data ./ ricianFactor;
+    noise_data_corr_std = std(double(noise_data(:))) ./ ricianFactor;
     msig = mean(im_data,4);
-    iSNR = msig./double(noise_data_corr);
+    iSNR = msig./noise_data_corr_std;
     isnrfig = figure('Position',[100 100 800 600]);
 
     if verLessThan('matlab', '9.7')
