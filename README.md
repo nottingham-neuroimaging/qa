@@ -7,6 +7,9 @@
 Github Pages: <https://nottingham-neuroimaging.github.io/qa/>
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/nottingham-neuroimaging/qa)
+![GitHub last commit](https://img.shields.io/github/last-commit/nottingham-neuroimaging/qa)
+
 
 # What is this?  
 * A MATLAB-based toolbox to allow quick and easy temporal signal-to-noise-ratio analysis of routine brain/fMRI NIFTI data.
