@@ -38,12 +38,13 @@ pip install -r requirements.txt
 
 ```
 cd fMRI_report_python/tutorials/
-jupyter notebook qa.ipynb
+jupyter notebook qa_tutorial.ipynb
 ```
 
 * This code uses a lot of function within the `functions/snr.py` code.
 * Example phantom data is in `data/`
 * Thanks to [Alex Daniel](https://github.com/UKRIN-MAPS/ukat/tree/master) and his `ukat` repo for help porting this from MATLAB to python.
+* The file `qa_run.ipynb` is a version that is being altered for use as a container on XNAT.
 
 # Help
 
