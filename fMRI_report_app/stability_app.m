@@ -51,16 +51,27 @@ quickCrop = [xpos,xpatch,ypos,ypatch,thisSlice];
 mypatch = cleaned_data(quickCrop(1):quickCrop(2),quickCrop(3):quickCrop(4),quickCrop(5),:);
 squatch = squeeze(mypatch);
 
+
+% here third dim is time, so it's ok
 patch_tSNR = mean(squatch,3)./std(squatch,0,3);
 patch_tSNR_mean = nanmean(patch_tSNR(:));
 
+
 if runISNR
     %keyboard
-    ricianFactor = 0.655;
+    %ricianFactor = 0.655;
+    ricianFactor = sqrt(2-pi/2);
     %noise_data_corr = noise_data ./ ricianFactor;
-    noise_data_corr_std = std(double(noise_data(:))) ./ ricianFactor;
+    %noise_data_corr_std = std(double(noise_data(:))) ./ ricianFactor;
     msig = mean(im_data,4);
-    iSNR = msig./noise_data_corr_std;
+    stdsig = std(im_data,0,4);
+    %iSNR = msig./noise_data_corr_std;
+
+    
+    %iSNR = (msig ./ double(noise_data)).*ricianFactor;
+    
+    iSNR = (msig ./ stdsig).*ricianFactor;
+
     isnrfig = figure('Position',[100 100 800 600]);
 
     if verLessThan('matlab', '9.7')
@@ -127,15 +138,13 @@ colormap inferno
 colorbar
 clim([0 imgScale])
 
-squatch_rows = mean(squatch,1);
-squatch_rowscols = mean(squatch_rows,2);
-squatch_t = squeeze(squatch_rowscols);
-std_sq = std(squatch);
-std_sq_rows = mean(std_sq);
-std_sq_rows_sq = squeeze(std_sq_rows);
+% is this silly? Take the mean and std of the patch slice, as we want a
+% single number over time to plot.
+squatch_t = squeeze(mean(squatch,[1 2]));
+squatch_std = squeeze(std(squatch,0,[1 2]));
 
 a = squatch_t-mean(squatch_t);
-b = std_sq_rows_sq-mean(std_sq_rows_sq);
+b = squatch_std-mean(squatch_std);
 % demean
 % from classic
 
@@ -149,7 +158,7 @@ plot(1:length(a),a,'LineWidth',2)
 hold on
 plot(1:length(b),b,'LineWidth',2)
 legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
-title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(std_sq_rows_sq)));
+title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(squatch_std)));
 %ylim([-1000 1000])
 xlabel('time (s)')
 ylabel('demeaned signal')
