@@ -1,5 +1,5 @@
-Classic image has an iSNR of 45.12.
-Mean tSNR Classic: 54.4993536270515
-Classic Image data shape: (144, 144, 60)
-Mean tSNR within ROI Classic: 51.59957928705408
-Mean SSN: 60.248423572264464
+Classic image has an iSNR of 70.26.
+Mean tSNR Classic: 16.609029745402964
+Classic Image data shape: (64, 64, 282)
+Mean tSNR within ROI Classic: 1.6554558967087627
+Mean SSN: -4235.708346013394
