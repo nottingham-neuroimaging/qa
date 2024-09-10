@@ -26,9 +26,9 @@ cleaned = im_data_vec.*clean;
 cleaned_data = reshape(cleaned,[nX,nY,nS,nV]);
 
 
-patchsize = [20 20];
-xpos = round(nX./2)-30; %-20
-ypos = round(nY./2); %+10
+patchsize = [14 14];
+xpos = round(nX./2)-18; %-20
+ypos = round(nY./2)-10; %+10
 xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
@@ -158,8 +158,9 @@ plot(1:length(a),a,'LineWidth',2)
 hold on
 plot(1:length(b),b,'LineWidth',2)
 legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
-title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(squatch_std)));
-%ylim([-1000 1000])
+%title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(squatch_std)));
+title('mean and std dev')
+%ylim([-10000 10000])
 xlabel('time (s)')
 ylabel('demeaned signal')
 %print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
@@ -176,7 +177,8 @@ imagesc(stat_mean(:,:,quickCrop(5)));
 
 
 
-title(sprintf('mean across time = %d',round(mean(nonzeros(stat_mean(:))))));
+%title(sprintf('mean across time = %d',round(mean(nonzeros(stat_mean(:))))));
+title(sprintf('mean across time'))
 colormap(ff,viridis)
 colorbar(ff)
 %clim([0 imgScale])
@@ -200,10 +202,11 @@ thisDIFF = sumODD-sumEVEN;
 stat_spatial_noise = thisDIFF(:,:,quickCrop(5));
 %imagesc(stat_spatial_noise(:,:,quickCrop(5)));
 imagesc(stat_spatial_noise);
-title(sprintf('Static Spatial Noise Image, mean=%d',round(mean(stat_spatial_noise(:)))) );
+%title(sprintf('Static Spatial Noise Image, mean=%d',round(mean(stat_spatial_noise(:)))) );
+title(sprintf('Static Spatial Noise Image'));
 colormap(ff,viridis)
 colorbar(ff)
-clim([-100 100])
+%clim([-1000000 1000000])
 print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
 
 
