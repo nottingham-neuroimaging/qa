@@ -184,18 +184,13 @@ if manydyns
     
     dirPath = pwd;
     filePattern = fullfile(dirPath, '*.csv'); % Adjust pattern to match your filenames
-    fileList = dir(filePattern);
-    numFiles = length(fileList);
-    
-    % prevent overwriting!
-    csvFile = 'mean_tSNR_data';
-    if numFiles>=1
-        writetable(T,[csvFile '_' num2str(numFiles) '.csv'],'WriteVariableNames',0);
-    else
-        writetable(T,[csvFile '.csv'],'WriteVariableNames',0);
-    end
 
-  
+    csvFile = 'mean_tSNR_data.csv';
+    if ~exist(csvFile,'file')
+        writetable(T,csvFile,'WriteVariableNames',0);
+    else
+
+    end
 
     
     %fprintf('Grand mean: %.4f\n', mean(themeans));

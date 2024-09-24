@@ -33,13 +33,13 @@ xpatch = xpos+patchsize(1);
 ypatch = ypos+patchsize(2);
 
 
-montage=12; % for tiles
+montage=6; % for tiles
 theRound = round(nS./montage);
 
 % we dont care about top and bottom
 % take middle 80%
 
-sliceVec = round(0.2*nS):theRound:round(0.8*nS);
+sliceVec = 1:theRound:nS;
 tiles = length(sliceVec);
 
 grid = factork(length(sliceVec),3);
