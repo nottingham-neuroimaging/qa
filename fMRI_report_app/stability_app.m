@@ -47,8 +47,9 @@ grid = factork(length(sliceVec),3);
 %grid = factor(length(sliceVec));
 mylims = [0 100];
 % BROKEN
-thisSlice = round(size(cleaned_data,3).*0.5);
+%thisSlice = round(size(cleaned_data,3).*0.5);
 %thisSlice = round(size(cleaned_data,3).*(2./3));
+thisSlice = round(size(cleaned_data,3).*0.57);
 %thisSlice = round(size(cleaned_data,3)./2);
 %thisSlice = 19;
 quickCrop = [xpos,xpatch,ypos,ypatch,thisSlice];
@@ -164,7 +165,7 @@ plot(1:length(b),b,'LineWidth',2)
 legend('Mean patch','STD patch','FontSize',9,'Location','southeast')
 %title(sprintf('mean of signal %.0f, mean of std %.0f',mean(squatch_t), mean(squatch_std)));
 title('mean and std dev')
-ylim([-20 20])
+ylim([-10 10])
 xlabel('time (s)')
 ylabel('demeaned signal')
 %print(bloop,[outputBaseName '_signal_std.png'],'-dpng');
