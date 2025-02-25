@@ -75,10 +75,16 @@ class Isnr:
         self.noise_mask = self.clusters == bg_label
 
     def __snr__(self):
-        noise = np.std(self.pixel_array[self.noise_mask])
-        signal = np.mean(self.pixel_array[~self.noise_mask])
-        self.isnr = (signal / noise) * np.sqrt(2 - (np.pi / 2))
-        self.isnr_map = (self.pixel_array / noise) * np.sqrt(2 - (np.pi / 2))
+        
+        self.noise = self.noise_mask[self.noise_mask != 0].std() 
+        signal = np.mean(self.pixel_array, axis=-1)
+        self.isnr = (signal / self.noise) * np.sqrt(2 - (np.pi / 2))
+        self.isnr_map = (self.pixel_array / self.noise) * np.sqrt(2 - (np.pi / 2))
+
+        #noise = np.std(self.pixel_array[self.noise_mask])
+        #signal = np.mean(self.pixel_array[~self.noise_mask])
+        #self.isnr = (signal / self.noise) * np.sqrt(2 - (np.pi / 2))
+        #self.isnr_map = (self.pixel_array / self.noise) * np.sqrt(2 - (np.pi / 2))
 
     def to_nifti(self, output_directory=os.getcwd(), base_file_name='Output'):
         """Exports iSNR maps to NIFTI.
